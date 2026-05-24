@@ -12,7 +12,6 @@ export const auth = betterAuth({
 	emailAndPassword: {
 		enabled: true,
 		sendResetPassword: async ({ user, url }) => {
-			// TODO: envoyer l'email de reset (Resend, Nodemailer...)
 			console.log(`Reset password link for ${user.email}: ${url}`);
 		}
 	},
@@ -22,6 +21,18 @@ export const auth = betterAuth({
 			clientSecret: env.GOOGLE_CLIENT_SECRET,
 		}
 	},
+	user: {
+		modelName: 'users',
+		additionalFields: {
+			firstname: { type: 'string', required: true },
+			role: { type: 'string', required: true, defaultValue: 'customer' },
+			localization: { type: 'string', required: true },
+			upload_profile_picture: { type: 'date', required: false },
+		}
+	},
+	session: { modelName: 'sessions' },
+	account: { modelName: 'accounts' },
+	verification: { modelName: 'verifications' },
 	plugins: [
 		sveltekitCookies(getRequestEvent)
 	]

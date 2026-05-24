@@ -1,21 +1,28 @@
-import { relations } from 'drizzle-orm';
-import { pgTable, text, timestamp, boolean, index } from 'drizzle-orm/pg-core';
+// ⚠️ Fichier généré par `pnpm auth:schema` puis ÉDITÉ MANUELLEMENT pour respecter le dico (varchar avec longueurs).
+// Si tu régénères, il faudra réappliquer les types varchar à la main.
 
-export const user = pgTable('user', {
+import { relations } from 'drizzle-orm';
+import { pgTable, text, varchar, timestamp, boolean, date, index } from 'drizzle-orm/pg-core';
+
+export const users = pgTable('users', {
 	id: text('id').primaryKey(),
-	name: text('name').notNull(),
-	email: text('email').notNull().unique(),
+	name: varchar('name', { length: 50 }).notNull(),
+	email: varchar('email', { length: 128 }).notNull().unique(),
 	emailVerified: boolean('email_verified').default(false).notNull(),
-	image: text('image'),
+	image: varchar('image', { length: 255 }),
 	createdAt: timestamp('created_at').defaultNow().notNull(),
 	updatedAt: timestamp('updated_at')
 		.defaultNow()
 		.$onUpdate(() => new Date())
 		.notNull(),
+	firstname: varchar('firstname', { length: 50 }).notNull(),
+	role: varchar('role', { length: 50 }).default('customer').notNull(),
+	localization: varchar('localization', { length: 128 }).notNull(),
+	upload_profile_picture: date('upload_profile_picture'),
 });
 
-export const session = pgTable(
-	'session',
+export const sessions = pgTable(
+	'sessions',
 	{
 		id: text('id').primaryKey(),
 		expiresAt: timestamp('expires_at').notNull(),
@@ -28,37 +35,37 @@ export const session = pgTable(
 		userAgent: text('user_agent'),
 		userId: text('user_id')
 			.notNull()
-			.references(() => user.id, { onDelete: 'cascade' }),
+			.references(() => users.id, { onDelete: 'cascade' }),
 	},
-	(table) => [index('session_userId_idx').on(table.userId)],
+	(table) => [index('sessions_userId_idx').on(table.userId)],
 );
 
-export const account = pgTable(
-	'account',
+export const accounts = pgTable(
+	'accounts',
 	{
 		id: text('id').primaryKey(),
 		accountId: text('account_id').notNull(),
 		providerId: text('provider_id').notNull(),
 		userId: text('user_id')
 			.notNull()
-			.references(() => user.id, { onDelete: 'cascade' }),
+			.references(() => users.id, { onDelete: 'cascade' }),
 		accessToken: text('access_token'),
 		refreshToken: text('refresh_token'),
 		idToken: text('id_token'),
 		accessTokenExpiresAt: timestamp('access_token_expires_at'),
 		refreshTokenExpiresAt: timestamp('refresh_token_expires_at'),
 		scope: text('scope'),
-		password: text('password'),
+		password: varchar('password', { length: 255 }),
 		createdAt: timestamp('created_at').defaultNow().notNull(),
 		updatedAt: timestamp('updated_at')
 			.$onUpdate(() => new Date())
 			.notNull(),
 	},
-	(table) => [index('account_userId_idx').on(table.userId)],
+	(table) => [index('accounts_userId_idx').on(table.userId)],
 );
 
-export const verification = pgTable(
-	'verification',
+export const verifications = pgTable(
+	'verifications',
 	{
 		id: text('id').primaryKey(),
 		identifier: text('identifier').notNull(),
@@ -70,24 +77,24 @@ export const verification = pgTable(
 			.$onUpdate(() => new Date())
 			.notNull(),
 	},
-	(table) => [index('verification_identifier_idx').on(table.identifier)],
+	(table) => [index('verifications_identifier_idx').on(table.identifier)],
 );
 
-export const userRelations = relations(user, ({ many }) => ({
-	sessions: many(session),
-	accounts: many(account),
+export const usersRelations = relations(users, ({ many }) => ({
+	sessions: many(sessions),
+	accounts: many(accounts),
 }));
 
-export const sessionRelations = relations(session, ({ one }) => ({
-	user: one(user, {
-		fields: [session.userId],
-		references: [user.id],
+export const sessionsRelations = relations(sessions, ({ one }) => ({
+	user: one(users, {
+		fields: [sessions.userId],
+		references: [users.id],
 	}),
 }));
 
-export const accountRelations = relations(account, ({ one }) => ({
-	user: one(user, {
-		fields: [account.userId],
-		references: [user.id],
+export const accountsRelations = relations(accounts, ({ one }) => ({
+	user: one(users, {
+		fields: [accounts.userId],
+		references: [users.id],
 	}),
 }));

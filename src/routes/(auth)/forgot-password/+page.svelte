@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { createAuthClient } from 'better-auth/svelte';
 
-	const { forgetPassword } = createAuthClient();
+	const { requestPasswordReset } = createAuthClient();
 
 	let email = $state('');
 	let sent = $state(false);
@@ -9,7 +9,7 @@
 
 	async function handleSubmit(e: SubmitEvent) {
 		e.preventDefault();
-		const result = await forgetPassword({ email, redirectTo: '/reset-password' });
+		const result = await requestPasswordReset({ email, redirectTo: '/reset-password' });
 		if (result.error) error = result.error.message ?? 'Erreur';
 		else sent = true;
 	}
