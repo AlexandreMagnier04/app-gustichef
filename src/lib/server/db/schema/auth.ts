@@ -15,9 +15,9 @@ export const users = pgTable('users', {
 		.defaultNow()
 		.$onUpdate(() => new Date())
 		.notNull(),
-	firstname: varchar('firstname', { length: 50 }).notNull(),
+	firstname: varchar('firstname', { length: 50 }).default('').notNull(),
 	role: varchar('role', { length: 50 }).default('customer').notNull(),
-	localization: varchar('localization', { length: 128 }).notNull(),
+	localization: varchar('localization', { length: 128 }).default('').notNull(),
 	upload_profile_picture: date('upload_profile_picture'),
 });
 

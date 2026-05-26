@@ -2,6 +2,7 @@ import { relations } from 'drizzle-orm';
 import { pgTable, serial, text, varchar, decimal, integer, primaryKey, date } from 'drizzle-orm/pg-core';
 import { chiefs, customers } from './profiles';
 
+/
 export const specialties = pgTable('specialties', {
 	id_speciality: serial('id_speciality').primaryKey(),
 	name_speciality: varchar('name_speciality', { length: 50 }).notNull(),

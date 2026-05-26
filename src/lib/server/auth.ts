@@ -24,10 +24,10 @@ export const auth = betterAuth({
 	user: {
 		modelName: 'users',
 		additionalFields: {
-			firstname: { type: 'string', required: true },
-			role: { type: 'string', required: true, defaultValue: 'customer' },
-			localization: { type: 'string', required: true },
-			upload_profile_picture: { type: 'date', required: false },
+			firstname: { type: 'string', required: false, defaultValue: '' },
+			role: { type: 'string', required: false, defaultValue: 'customer' },
+			localization: { type: 'string', required: false, defaultValue: '' },
+			upload_profile_picture: { type: 'string', required: false },
 		}
 	},
 	session: { modelName: 'sessions' },

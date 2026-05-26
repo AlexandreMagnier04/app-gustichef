@@ -1,3 +1,14 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
+
+@theme {
+	--color-cream: #F5EDDC;
+	--color-rust: #B85C38;
+	--color-navy: #163040;
+	--font-script: 'Dancing Script', cursive;
+}
+
+@keyframes scroll-left {
+	to { transform: translateX(-50%); }
+}

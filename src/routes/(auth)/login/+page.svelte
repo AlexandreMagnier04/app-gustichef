@@ -1,7 +1,5 @@
 <script lang="ts">
-	import { createAuthClient } from 'better-auth/svelte';
-
-	const { signIn } = createAuthClient();
+	import { signIn } from '$lib/auth-client';
 
 	let email = $state('');
 	let password = $state('');
