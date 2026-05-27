@@ -21,6 +21,15 @@ export const forgotPasswordDto = z.object({
 	email: z.email({ error: 'Email invalide' })
 });
 
+// Validation étape 1 du register chef (localization vient de l'étape 4)
+export const chefSignUpStep1Dto = signUpDto.pick({
+	name: true,
+	firstname: true,
+	email: true,
+	password: true
+});
+
 export type SignInDto = z.infer<typeof signInDto>;
 export type SignUpDto = z.infer<typeof signUpDto>;
 export type ForgotPasswordDto = z.infer<typeof forgotPasswordDto>;
+export type ChefSignUpStep1Dto = z.infer<typeof chefSignUpStep1Dto>;

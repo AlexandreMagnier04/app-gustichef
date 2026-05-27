@@ -1,12 +1,16 @@
 import { eq } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { chiefs, specialties, categories, chiefs_specialties, chiefs_categories, menus, notices } from '$lib/server/db/schema/chiefs';
-import type { Chief, ChiefProfile, ChiefUpdate, Menu, Notice } from '$lib/models/chief.model';
+import type { Chief, ChiefProfile, ChiefUpdate, Menu, Notice, Specialty } from '$lib/models/chief.model';
 import type { UpdateChiefDto, CreateMenuDto } from '$lib/dtos/chief.dto';
 import type { CreateNoticeDto } from '$lib/dtos/customer.dto';
 
 export async function getChiefs(): Promise<Chief[]> {
 	return db.select().from(chiefs);
+}
+
+export async function getSpecialties(): Promise<Specialty[]> {
+	return db.select().from(specialties);
 }
 
 export async function getChiefById(id: string): Promise<ChiefProfile | null> {

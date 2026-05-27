@@ -1,17 +1,24 @@
 <script lang="ts">
+	import { page } from '$app/state';
+	import BackButton from '$lib/components/BackButton.svelte';
+
 	let { children } = $props();
+
+	const noBackButton = ['/login', '/onboarding'];
+	const lightPages = ['/register', '/chief/register'];
+
+	let showBack = $derived(!noBackButton.includes(page.url.pathname));
+	let isLight = $derived(lightPages.some((p) => page.url.pathname.startsWith(p)));
 </script>
 
-<div class="auth-layout">
-	{@render children()}
-</div>
+{#if showBack}
+	<div class="fixed top-4 left-4 z-50">
+		<BackButton
+			class={isLight
+				? 'rounded-full bg-navy/10 px-3 py-1.5 text-navy'
+				: 'rounded-full bg-white/20 px-3 py-1.5 text-white backdrop-blur-sm'}
+		/>
+	</div>
+{/if}
 
-<style>
-	.auth-layout {
-		min-height: 100vh;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		padding: 1rem;
-	}
-</style>
+{@render children()}

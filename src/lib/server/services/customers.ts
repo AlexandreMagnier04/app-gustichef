@@ -6,7 +6,7 @@ import type { Customer, CustomerUpdate } from '$lib/models/customer.model';
 import { requests } from '$lib/server/db/schema/customers';
 import { services } from '$lib/server/db/schema/services';
 import type { Request } from '$lib/models/customer.model';
-import type { Service } from '$lib/dtos/service.model';
+import type { Service } from '$lib/models/service.model';
 import type { CreateRequestDto } from '$lib/dtos/customer.dto';
 
 export async function getCustomerById(id: string): Promise<Customer | null> {
