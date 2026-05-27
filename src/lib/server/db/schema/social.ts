@@ -1,6 +1,6 @@
 import { pgTable, serial, text, varchar, integer, date, primaryKey } from 'drizzle-orm/pg-core';
 import { users } from './auth';
-import { requests } from './prestation';
+import { requests } from './customers';
 
 export const images_publication = pgTable('images_publication', {
 	id_image_publication: serial('id_image_publication').primaryKey(),
