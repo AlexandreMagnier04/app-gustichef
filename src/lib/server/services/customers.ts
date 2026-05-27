@@ -1,13 +1,13 @@
 import { eq } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { customers } from '$lib/server/db/schema/customers';
-import type { Customer, CustomerUpdate } from '$lib/features/customers/customer.model';
+import type { Customer, CustomerUpdate } from '$lib/models/customer.model';
 
 import { requests } from '$lib/server/db/schema/customers';
 import { services } from '$lib/server/db/schema/services';
-import type { Request } from '$lib/features/customers/customer.model';
-import type { Service } from '$lib/features/services/service.model';
-import type { CreateRequestDto } from '$lib/features/customers/customer.dto';
+import type { Request } from '$lib/models/customer.model';
+import type { Service } from '$lib/dtos/service.model';
+import type { CreateRequestDto } from '$lib/dtos/customer.dto';
 
 export async function getCustomerById(id: string): Promise<Customer | null> {
 	const result = await db.select().from(customers).where(eq(customers.id_customer, id)).limit(1);

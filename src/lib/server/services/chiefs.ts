@@ -1,9 +1,9 @@
 import { eq } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { chiefs, specialties, categories, cook, affiliate, menus, notices } from '$lib/server/db/schema/chiefs';
-import type { Chief, ChiefProfile, ChiefUpdate, Menu, Notice } from '$lib/features/chiefs/chief.model';
-import type { UpdateChiefDto, CreateMenuDto } from '$lib/features/chiefs/chief.dto';
-import type { CreateNoticeDto } from '$lib/features/customers/customer.dto';
+import { chiefs, specialties, categories, chiefs_specialties, chiefs_categories, menus, notices } from '$lib/server/db/schema/chiefs';
+import type { Chief, ChiefProfile, ChiefUpdate, Menu, Notice } from '$lib/models/chief.model';
+import type { UpdateChiefDto, CreateMenuDto } from '$lib/dtos/chief.dto';
+import type { CreateNoticeDto } from '$lib/dtos/customer.dto';
 
 export async function getChiefs(): Promise<Chief[]> {
 	return db.select().from(chiefs);
@@ -30,14 +30,14 @@ export async function getChiefById(id: string): Promise<ChiefProfile | null> {
 	const chiefSpecialties = await db
 		.select({ id_speciality: specialties.id_speciality, name_speciality: specialties.name_speciality, description_speciality: specialties.description_speciality })
 		.from(specialties)
-		.innerJoin(cook, eq(cook.id_speciality, specialties.id_speciality))
-		.where(eq(cook.id_chief, id));
+		.innerJoin(chiefs_specialties, eq(chiefs_specialties.id_speciality, specialties.id_speciality))
+		.where(eq(chiefs_specialties.id_chief, id));
 
 	const chiefCategories = await db
 		.select({ id_category: categories.id_category, name_category: categories.name_category })
 		.from(categories)
-		.innerJoin(affiliate, eq(affiliate.id_category, categories.id_category))
-		.where(eq(affiliate.id_chief, id));
+		.innerJoin(chiefs_categories, eq(chiefs_categories.id_category, categories.id_category))
+		.where(eq(chiefs_categories.id_chief, id));
 
 	return {
 		...result,

@@ -1,7 +1,7 @@
 ﻿<script lang="ts">
-	import SlideIntro from '$lib/features/onboarding/SlideIntro.svelte';
-	import SlideChef from '$lib/features/onboarding/SlideChef.svelte';
-	import SlideRole from '$lib/features/onboarding/SlideRole.svelte';
+	import SlideIntro from '$lib/components/SlideIntro.svelte';
+	import SlideChef from '$lib/components/SlideChef.svelte';
+	import SlideRole from '$lib/components/SlideRole.svelte';
 
 	// slide = seul état que le parent gère — tout le reste est interne aux composants enfants
 	let slide = $state(0);

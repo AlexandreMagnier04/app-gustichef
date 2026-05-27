@@ -22,8 +22,8 @@ export const categories = pgTable('categories', {
 });
 
 // M:N chiefs ↔ specialties
-export const cook = pgTable(
-	'cook',
+export const chiefs_specialties = pgTable(
+	'chiefs_specialties',
 	{
 		id_chief: text('id_chief').notNull().references(() => chiefs.id_chief, { onDelete: 'cascade' }),
 		id_speciality: integer('id_speciality').notNull().references(() => specialties.id_speciality, { onDelete: 'cascade' }),
@@ -32,8 +32,8 @@ export const cook = pgTable(
 );
 
 // M:N chiefs ↔ categories
-export const affiliate = pgTable(
-	'affiliate',
+export const chiefs_categories = pgTable(
+	'chiefs_categories',
 	{
 		id_chief: text('id_chief').notNull().references(() => chiefs.id_chief, { onDelete: 'cascade' }),
 		id_category: integer('id_category').notNull().references(() => categories.id_category, { onDelete: 'cascade' }),
@@ -77,12 +77,12 @@ export const chiefRelations = relations(chiefs, ({ one }) => ({
 	user: one(users, { fields: [chiefs.id_chief], references: [users.id] }),
 }));
 
-export const cookRelations = relations(cook, ({ one }) => ({
-	chief: one(chiefs, { fields: [cook.id_chief], references: [chiefs.id_chief] }),
-	speciality: one(specialties, { fields: [cook.id_speciality], references: [specialties.id_speciality] }),
+export const chiefsSpecialtiesRelations = relations(chiefs_specialties, ({ one }) => ({
+	chief: one(chiefs, { fields: [chiefs_specialties.id_chief], references: [chiefs.id_chief] }),
+	speciality: one(specialties, { fields: [chiefs_specialties.id_speciality], references: [specialties.id_speciality] }),
 }));
 
-export const affiliateRelations = relations(affiliate, ({ one }) => ({
-	chief: one(chiefs, { fields: [affiliate.id_chief], references: [chiefs.id_chief] }),
-	category: one(categories, { fields: [affiliate.id_category], references: [categories.id_category] }),
+export const chiefsCategoriesRelations = relations(chiefs_categories, ({ one }) => ({
+	chief: one(chiefs, { fields: [chiefs_categories.id_chief], references: [chiefs.id_chief] }),
+	category: one(categories, { fields: [chiefs_categories.id_category], references: [categories.id_category] }),
 }));

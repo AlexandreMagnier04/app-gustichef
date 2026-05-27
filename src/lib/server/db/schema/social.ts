@@ -25,8 +25,9 @@ export const tags = pgTable('tags', {
 	name_tag: varchar('name_tag', { length: 50 }).notNull(),
 });
 
-export const contain = pgTable(
-	'contain',
+// M:N publications ↔ tags
+export const publications_tags = pgTable(
+	'publications_tags',
 	{
 		id_publication: integer('id_publication').notNull().references(() => publications.id_publication, { onDelete: 'cascade' }),
 		id_tag: integer('id_tag').notNull().references(() => tags.id_tag, { onDelete: 'cascade' }),
@@ -34,8 +35,9 @@ export const contain = pgTable(
 	(table) => [primaryKey({ columns: [table.id_publication, table.id_tag] })],
 );
 
-export const associate = pgTable(
-	'associate',
+// M:N tags ↔ requests
+export const tags_requests = pgTable(
+	'tags_requests',
 	{
 		id_tag: integer('id_tag').notNull().references(() => tags.id_tag, { onDelete: 'cascade' }),
 		id_request: integer('id_request').notNull().references(() => requests.id_request, { onDelete: 'cascade' }),

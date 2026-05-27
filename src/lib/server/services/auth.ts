@@ -1,5 +1,5 @@
 import { auth } from '$lib/server/auth';
-import type { User } from '$lib/auth/user.model';
+import type { User } from '$lib/models/user.model';
 
 // Retourne l'utilisateur connecté ou null
 export async function getSession(headers: Headers): Promise<User | null> {

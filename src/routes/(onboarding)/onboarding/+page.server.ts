@@ -1,6 +1,7 @@
 import { redirect, fail } from '@sveltejs/kit';
+import { z } from 'zod';
 import type { Actions } from './$types';
-import { roleDto } from '$lib/features/onboarding/onboarding.dto';
+import { roleDto } from '$lib/dtos/onboarding.dto';
 
 export const actions: Actions = {
 	default: async ({ request, cookies }) => {
@@ -8,7 +9,7 @@ export const actions: Actions = {
 
 		const parsed = roleDto.safeParse({ role: formData.get('role') });
 		if (!parsed.success) {
-			const message = parsed.error.flatten().fieldErrors.role?.[0] ?? 'Rôle invalide';
+			const message = z.flattenError(parsed.error).fieldErrors.role?.[0] ?? 'Rôle invalide';
 			return fail(400, { error: message });
 		}
 

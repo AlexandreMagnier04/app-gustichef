@@ -20,6 +20,7 @@ export const requests = pgTable('requests', {
 	statut_request: varchar('statut_request', { length: 50 }).notNull(),
 	id_service: integer('id_service'),
 	id_customer: text('id_customer').notNull().references(() => customers.id_customer, { onDelete: 'cascade' }),
+	id_chief: text('id_chief').notNull(),
 });
 
 export const customerRelations = relations(customers, ({ one }) => ({

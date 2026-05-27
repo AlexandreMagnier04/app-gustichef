@@ -10,6 +10,7 @@ export interface Request {
     statut_request: string;
     id_service: number | null;
     id_customer: string;
+    id_chief: string;
 }
 
 export type CreateRequest = Omit<Request, 'id_request' | 'id_service'>;

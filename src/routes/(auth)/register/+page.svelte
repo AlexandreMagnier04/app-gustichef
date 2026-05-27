@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { signUp } from '$lib/auth-client';
-	import { signUpDto } from '$lib/auth/auth.dto';
+	import { signUpDto } from '$lib/dtos/auth.dto';
 
 	// Rôle transmis par l'onboarding via ?role=chef|customer
 	let role = $derived((page.url.searchParams.get('role') ?? 'customer') as 'chef' | 'customer');
