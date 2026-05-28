@@ -12,7 +12,7 @@ export const signUpDto = z.object({
 	firstname: z.string().min(2, { message: 'Au moins 2 caractères' }).max(50, { message: 'Maximum 50 caractères' }),
 	email: z.email({ error: 'Email invalide' }),
 	password: z.string().min(8, { message: 'Au moins 8 caractères' }),
-	role: z.enum(['chef', 'customer']),
+	role: z.enum(['chief', 'customer']),
 	localization: z.string().min(2, { message: 'Localisation requise' }).max(128, { message: 'Maximum 128 caractères' })
 });
 
@@ -21,7 +21,7 @@ export const forgotPasswordDto = z.object({
 	email: z.email({ error: 'Email invalide' })
 });
 
-// Validation étape 1 du register chef (localization vient de l'étape 4)
+// Validation étape 1 du register chief (localization vient de l'étape 4)
 export const chefSignUpStep1Dto = signUpDto.pick({
 	name: true,
 	firstname: true,

@@ -9,7 +9,7 @@
 
 	// État local : rôle sélectionné par l'utilisateur
 	// null = rien sélectionné, le bouton submit est désactivé
-	let role = $state<'chef' | 'customer' | null>(null);
+	let role = $state<'chief' | 'customer' | null>(null);
 </script>
 
 <section class="flex h-dvh w-screen shrink-0 flex-col overflow-hidden bg-cream">
@@ -46,12 +46,12 @@
 		<div class="flex flex-col gap-2.5">
 			<label
 				class="flex cursor-pointer items-center gap-3 rounded-xl border-[1.5px] px-4 py-3.5 transition-colors"
-				class:border-rust={role === 'chef'}
-				class:border-stone-200={role !== 'chef'}
+				class:border-rust={role === 'chief'}
+				class:border-stone-200={role !== 'chief'}
 			>
-				<!-- bind:group={role} : lie les radios à la variable role — quand on coche "chef", role = 'chef' -->
+				<!-- bind:group={role} : lie les radios à la variable role — quand on coche "chief", role = 'chief' -->
 				<!-- sr-only : le vrai input radio est invisible, c'est le label entier qui est cliquable -->
-				<input type="radio" name="role" value="chef" bind:group={role} class="sr-only" />
+				<input type="radio" name="role" value="chief" bind:group={role} class="sr-only" />
 				<svg
 					viewBox="0 0 24 24"
 					fill="none"
@@ -65,14 +65,14 @@
 						d="M12 8.25v-1.5m0 1.5c-1.355 0-2.697.056-4.024.166C6.845 8.51 6 9.473 6 10.608v2.513m6-4.871c1.355 0 2.697.056 4.024.166C17.155 8.51 18 9.473 18 10.608v2.513m-3-4.87v-1.5m-6 1.5v-1.5m12 9.75-1.5.75a3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 1-3 0L6 18m12-3H6.75"
 					/>
 				</svg>
-				<span class="flex-1 text-[0.95rem] text-stone-700">Chef</span>
+				<span class="flex-1 text-[0.95rem] text-stone-700">chief</span>
 				<!-- Indicateur visuel custom du radio — change de style selon role -->
 				<div
 					class="size-5 shrink-0 rounded-full border-2 transition-all"
-					class:border-rust={role === 'chef'}
-					class:bg-rust={role === 'chef'}
-					class:shadow-[inset_0_0_0_3px_white]={role === 'chef'}
-					class:border-stone-300={role !== 'chef'}
+					class:border-rust={role === 'chief'}
+					class:bg-rust={role === 'chief'}
+					class:shadow-[inset_0_0_0_3px_white]={role === 'chief'}
+					class:border-stone-300={role !== 'chief'}
 				></div>
 			</label>
 

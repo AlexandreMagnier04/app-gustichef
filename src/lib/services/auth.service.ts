@@ -45,7 +45,7 @@ export async function registerUser(
 	return {};
 }
 
-// --- Chef register ---
+// --- chief register ---
 
 export type Step1Data = Pick<User, 'firstname' | 'name' | 'email'> & {
 	password: string;
@@ -71,7 +71,7 @@ export function validateChefStep1(data: Step1Data): FieldErrors {
 }
 
 export async function registerChef(data: ChefSubmitData): Promise<{ error?: string }> {
-	const ROLE: UserRole = 'chef';
+	const ROLE: UserRole = 'chief';
 	const primaryCity = data.cities[0] ?? 'Non renseigné';
 
 	const parsedSignUp = signUpDto.safeParse({
@@ -109,7 +109,7 @@ export async function registerChef(data: ChefSubmitData): Promise<{ error?: stri
 	});
 
 	if (profileParsed.success) {
-		await fetch('/api/chef/profile', {
+		await fetch('/api/chief/profile', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(profileParsed.data)

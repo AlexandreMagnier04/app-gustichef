@@ -20,7 +20,7 @@ export const actions: Actions = {
 			sameSite: 'lax'
 		});
 
-		if (parsed.data.role === 'chef') {
+		if (parsed.data.role === 'chief') {
 			redirect(302, '/chief/register');
 		} else {
 			redirect(302, '/register');

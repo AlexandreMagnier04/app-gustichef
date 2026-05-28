@@ -15,7 +15,7 @@ export const createRequestDto = z.object({
     guests_request: z.coerce.number().int().positive({ message: 'Nombre de convives invalide' }).max(500, { message: 'Maximum 500 convives' }),
     type_event_request: z.string().max(50).optional(),
     localization_request: z.string().min(2, { message: 'Localisation requise' }).max(100),
-    id_chief: z.string().min(1, { message: 'Chef requis' })
+    id_chief: z.string().min(1, { message: 'chef requis' })
 });
 
 export type CreateRequestDto = z.infer<typeof createRequestDto>;

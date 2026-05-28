@@ -7,7 +7,9 @@
 
 	let { data } = $props<{ data: { specialties: Specialty[] } }>();
 
-	let availableSpecialties = $state<string[]>(data.specialties.map((s: Specialty) => s.name_speciality));
+	let availableSpecialties = $state<string[]>(
+		data.specialties.map((s: Specialty) => s.name_speciality)
+	);
 	let customSpecialtyInput = $state('');
 
 	function addCustomSpecialty() {
@@ -103,8 +105,14 @@
 		loading = true;
 
 		const result = await registerChef({
-			firstname, name, email, password,
-			cities, bio, specialties, siret
+			firstname,
+			name,
+			email,
+			password,
+			cities,
+			bio,
+			specialties,
+			siret
 		});
 
 		loading = false;
@@ -142,6 +150,7 @@
 				></div>
 			{/each}
 		</div>
+		f
 
 		{#if error}
 			<p class="mb-4 text-sm text-rust">{error}</p>
@@ -149,7 +158,7 @@
 
 		<!-- Étape 1 — Informations de compte -->
 		{#if step === 1}
-			<h2 class="mb-1 text-base font-semibold text-navy">Créer mon compte chef</h2>
+			<h2 class="mb-1 text-base font-semibold text-navy">Créer mon compte chief</h2>
 			<p class="mb-6 text-xs text-gray-500">Étape 1/5 — Informations de compte</p>
 
 			<div class="flex flex-col gap-4">
@@ -201,7 +210,9 @@
 						placeholder="••••••••"
 						class="rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-rust"
 					/>
-					{#if fieldErrors.confirmPassword}<p class="text-xs text-rust">{fieldErrors.confirmPassword}</p>{/if}
+					{#if fieldErrors.confirmPassword}<p class="text-xs text-rust">
+							{fieldErrors.confirmPassword}
+						</p>{/if}
 				</div>
 			</div>
 
@@ -283,22 +294,17 @@
 								/>
 							</svg>
 						{/if}
-						<input
-							type="file"
-							accept="image/*"
-							onchange={handlePhotoChange}
-							class="hidden"
-						/>
+						<input type="file" accept="image/*" onchange={handlePhotoChange} class="hidden" />
 					</label>
 					<span class="text-xs text-gray-400">Ajouter une photo</span>
 				</div>
 
-				<div class="flex flex-col gap-1">
+				<div class="flex-cofl flex gap-1">
 					<label class="text-xs font-medium text-navy/70">Titre professionnel (optionnel)</label>
 					<input
 						type="text"
 						bind:value={bio}
-						placeholder="ex : Chef pâtissier, Traiteur..."
+						placeholder="ex : chief pâtissier, Traiteur..."
 						class="rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-rust"
 					/>
 				</div>
@@ -312,7 +318,9 @@
 							<button
 								type="button"
 								onclick={() => toggleSpecialty(s)}
-								class="rounded-full border px-3 py-1 text-xs transition-colors {specialties.includes(s)
+								class="rounded-full border px-3 py-1 text-xs transition-colors {specialties.includes(
+									s
+								)
 									? 'border-rust bg-rust text-white'
 									: 'border-gray-200 bg-white text-navy/70'}"
 							>
@@ -370,11 +378,7 @@
 							class="flex flex-1 cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-gray-200 bg-white py-5 text-xs text-gray-400 hover:border-rust/40"
 						>
 							{#if idFrontPreview}
-								<img
-									src={idFrontPreview}
-									alt=""
-									class="h-16 w-full rounded-lg object-cover"
-								/>
+								<img src={idFrontPreview} alt="" class="h-16 w-full rounded-lg object-cover" />
 							{:else}
 								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="h-6 w-6">
 									<rect x="3" y="3" width="18" height="18" rx="2" stroke-width="1.5" />
@@ -389,11 +393,7 @@
 							class="flex flex-1 cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-gray-200 bg-white py-5 text-xs text-gray-400 hover:border-rust/40"
 						>
 							{#if idBackPreview}
-								<img
-									src={idBackPreview}
-									alt=""
-									class="h-16 w-full rounded-lg object-cover"
-								/>
+								<img src={idBackPreview} alt="" class="h-16 w-full rounded-lg object-cover" />
 							{:else}
 								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="h-6 w-6">
 									<rect x="3" y="3" width="18" height="18" rx="2" stroke-width="1.5" />
@@ -577,7 +577,7 @@
 		{/if}
 	</div>
 
-<!-- Étape 5 — Confirmation -->
+	<!-- Étape 5 — Confirmation -->
 {:else}
 	<div class="relative flex h-dvh flex-col overflow-hidden">
 		<img src={bgConfirm} alt="" class="absolute inset-0 h-full w-full object-cover" />
@@ -589,17 +589,13 @@
 
 				<div class="mt-8 flex gap-2">
 					{#each [1, 2, 3, 4, 5] as i (i)}
-						<div
-							class="rounded-full {i === 5 ? 'h-3 w-3 bg-rust' : 'h-2 w-2 bg-white/30'}"
-						></div>
+						<div class="rounded-full {i === 5 ? 'h-3 w-3 bg-rust' : 'h-2 w-2 bg-white/30'}"></div>
 					{/each}
 				</div>
 			</div>
 
 			<div class="rounded-t-3xl bg-cream px-6 pt-8 pb-10 text-center">
-				<div
-					class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-rust"
-				>
+				<div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-rust">
 					<svg viewBox="0 0 24 24" fill="none" class="h-8 w-8" aria-hidden="true">
 						<path
 							d="M5 13l4 4L19 7"
@@ -616,11 +612,8 @@
 				<p class="mb-8 text-sm text-gray-500">
 					Vous recevrez un email dès validation de votre profil chef.
 				</p>
-				<a
-					href="/login"
-					class="block w-full rounded-xl bg-rust py-3 text-sm font-medium text-white"
-				>
-					Retour à la connexion
+				<a href="/login" class="block w-full rounded-xl bg-rust py-3 text-sm font-medium text-white"
+					>f Retour à la connexion
 				</a>
 			</div>
 		</div>

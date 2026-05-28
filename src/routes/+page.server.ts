@@ -6,7 +6,7 @@ export const load: PageServerLoad = async ({ request, cookies }) => {
 	const session = await auth.api.getSession({ headers: request.headers });
 
 	if (session) {
-		redirect(302, '/dashboard');
+		redirect(302, '/home');
 	}
 
 	const onboardingSeen = cookies.get('onboarding_seen');

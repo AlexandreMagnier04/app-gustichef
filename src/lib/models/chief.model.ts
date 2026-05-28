@@ -24,7 +24,7 @@ export interface Notice {
     id_chief: string;
 }
 
-// Chef enrichi : données user jointes pour l'affichage
+// chief enrichi : données user jointes pour l'affichage
 export interface ChiefProfile extends Chief {
     user: {
         name: string;
