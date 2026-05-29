@@ -116,9 +116,18 @@
 </div>
 
 {#if activeTab === 'decouvrir'}
-	<!-- Bouton "Ajouter un nouveau post" — chef uniquement, en haut du feed -->
+	<!-- Categories -->
+	{#if data.categories.length > 0}
+		<div class="scrollbar-none flex gap-3 overflow-x-auto px-4 py-3">
+			{#each data.categories as cat (cat.id_category)}
+				<CategoryChip label={cat.name_category} image={categoryImage(cat)} onSelect={() => {}} />
+			{/each}
+		</div>
+	{/if}
+
+	<!-- Bouton "Ajouter un nouveau post" — chef uniquement, entre catégories et filtres -->
 	{#if isChief}
-		<div class="px-3 pt-3">
+		<div class="px-4 pb-3">
 			<button
 				onclick={() => (showNewPublication = true)}
 				class="flex w-full items-center justify-center gap-3 rounded-full bg-rust py-3 text-sm font-medium text-white shadow-sm transition-opacity hover:opacity-90"
@@ -130,15 +139,6 @@
 					</svg>
 				</span>
 			</button>
-		</div>
-	{/if}
-
-	<!-- Categories -->
-	{#if data.categories.length > 0}
-		<div class="scrollbar-none flex gap-3 overflow-x-auto px-4 py-3">
-			{#each data.categories as cat (cat.id_category)}
-				<CategoryChip label={cat.name_category} image={categoryImage(cat)} onSelect={() => {}} />
-			{/each}
 		</div>
 	{/if}
 
