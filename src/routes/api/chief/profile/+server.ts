@@ -14,7 +14,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		return json({ error: z.flattenError(parsed.error).fieldErrors }, { status: 400 });
 	}
 
-	await setupChiefProfile(user.id, parsed.data.bio, parsed.data.specialties);
+	await setupChiefProfile(user.id, {
+		bio: parsed.data.bio,
+		categoryName: parsed.data.category,
+		specialtyNames: parsed.data.specialties,
+	});
 
 	return json({ success: true });
 };

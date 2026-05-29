@@ -1,5 +1,6 @@
 import { relations } from 'drizzle-orm';
-import { pgTable, text, decimal, serial, varchar, integer, primaryKey, date } from 'drizzle-orm/pg-core';
+import { pgTable, text, decimal, serial, varchar, integer, primaryKey, date, timestamp } from 'drizzle-orm/pg-core';
+// `date` reste utilisé pour notices.date_notice
 import { users } from './auth';
 import { customers } from './customers';
 
@@ -18,7 +19,8 @@ export const specialties = pgTable('specialties', {
 
 export const categories = pgTable('categories', {
 	id_category: serial('id_category').primaryKey(),
-	name_category: varchar('name_category', { length: 50 }).notNull(),
+	name_category: varchar('name_category', { length: 50 }).notNull().unique(),
+	image_url: varchar('image_url', { length: 255 }),
 });
 
 // M:N chiefs ↔ specialties
@@ -41,11 +43,13 @@ export const chiefs_categories = pgTable(
 	(table) => [primaryKey({ columns: [table.id_chief, table.id_category] })],
 );
 
+// Galerie du profil chef (écran 4) — voir MPD
 export const images_chef = pgTable('images_chef', {
-	id_image_chef: serial('id_image_chef').primaryKey(),
-	url_image_chef: varchar('url_image_chef', { length: 255 }),
-	upload_image_chef: date('upload_image_chef'),
+	id_image: serial('id_image').primaryKey(),
 	id_chief: text('id_chief').notNull().references(() => chiefs.id_chief, { onDelete: 'cascade' }),
+	url: varchar('url', { length: 255 }).notNull(),
+	position: integer('position').notNull().default(0),
+	date_upload: timestamp('date_upload').defaultNow().notNull(),
 });
 
 export const menus = pgTable('menus', {
@@ -56,11 +60,13 @@ export const menus = pgTable('menus', {
 	id_chief: text('id_chief').notNull().references(() => chiefs.id_chief, { onDelete: 'cascade' }),
 });
 
+// Photos d'un menu (carrousel) — voir MPD
 export const images_menu = pgTable('images_menu', {
-	id_image_menu: serial('id_image_menu').primaryKey(),
-	url_image_menu: varchar('url_image_menu', { length: 255 }),
-	upload_image_menu: date('upload_image_menu'),
+	id_image: serial('id_image').primaryKey(),
 	id_menu: integer('id_menu').notNull().references(() => menus.id_menu, { onDelete: 'cascade' }),
+	url: varchar('url', { length: 255 }).notNull(),
+	position: integer('position').notNull().default(0),
+	date_upload: timestamp('date_upload').defaultNow().notNull(),
 });
 
 // Avis laissé par un client sur un chef (référence les deux entités)

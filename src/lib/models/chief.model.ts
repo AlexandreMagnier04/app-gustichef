@@ -13,6 +13,7 @@ export interface Specialty {
 export interface Category {
     id_category: number;
     name_category: string;
+    image_url: string | null;
 }
 
 export interface Notice {

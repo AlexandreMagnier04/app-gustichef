@@ -52,10 +52,15 @@ export async function getSpecialties(): Promise<Specialty[]> {
 	return db.select().from(specialties);
 }
 
+export type SetupChiefProfileInput = {
+	bio: string | undefined;
+	categoryName: string;
+	specialtyNames: string[];
+};
+
 export async function setupChiefProfile(
 	userId: string,
-	bio: string | undefined,
-	specialtyNames: string[],
+	input: SetupChiefProfileInput,
 ): Promise<void> {
 	// Vérifie que l'utilisateur existe et a bien le rôle 'chief' — refuse sinon.
 	const [user] = await db
@@ -71,23 +76,43 @@ export async function setupChiefProfile(
 		// Insère le profil chef
 		await tx
 			.insert(chiefs)
-			.values({ id_chief: userId, bio_chief: bio ?? null })
+			.values({ id_chief: userId, bio_chief: input.bio ?? null })
 			.onConflictDoNothing();
 
-		if (specialtyNames.length === 0) return;
+		// --- Catégorie (1 seule par chef) ---
+		// Upsert de la catégorie si elle n'existe pas, puis lien chef ↔ catégorie
+		await tx
+			.insert(categories)
+			.values({ name_category: input.categoryName })
+			.onConflictDoNothing();
 
-		// Upsert bulk des spécialités, puis récupère les IDs (existantes ou créées)
+		const [cat] = await tx
+			.select({ id_category: categories.id_category })
+			.from(categories)
+			.where(eq(categories.name_category, input.categoryName))
+			.limit(1);
+
+		if (cat) {
+			// Remplace l'éventuelle catégorie précédente : on s'assure qu'il n'y en a qu'une
+			await tx.delete(chiefs_categories).where(eq(chiefs_categories.id_chief, userId));
+			await tx
+				.insert(chiefs_categories)
+				.values({ id_chief: userId, id_category: cat.id_category });
+		}
+
+		// --- Spécialités (N par chef) ---
+		if (input.specialtyNames.length === 0) return;
+
 		await tx
 			.insert(specialties)
-			.values(specialtyNames.map((name) => ({ name_speciality: name })))
+			.values(input.specialtyNames.map((name) => ({ name_speciality: name })))
 			.onConflictDoNothing();
 
 		const rows = await tx
 			.select({ id_speciality: specialties.id_speciality })
 			.from(specialties)
-			.where(inArray(specialties.name_speciality, specialtyNames));
+			.where(inArray(specialties.name_speciality, input.specialtyNames));
 
-		// Lien chef ↔ spécialités en un seul INSERT
 		await tx
 			.insert(chiefs_specialties)
 			.values(rows.map((r) => ({ id_chief: userId, id_speciality: r.id_speciality })))
@@ -124,7 +149,11 @@ export async function getChiefById(id: string): Promise<ChiefProfile | null> {
 		.where(eq(chiefs_specialties.id_chief, id));
 
 	const chiefCategories = await db
-		.select({ id_category: categories.id_category, name_category: categories.name_category })
+		.select({
+			id_category: categories.id_category,
+			name_category: categories.name_category,
+			image_url: categories.image_url,
+		})
 		.from(categories)
 		.innerJoin(chiefs_categories, eq(chiefs_categories.id_category, categories.id_category))
 		.where(eq(chiefs_categories.id_chief, id));

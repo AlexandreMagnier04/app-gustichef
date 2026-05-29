@@ -15,6 +15,7 @@ export const createMenuDto = z.object({
 // DTO pour la création du profil chef après signUp (appelé par /api/chief/profile)
 export const setupChiefProfileDto = z.object({
 	bio: z.string().max(200, { message: 'Maximum 200 caractères' }).optional(),
+	category: z.string().min(1, { message: 'Catégorie requise' }),
 	specialties: z.array(z.string().min(1)).max(3, { message: '3 spécialités maximum' }),
 	siret: z.string().optional()
 });

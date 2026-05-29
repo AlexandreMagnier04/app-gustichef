@@ -1,35 +1,91 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import portrait1 from '$lib/assets/img/portrait-1.jpeg';
 	import slide1 from '$lib/assets/img/slide-1.jpeg';
 	import slide2 from '$lib/assets/img/slide-2.jpeg';
 	import slide3 from '$lib/assets/img/slide-3.jpeg';
 	import slide4 from '$lib/assets/img/slide-4.jpeg';
-	import ChiefCard from '$lib/components/ChiefCard.svelte';
+	import slide5 from '$lib/assets/img/slide-5.jpeg';
+	import slide6 from '$lib/assets/img/slide-6.jpeg';
+	import slide8 from '$lib/assets/img/slide-8.jpeg';
+	import slide9 from '$lib/assets/img/slide-9.jpeg';
+	import slide10 from '$lib/assets/img/slide-10.jpeg';
+	import PublicationCard from '$lib/components/PublicationCard.svelte';
 	import CategoryChip from '$lib/components/CategoryChip.svelte';
 	import CityAutocomplete from '$lib/components/CityAutocomplete.svelte';
+	import NewPublicationModal from '$lib/components/NewPublicationModal.svelte';
 
 	let { data } = $props();
 
 	let activeTab = $state<'decouvrir' | 'demandes'>('decouvrir');
+	let showNewPublication = $state(false);
+	const isChief = $derived(data.user?.role === 'chief');
 
+	// Mapping de secours pour catégories sans image_url en DB.
+	// Cas connus mappés explicitement, sinon rotation déterministe sur les slides locaux.
 	const CATEGORY_IMAGES: Record<string, string> = {
 		'chef à domicile': portrait1,
 		'plats préparés': slide1,
 		pâtisserie: slide3,
 		nutrition: slide2,
+		'dîner privé': slide4,
+		anniversaire: slide5,
+		mariage: slide6,
+		"événement d'entreprise": slide8,
+		traiteur: slide9,
+		barbecue: slide10,
 	};
+	const FALLBACK_POOL = [slide1, slide2, slide3, slide4, slide5, slide6, slide8, slide9, slide10];
 
-	function categoryImage(name: string): string {
-		return CATEGORY_IMAGES[name.toLowerCase()] ?? slide4;
+	function fallbackImage(name: string): string {
+		// Hash simple pour avoir la même image à chaque rendu pour un nom donné
+		let hash = 0;
+		for (const c of name) hash = (hash * 31 + c.charCodeAt(0)) | 0;
+		return FALLBACK_POOL[Math.abs(hash) % FALLBACK_POOL.length];
 	}
 
+	function categoryImage(cat: { name_category: string; image_url: string | null }): string {
+		if (cat.image_url) return cat.image_url;
+		return CATEGORY_IMAGES[cat.name_category.toLowerCase()] ?? fallbackImage(cat.name_category);
+	}
+
+	// Filtres côté client — à terme push DB pour scalabilité
+	let selectedCity = $state('');
+	let selectedPrice = $state<'' | 'low' | 'mid' | 'high'>('');
+	let showCityFilter = $state(false);
+	let showPriceFilter = $state(false);
+
+	const PRICE_RANGES = {
+		low: { label: '< 30 €', min: 0, max: 30 },
+		mid: { label: '30 – 60 €', min: 30, max: 60 },
+		high: { label: '> 60 €', min: 60, max: Infinity },
+	} as const;
+
+	const filteredPublications = $derived(
+		data.publications.filter((p) => {
+			if (selectedCity && !p.author.localization.toLowerCase().includes(selectedCity.toLowerCase()))
+				return false;
+			if (selectedPrice) {
+				const price = p.price_publication ? parseFloat(p.price_publication) : null;
+				if (price === null) return false;
+				const range = PRICE_RANGES[selectedPrice];
+				if (price < range.min || price >= range.max) return false;
+			}
+			return true;
+		}),
+	);
+
 	function onCitySelect(city: string) {
-		goto(`/home?city=${encodeURIComponent(city)}`, { replaceState: true });
+		selectedCity = city;
+		showCityFilter = false;
 	}
 
 	function onCityClear() {
-		goto('/home', { replaceState: true });
+		selectedCity = '';
+	}
+
+	function selectPrice(p: '' | 'low' | 'mid' | 'high') {
+		selectedPrice = p;
+		showPriceFilter = false;
 	}
 </script>
 
@@ -60,39 +116,105 @@
 </div>
 
 {#if activeTab === 'decouvrir'}
+	<!-- Bouton "Ajouter un nouveau post" — chef uniquement, en haut du feed -->
+	{#if isChief}
+		<div class="px-3 pt-3">
+			<button
+				onclick={() => (showNewPublication = true)}
+				class="flex w-full items-center justify-center gap-3 rounded-full bg-rust py-3 text-sm font-medium text-white shadow-sm transition-opacity hover:opacity-90"
+			>
+				Ajouter un nouveau post
+				<span class="flex h-6 w-6 items-center justify-center rounded-full bg-white/20">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3.5 w-3.5">
+						<path d="M8 2a.75.75 0 0 1 .75.75v4.5h4.5a.75.75 0 0 1 0 1.5h-4.5v4.5a.75.75 0 0 1-1.5 0v-4.5h-4.5a.75.75 0 0 1 0-1.5h4.5v-4.5A.75.75 0 0 1 8 2Z" />
+					</svg>
+				</span>
+			</button>
+		</div>
+	{/if}
+
 	<!-- Categories -->
 	{#if data.categories.length > 0}
-		<div class="scrollbar-none flex gap-3 overflow-x-auto px-4 py-4">
+		<div class="scrollbar-none flex gap-3 overflow-x-auto px-4 py-3">
 			{#each data.categories as cat (cat.id_category)}
-				<CategoryChip
-					label={cat.name_category}
-					image={categoryImage(cat.name_category)}
-					onSelect={() => {}}
-				/>
+				<CategoryChip label={cat.name_category} image={categoryImage(cat)} onSelect={() => {}} />
 			{/each}
 		</div>
 	{/if}
 
-	<!-- City filter -->
-	<div class="relative px-4 pb-3">
-		<CityAutocomplete value={data.city} onSelect={onCitySelect} onClear={onCityClear} />
+	<!-- Filtres ville + prix (deux pills) -->
+	<div class="relative flex items-center gap-3 px-4 pb-3">
+		<!-- Pill ville -->
+		<div class="relative">
+			<button
+				type="button"
+				onclick={() => (showCityFilter = !showCityFilter)}
+				class="inline-flex items-center gap-2 rounded-full border border-navy/15 bg-white px-4 py-1.5 text-sm text-navy/80"
+			>
+				{selectedCity || 'Ville'}
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3.5 w-3.5 text-navy/50">
+					<path fill-rule="evenodd" d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+				</svg>
+			</button>
+			{#if showCityFilter}
+				<div class="absolute top-full left-0 z-30 mt-2">
+					<CityAutocomplete value={selectedCity} onSelect={onCitySelect} onClear={onCityClear} />
+				</div>
+			{/if}
+		</div>
+
+		<!-- Pill prix -->
+		<div class="relative">
+			<button
+				type="button"
+				onclick={() => (showPriceFilter = !showPriceFilter)}
+				class="inline-flex items-center gap-2 rounded-full border border-navy/15 bg-white px-4 py-1.5 text-sm text-navy/80"
+			>
+				{selectedPrice ? PRICE_RANGES[selectedPrice].label : 'Prix'}
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3.5 w-3.5 text-navy/50">
+					<path fill-rule="evenodd" d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+				</svg>
+			</button>
+			{#if showPriceFilter}
+				<ul class="absolute top-full left-0 z-30 mt-2 w-44 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-lg">
+					<li>
+						<button class="w-full px-4 py-2.5 text-left text-sm text-navy hover:bg-cream" onclick={() => selectPrice('')}>
+							Tous les prix
+						</button>
+					</li>
+					{#each Object.entries(PRICE_RANGES) as [key, range] (key)}
+						<li>
+							<button
+								class="w-full px-4 py-2.5 text-left text-sm text-navy hover:bg-cream"
+								onclick={() => selectPrice(key as 'low' | 'mid' | 'high')}
+							>
+								{range.label}
+							</button>
+						</li>
+					{/each}
+				</ul>
+			{/if}
+		</div>
 	</div>
 
-	<!-- Chef cards -->
-	<div class="flex flex-col gap-4 px-4 pb-6">
-		{#each data.chiefs as chef (chef.id_chief)}
-			<ChiefCard chief={chef} />
+	<!-- Feed des publications — pleine largeur : casse le px-5 du layout (app) -->
+	<div class="-mx-5 flex flex-col gap-4 pb-10">
+		{#each filteredPublications as publication (publication.id_publication)}
+			<PublicationCard {publication} />
 		{/each}
 
-		{#if data.chiefs.length === 0}
+		{#if filteredPublications.length === 0}
 			<div class="py-12 text-center">
-				{#if data.city}
-					<p class="text-sm text-navy/40">Aucun chef disponible à {data.city}.</p>
+				{#if selectedCity}
+					<p class="text-sm text-navy/40">Aucune publication à {selectedCity}.</p>
 					<button class="mt-3 text-sm text-rust underline" onclick={onCityClear}>
-						Voir tous les chefs
+						Voir toutes les publications
 					</button>
 				{:else}
-					<p class="text-sm text-navy/40">Aucun chef disponible pour l'instant.</p>
+					<p class="text-sm text-navy/40">Aucune publication pour l'instant.</p>
+					{#if isChief}
+						<p class="mt-1 text-xs text-navy/40">Sois le premier à publier !</p>
+					{/if}
 				{/if}
 			</div>
 		{/if}
@@ -127,4 +249,8 @@
 			Trouver un chef
 		</a>
 	</div>
+{/if}
+
+{#if isChief}
+	<NewPublicationModal bind:open={showNewPublication} />
 {/if}
