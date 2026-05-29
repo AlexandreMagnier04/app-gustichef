@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
-export const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5 MB
-export const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp'] as const;
+export const MAX_IMAGE_SIZE = 20 * 1024 * 1024; // 20 MB
+export const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'] as const;
 
 // Métadonnées d'upload — validées côté serveur, doublée d'un check binaire du buffer
 export const uploadImageDto = z.object({
@@ -18,7 +18,7 @@ export function validateImageFile(file: File): { ok: true } | { ok: false; error
 		return { ok: false, error: 'Format non supporté (JPEG, PNG ou WebP uniquement)' };
 	}
 	if (file.size > MAX_IMAGE_SIZE) {
-		return { ok: false, error: 'Image trop lourde (5 MB maximum)' };
+		return { ok: false, error: 'Image trop lourde (20 MB maximum)' };
 	}
 	return { ok: true };
 }

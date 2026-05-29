@@ -32,7 +32,7 @@
 		mariage: slide6,
 		"événement d'entreprise": slide8,
 		traiteur: slide9,
-		barbecue: slide10,
+		barbecue: slide10
 	};
 	const FALLBACK_POOL = [slide1, slide2, slide3, slide4, slide5, slide6, slide8, slide9, slide10];
 
@@ -57,7 +57,7 @@
 	const PRICE_RANGES = {
 		low: { label: '< 30 €', min: 0, max: 30 },
 		mid: { label: '30 – 60 €', min: 30, max: 60 },
-		high: { label: '> 60 €', min: 60, max: Infinity },
+		high: { label: '> 60 €', min: 60, max: Infinity }
 	} as const;
 
 	const filteredPublications = $derived(
@@ -71,7 +71,7 @@
 				if (price < range.min || price >= range.max) return false;
 			}
 			return true;
-		}),
+		})
 	);
 
 	function onCitySelect(city: string) {
@@ -99,7 +99,8 @@
 	>
 		découvrir
 		{#if activeTab === 'decouvrir'}
-			<span class="absolute bottom-0 left-1/2 h-0.5 w-16 -translate-x-1/2 rounded-full bg-rust"></span>
+			<span class="absolute bottom-0 left-1/2 h-0.5 w-16 -translate-x-1/2 rounded-full bg-rust"
+			></span>
 		{/if}
 	</button>
 	<button
@@ -110,7 +111,8 @@
 	>
 		demandes
 		{#if activeTab === 'demandes'}
-			<span class="absolute bottom-0 left-1/2 h-0.5 w-16 -translate-x-1/2 rounded-full bg-rust"></span>
+			<span class="absolute bottom-0 left-1/2 h-0.5 w-16 -translate-x-1/2 rounded-full bg-rust"
+			></span>
 		{/if}
 	</button>
 </div>
@@ -134,8 +136,15 @@
 			>
 				Ajouter un nouveau post
 				<span class="flex h-6 w-6 items-center justify-center rounded-full bg-white/20">
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3.5 w-3.5">
-						<path d="M8 2a.75.75 0 0 1 .75.75v4.5h4.5a.75.75 0 0 1 0 1.5h-4.5v4.5a.75.75 0 0 1-1.5 0v-4.5h-4.5a.75.75 0 0 1 0-1.5h4.5v-4.5A.75.75 0 0 1 8 2Z" />
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 16 16"
+						fill="currentColor"
+						class="h-3.5 w-3.5"
+					>
+						<path
+							d="M8 2a.75.75 0 0 1 .75.75v4.5h4.5a.75.75 0 0 1 0 1.5h-4.5v4.5a.75.75 0 0 1-1.5 0v-4.5h-4.5a.75.75 0 0 1 0-1.5h4.5v-4.5A.75.75 0 0 1 8 2Z"
+						/>
 					</svg>
 				</span>
 			</button>
@@ -152,8 +161,17 @@
 				class="inline-flex items-center gap-2 rounded-full border border-navy/15 bg-white px-4 py-1.5 text-sm text-navy/80"
 			>
 				{selectedCity || 'Ville'}
-				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3.5 w-3.5 text-navy/50">
-					<path fill-rule="evenodd" d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					viewBox="0 0 16 16"
+					fill="currentColor"
+					class="h-3.5 w-3.5 text-navy/50"
+				>
+					<path
+						fill-rule="evenodd"
+						d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
+						clip-rule="evenodd"
+					/>
 				</svg>
 			</button>
 			{#if showCityFilter}
@@ -171,14 +189,28 @@
 				class="inline-flex items-center gap-2 rounded-full border border-navy/15 bg-white px-4 py-1.5 text-sm text-navy/80"
 			>
 				{selectedPrice ? PRICE_RANGES[selectedPrice].label : 'Prix'}
-				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3.5 w-3.5 text-navy/50">
-					<path fill-rule="evenodd" d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					viewBox="0 0 16 16"
+					fill="currentColor"
+					class="h-3.5 w-3.5 text-navy/50"
+				>
+					<path
+						fill-rule="evenodd"
+						d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
+						clip-rule="evenodd"
+					/>
 				</svg>
 			</button>
 			{#if showPriceFilter}
-				<ul class="absolute top-full left-0 z-30 mt-2 w-44 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-lg">
+				<ul
+					class="absolute top-full left-0 z-30 mt-2 w-44 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-lg"
+				>
 					<li>
-						<button class="w-full px-4 py-2.5 text-left text-sm text-navy hover:bg-cream" onclick={() => selectPrice('')}>
+						<button
+							class="w-full px-4 py-2.5 text-left text-sm text-navy hover:bg-cream"
+							onclick={() => selectPrice('')}
+						>
 							Tous les prix
 						</button>
 					</li>
@@ -197,7 +229,7 @@
 		</div>
 	</div>
 
-	<!-- Feed des publications — pleine largeur : casse le px-5 du layout (app) -->
+	<!-- Feed pleine largeur — -mx-5 annule le px-5 du main -->
 	<div class="-mx-5 flex flex-col gap-4 pb-10">
 		{#each filteredPublications as publication (publication.id_publication)}
 			<PublicationCard {publication} />

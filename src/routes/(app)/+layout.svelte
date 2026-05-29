@@ -6,9 +6,9 @@
 	let { children, data } = $props();
 </script>
 
-<div class="flex h-dvh flex-col overflow-hidden bg-cream px-5 py-3">
+<div class="flex h-dvh flex-col overflow-hidden bg-cream py-3">
 	<!-- Header -->
-	<header class="shrink-0">
+	<header class="shrink-0 px-5">
 		<div class="flex items-center justify-between">
 			<div class="flex items-center gap-2.5">
 				<img src={logoImg} alt="" class="h-9 w-9 object-contain" />

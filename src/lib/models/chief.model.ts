@@ -43,6 +43,10 @@ export interface Menu {
     title_menu: string;
     description_menu: string;
     price_menu: string;
+    type_menu: string;
+    guests_min: number | null;
+    guests_max: number | null;
+    ingredients: string[] | null;
     id_chief: string;
 }
 export type CreateMenu = Omit<Menu, 'id_menu'>;

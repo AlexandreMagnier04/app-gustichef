@@ -73,6 +73,30 @@ export async function createPublication(
 	}
 }
 
+// Images des publications d'un chef — utilisé par la galerie du profil
+export async function getChiefPublicationImages(
+	chiefId: string,
+): Promise<{ id_image: number; id_publication: number; url: string; position: number }[]> {
+	const pubs = await db
+		.select({ id_publication: publications.id_publication })
+		.from(publications)
+		.where(eq(publications.id_users, chiefId));
+
+	if (pubs.length === 0) return [];
+
+	const pubIds = pubs.map((p) => p.id_publication);
+	return db
+		.select({
+			id_image: images_publication.id_image,
+			id_publication: images_publication.id_publication,
+			url: images_publication.url,
+			position: images_publication.position,
+		})
+		.from(images_publication)
+		.where(inArray(images_publication.id_publication, pubIds))
+		.orderBy(images_publication.date_upload);
+}
+
 // Feed paginé enrichi (auteur + images + tags) — utilisé par la home
 export async function getPublicationsFeed(page = 0): Promise<PublicationCard[]> {
 	const rows = await db

@@ -57,6 +57,10 @@ export const menus = pgTable('menus', {
 	title_menu: varchar('title_menu', { length: 100 }).notNull(),
 	description_menu: text('description_menu').notNull(),
 	price_menu: decimal('price_menu', { precision: 5, scale: 2 }).notNull(),
+	type_menu: varchar('type_menu', { length: 10 }).notNull().default('plat'),
+	guests_min: integer('guests_min'),
+	guests_max: integer('guests_max'),
+	ingredients: text('ingredients').array(),
 	id_chief: text('id_chief').notNull().references(() => chiefs.id_chief, { onDelete: 'cascade' }),
 });
 

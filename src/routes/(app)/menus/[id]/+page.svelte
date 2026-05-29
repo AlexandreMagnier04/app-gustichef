@@ -1,0 +1,114 @@
+<script lang="ts">
+	import type { PageData } from './$types';
+	import EditMenuModal from '$lib/components/EditMenuModal.svelte';
+	import { goto } from '$app/navigation';
+
+	let { data }: { data: PageData } = $props();
+
+	const menu = $derived(data.menu);
+	const images = $derived(data.images);
+	const coverImage = $derived(images[0]?.url ?? null);
+
+	const isOwner = $derived(data.user?.id === menu.id_chief);
+
+	let showEdit = $state(false);
+
+	function onUpdated() {
+		showEdit = false;
+		window.location.reload();
+	}
+
+	function onDeleted() {
+		goto('/profile');
+	}
+</script>
+
+<div class="-mx-5 flex flex-col pb-24">
+
+	<!-- Bannière photo -->
+	<div class="relative h-52 w-full overflow-hidden">
+		{#if coverImage}
+			<img src={coverImage} alt="" class="h-full w-full object-cover" />
+			<div class="absolute inset-0 bg-black/10"></div>
+		{:else}
+			<div class="h-full w-full bg-linear-to-br from-navy via-[#1e4060] to-[#b85a35]"></div>
+		{/if}
+	</div>
+
+	<div class="px-5">
+		<!-- Bouton retour -->
+		<button
+			onclick={() => history.back()}
+			class="mt-4 flex items-center gap-2 text-sm font-medium text-navy/70"
+		>
+			<span class="flex h-8 w-8 items-center justify-center rounded-full bg-navy/8">
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-4 w-4">
+					<path fill-rule="evenodd" d="M9.78 4.22a.75.75 0 0 1 0 1.06L7.06 8l2.72 2.72a.75.75 0 1 1-1.06 1.06L5.47 8.53a.75.75 0 0 1 0-1.06l3.25-3.25a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd" />
+				</svg>
+			</span>
+			Retour
+		</button>
+
+		<!-- Titre -->
+		<h1 class="mt-4 text-2xl font-bold leading-tight text-navy">{menu.title_menu}</h1>
+
+		<!-- Prix + convives -->
+		<p class="mt-1 text-sm font-medium text-rust">
+			Dès {Math.floor(parseFloat(menu.price_menu))} € / convive
+			{#if menu.guests_min || menu.guests_max}
+				<span class="text-navy/50 font-normal">
+					({menu.guests_min ?? '?'}-{menu.guests_max ?? '?'} pers.)
+				</span>
+			{/if}
+		</p>
+
+		<!-- Description -->
+		<div class="mt-6">
+			<h2 class="mb-2 text-sm font-semibold uppercase tracking-wider text-navy/40">Description du plat</h2>
+			<p class="text-sm leading-relaxed text-navy/80">{menu.description_menu}</p>
+		</div>
+
+		<!-- Ingrédients -->
+		{#if menu.ingredients && menu.ingredients.length > 0}
+			<div class="mt-6">
+				<h2 class="mb-3 text-sm font-semibold uppercase tracking-wider text-navy/40">Ingrédients</h2>
+				<ul class="space-y-2">
+					{#each menu.ingredients as ing (ing)}
+						<li class="flex items-center gap-2 text-sm text-navy/80">
+							<span class="h-1.5 w-1.5 shrink-0 rounded-full bg-rust"></span>
+							{ing}
+						</li>
+					{/each}
+				</ul>
+			</div>
+		{/if}
+
+		<!-- Allergènes notice (placeholder) -->
+		<div class="mt-6 flex items-start gap-2 rounded-xl bg-rust/8 px-4 py-3">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="mt-0.5 h-4 w-4 shrink-0 text-rust/70">
+				<path fill-rule="evenodd" d="M6.701 2.25c.577-1 2.02-1 2.598 0l5.196 9a1.5 1.5 0 0 1-1.299 2.25H2.804a1.5 1.5 0 0 1-1.3-2.25l5.197-9ZM8 4a.75.75 0 0 1 .75.75v3a.75.75 0 0 1-1.5 0v-3A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" />
+			</svg>
+			<p class="text-xs leading-relaxed text-navy/60">
+				Allergènes : œufs, produits laitiers, fruits à coque. Sur demande sans gluten.
+			</p>
+		</div>
+
+		<!-- Bouton éditer (chef propriétaire uniquement) -->
+		{#if isOwner}
+			<button
+				onclick={() => (showEdit = true)}
+				class="mt-8 flex w-full items-center justify-center gap-2 rounded-2xl bg-rust py-4 text-sm font-semibold text-white shadow-sm"
+			>
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-4 w-4">
+					<path d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.263a1.75 1.75 0 0 0 0-2.474Z" />
+					<path d="M4.75 3.5A2.25 2.25 0 0 0 2.5 5.75v5.5A2.25 2.25 0 0 0 4.75 13.5h5.5A2.25 2.25 0 0 0 12.5 11.25V9a.75.75 0 0 0-1.5 0v2.25a.75.75 0 0 1-.75.75h-5.5a.75.75 0 0 1-.75-.75v-5.5a.75.75 0 0 1 .75-.75H7A.75.75 0 0 0 7 2H4.75Z" />
+				</svg>
+				éditer ce plat
+			</button>
+		{/if}
+	</div>
+</div>
+
+{#if isOwner}
+	<EditMenuModal bind:open={showEdit} {menu} {onUpdated} {onDeleted} />
+{/if}

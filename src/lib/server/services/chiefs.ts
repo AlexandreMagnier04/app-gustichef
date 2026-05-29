@@ -4,7 +4,7 @@ import { db } from '$lib/server/db';
 import { chiefs, specialties, categories, chiefs_specialties, chiefs_categories, menus, notices } from '$lib/server/db/schema/chiefs';
 import { users } from '$lib/server/db/schema/auth';
 import type { Category, Chief, ChiefCard, ChiefProfile, Menu, Notice, Specialty } from '$lib/models/chief.model';
-import type { UpdateChiefDto, CreateMenuDto } from '$lib/dtos/chief.dto';
+import type { UpdateChiefDto, CreateMenuDto, UpdateMenuDto } from '$lib/dtos/chief.dto';
 import type { CreateNoticeDto } from '$lib/dtos/customer.dto';
 
 export async function getChiefs(): Promise<Chief[]> {
@@ -174,6 +174,11 @@ export async function getMenusByChief(chiefId: string): Promise<Menu[]> {
 	return db.select().from(menus).where(eq(menus.id_chief, chiefId));
 }
 
+export async function getMenuById(id: number): Promise<Menu | null> {
+	const [menu] = await db.select().from(menus).where(eq(menus.id_menu, id)).limit(1);
+	return menu ?? null;
+}
+
 export async function createMenu(data: CreateMenuDto & { id_chief: string }): Promise<Menu> {
 	const [menu] = await db
 		.insert(menus)
@@ -181,10 +186,42 @@ export async function createMenu(data: CreateMenuDto & { id_chief: string }): Pr
 			title_menu: data.title_menu,
 			description_menu: data.description_menu,
 			price_menu: String(data.price_menu),
+			type_menu: data.type_menu ?? 'plat',
+			guests_min: data.guests_min ?? null,
+			guests_max: data.guests_max ?? null,
+			ingredients: data.ingredients ?? null,
 			id_chief: data.id_chief
 		})
 		.returning();
 	return menu;
+}
+
+export async function updateMenu(id: number, chiefId: string, data: UpdateMenuDto): Promise<Menu> {
+	const [existing] = await db.select({ id_chief: menus.id_chief }).from(menus).where(eq(menus.id_menu, id)).limit(1);
+	if (!existing) throw error(404, 'Menu introuvable');
+	if (existing.id_chief !== chiefId) throw error(403, 'Ce menu ne vous appartient pas');
+
+	const [updated] = await db
+		.update(menus)
+		.set({
+			...(data.title_menu !== undefined && { title_menu: data.title_menu }),
+			...(data.description_menu !== undefined && { description_menu: data.description_menu }),
+			...(data.price_menu !== undefined && { price_menu: String(data.price_menu) }),
+			...(data.type_menu !== undefined && { type_menu: data.type_menu }),
+			...(data.guests_min !== undefined && { guests_min: data.guests_min }),
+			...(data.guests_max !== undefined && { guests_max: data.guests_max }),
+			...(data.ingredients !== undefined && { ingredients: data.ingredients }),
+		})
+		.where(eq(menus.id_menu, id))
+		.returning();
+	return updated;
+}
+
+export async function deleteMenu(id: number, chiefId: string): Promise<void> {
+	const [existing] = await db.select({ id_chief: menus.id_chief }).from(menus).where(eq(menus.id_menu, id)).limit(1);
+	if (!existing) throw error(404, 'Menu introuvable');
+	if (existing.id_chief !== chiefId) throw error(403, 'Ce menu ne vous appartient pas');
+	await db.delete(menus).where(eq(menus.id_menu, id));
 }
 
 export async function createNotice(data: CreateNoticeDto & { id_customer: string }): Promise<Notice> {
