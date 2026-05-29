@@ -12,7 +12,7 @@
 		e.preventDefault();
 		loading = true;
 		error = '';
-		const result = await signIn.email({ email, password, callbackURL: '/dashboard' });
+		const result = await signIn.email({ email, password, callbackURL: '/home' });
 		if (result.error) {
 			error = result.error.message ?? 'Email ou mot de passe incorrect';
 			loading = false;
@@ -20,7 +20,7 @@
 	}
 
 	async function handleGoogle() {
-		await signIn.social({ provider: 'google', callbackURL: '/dashboard' });
+		await signIn.social({ provider: 'google', callbackURL: '/home' });
 	}
 </script>
 

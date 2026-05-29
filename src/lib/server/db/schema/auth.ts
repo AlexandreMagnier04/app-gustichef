@@ -4,22 +4,29 @@
 import { relations } from 'drizzle-orm';
 import { pgTable, text, varchar, timestamp, boolean, date, index } from 'drizzle-orm/pg-core';
 
-export const users = pgTable('users', {
-	id: text('id').primaryKey(),
-	name: varchar('name', { length: 50 }).notNull(),
-	email: varchar('email', { length: 128 }).notNull().unique(),
-	emailVerified: boolean('email_verified').default(false).notNull(),
-	image: varchar('image', { length: 255 }),
-	createdAt: timestamp('created_at').defaultNow().notNull(),
-	updatedAt: timestamp('updated_at')
-		.defaultNow()
-		.$onUpdate(() => new Date())
-		.notNull(),
-	firstname: varchar('firstname', { length: 50 }).default('').notNull(),
-	role: varchar('role', { length: 50 }).default('customer').notNull(),
-	localization: varchar('localization', { length: 128 }).default('').notNull(),
-	upload_profile_picture: date('upload_profile_picture'),
-});
+export const users = pgTable(
+	'users',
+	{
+		id: text('id').primaryKey(),
+		name: varchar('name', { length: 50 }).notNull(),
+		email: varchar('email', { length: 128 }).notNull().unique(),
+		emailVerified: boolean('email_verified').default(false).notNull(),
+		image: varchar('image', { length: 255 }),
+		createdAt: timestamp('created_at').defaultNow().notNull(),
+		updatedAt: timestamp('updated_at')
+			.defaultNow()
+			.$onUpdate(() => new Date())
+			.notNull(),
+		firstname: varchar('firstname', { length: 50 }).default('').notNull(),
+		role: varchar('role', { length: 50 }).default('customer').notNull(),
+		localization: varchar('localization', { length: 128 }).default('').notNull(),
+		upload_profile_picture: date('upload_profile_picture'),
+	},
+	(table) => [
+		index('users_localization_idx').on(table.localization),
+		index('users_role_idx').on(table.role),
+	],
+);
 
 export const sessions = pgTable(
 	'sessions',

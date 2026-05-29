@@ -48,3 +48,14 @@ export type CreateMenu = Omit<Menu, 'id_menu'>;
 
 
 export type ChiefUpdate = Partial<Pick<Chief, 'bio_chief'>>;
+
+export interface ChiefCard {
+	id_chief: string;
+	firstname: string;
+	name: string;
+	localization: string;
+	image: string | null;
+	min_price: string | null;
+	avg_rating: string | null;
+	review_count: number;
+}

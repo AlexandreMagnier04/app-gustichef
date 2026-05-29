@@ -35,7 +35,7 @@ export async function registerUser(
 		firstname: parsed.data.firstname,
 		role: parsed.data.role,
 		localization: parsed.data.localization,
-		callbackURL: '/dashboard'
+		callbackURL: '/home'
 	});
 
 	if (result.error) {
@@ -122,5 +122,5 @@ export async function registerChef(data: ChefSubmitData): Promise<{ error?: stri
 // --- Commun ---
 
 export async function loginWithGoogle() {
-	await signIn.social({ provider: 'google', callbackURL: '/dashboard' });
+	await signIn.social({ provider: 'google', callbackURL: '/home' });
 }
