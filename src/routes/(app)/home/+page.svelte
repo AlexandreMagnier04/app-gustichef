@@ -10,7 +10,7 @@
 	import slide9 from '$lib/assets/img/slide-9.jpeg';
 	import slide10 from '$lib/assets/img/slide-10.jpeg';
 	import PublicationCard from '$lib/components/PublicationCard.svelte';
-	import CategoryChip from '$lib/components/CategoryChip.svelte';
+	import SpecialtyChip from '$lib/components/SpecialtyChip.svelte';
 	import CityAutocomplete from '$lib/components/CityAutocomplete.svelte';
 	import NewPublicationModal from '$lib/components/NewPublicationModal.svelte';
 
@@ -20,9 +20,8 @@
 	let showNewPublication = $state(false);
 	const isChief = $derived(data.user?.role === 'chief');
 
-	// Mapping de secours pour catégories sans image_url en DB.
-	// Cas connus mappés explicitement, sinon rotation déterministe sur les slides locaux.
-	const CATEGORY_IMAGES: Record<string, string> = {
+	// Mapping de secours pour spécialités sans image en DB — rotation déterministe.
+	const SPECIALTY_IMAGES: Record<string, string> = {
 		'chef à domicile': portrait1,
 		'plats préparés': slide1,
 		pâtisserie: slide3,
@@ -37,20 +36,19 @@
 	const FALLBACK_POOL = [slide1, slide2, slide3, slide4, slide5, slide6, slide8, slide9, slide10];
 
 	function fallbackImage(name: string): string {
-		// Hash simple pour avoir la même image à chaque rendu pour un nom donné
 		let hash = 0;
 		for (const c of name) hash = (hash * 31 + c.charCodeAt(0)) | 0;
 		return FALLBACK_POOL[Math.abs(hash) % FALLBACK_POOL.length];
 	}
 
-	function categoryImage(cat: { name_category: string; image_url: string | null }): string {
-		if (cat.image_url) return cat.image_url;
-		return CATEGORY_IMAGES[cat.name_category.toLowerCase()] ?? fallbackImage(cat.name_category);
+	function specialtyImage(name: string): string {
+		return SPECIALTY_IMAGES[name.toLowerCase()] ?? fallbackImage(name);
 	}
 
-	// Filtres côté client — à terme push DB pour scalabilité
+	// Filtres côté client
 	let selectedCity = $state('');
 	let selectedPrice = $state<'' | 'low' | 'mid' | 'high'>('');
+	let selectedSpecialty = $state('');
 	let showCityFilter = $state(false);
 	let showPriceFilter = $state(false);
 
@@ -70,6 +68,8 @@
 				const range = PRICE_RANGES[selectedPrice];
 				if (price < range.min || price >= range.max) return false;
 			}
+			if (selectedSpecialty && !p.chiefSpecialties.map(s => s.toLowerCase()).includes(selectedSpecialty.toLowerCase()))
+				return false;
 			return true;
 		})
 	);
@@ -118,11 +118,18 @@
 </div>
 
 {#if activeTab === 'decouvrir'}
-	<!-- Categories -->
-	{#if data.categories.length > 0}
+	<!-- Spécialités -->
+	{#if data.specialties.length > 0}
 		<div class="scrollbar-none flex gap-3 overflow-x-auto px-4 py-3">
-			{#each data.categories as cat (cat.id_category)}
-				<CategoryChip label={cat.name_category} image={categoryImage(cat)} onSelect={() => {}} />
+			{#each data.specialties as s (s.id_speciality)}
+				<SpecialtyChip
+					label={s.name_speciality}
+					image={specialtyImage(s.name_speciality)}
+					selected={selectedSpecialty === s.name_speciality}
+					onSelect={() => {
+						selectedSpecialty = selectedSpecialty === s.name_speciality ? '' : s.name_speciality;
+					}}
+				/>
 			{/each}
 		</div>
 	{/if}
@@ -275,7 +282,7 @@
 			Trouve un chef et envoie ta première demande de prestation.
 		</p>
 		<a
-			href="/chefs"
+			href="/chiefs"
 			class="mt-6 rounded-xl bg-navy px-6 py-3 text-sm font-medium text-cream transition-opacity hover:opacity-90"
 		>
 			Trouver un chef
