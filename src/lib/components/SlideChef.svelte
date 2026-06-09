@@ -5,7 +5,7 @@
 	import portrait2 from '$lib/assets/img/portrait-2.jpeg';
 	import portrait3 from '$lib/assets/img/portrait-3.jpeg';
 	import portrait4 from '$lib/assets/img/portrait-4.jpeg';
-	import gustichefEcriture from '$lib/assets/img/gustichef-ecriture.png';
+	import gustichefEcriture from '$lib/assets/img/gustichef-ecriture-verte.png';
 
 	// Ce composant a besoin de 3 props :
 	// - active : index du slide (pour les dots)

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { authClient } from '$lib/auth-client';
-	import logoBlancImg from '$lib/assets/img/logo-gusti-blanc.png';
+	import logoBlancImg from '$lib/assets/img/gustichef-ecriture-blanc.png';
 	import bg from '$lib/assets/img/slide-1.jpeg';
 
 	let token = $derived(page.url.searchParams.get('token') ?? '');

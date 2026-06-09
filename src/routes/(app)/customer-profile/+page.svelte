@@ -173,7 +173,7 @@
 								<img src={reservation.chief_image} alt="" class="h-10 w-10 rounded-full object-cover" />
 							{:else}
 								<div class="flex h-10 w-10 items-center justify-center rounded-full bg-navy/10 text-sm font-bold text-navy">
-									{reservation.chief_firstname[0]}{reservation.chief_name[0]}
+									{reservation.chief_firstname?.[0] ?? ''}{reservation.chief_name?.[0] ?? ''}
 								</div>
 							{/if}
 							<div>

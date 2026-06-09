@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { validateChefStep1, registerChef, loginWithGoogle } from '$lib/services/auth.service';
 	import type { Specialty } from '$lib/models/chief.model';
-	import logoGusti from '$lib/assets/img/logo-gusti.png';
-	import logoGustiBlanc from '$lib/assets/img/logo-gusti-blanc.png';
+	import logoGusti from '$lib/assets/img/gustichef-ecriture-orange.png';
+	import logoGustiBlanc from '$lib/assets/img/gustichef-ecriture-blanc.png';
 	import bgConfirm from '$lib/assets/img/portrait-1.jpeg';
 
 	let { data } = $props<{ data: { specialties: Specialty[] } }>();

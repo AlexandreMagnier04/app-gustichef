@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { signIn } from '$lib/auth-client';
-	import logoBlancImg from '$lib/assets/img/logo-gusti-blanc.png';
+	import logoBlancImg from '$lib/assets/img/gustichef-ecriture-blanc.png';
 	import bg from '$lib/assets/img/slide-1.jpeg';
 
 	let email = $state('');

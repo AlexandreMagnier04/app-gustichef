@@ -1,6 +1,6 @@
 <script lang="ts">
-	import logo from '$lib/assets/img/logo-gusti.png';
-	import gustichefEcriture from '$lib/assets/img/gustichef-ecriture.png';
+	import logo from '$lib/assets/img/gustichef-ecriture-orange.png';
+	import gustichefEcriture from '$lib/assets/img/gustichef-ecriture-verte.png';
 
 	// Génère l'URL QR code via l'API publique qrserver — pointe vers l'URL courante du site
 	let siteUrl = $state('');

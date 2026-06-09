@@ -1,9 +1,13 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import logoImg from '$lib/assets/img/logo-gusti.png';
-	import gustichefEcriture from '$lib/assets/img/gustichef-ecriture.png';
+	import logoImg from '$lib/assets/img/gustichef-ecriture-orange.png';
+	import gustichefEcriture from '$lib/assets/img/gustichef-ecriture-verte.png';
+	import NotificationsPanel from '$lib/components/NotificationsPanel.svelte';
 
 	let { children, data } = $props();
+
+	let showNotifications = $state(false);
+	let unreadCount = $state(data.unreadNotificationsCount ?? 0);
 </script>
 
 <div class="flex h-dvh flex-col overflow-hidden bg-cream py-3">
@@ -15,7 +19,12 @@
 				<img src={gustichefEcriture} alt="Gustichef" class="h-7 object-contain" />
 			</div>
 			<div class="flex items-center gap-4">
-				<button class="text-navy/60 transition-colors hover:text-navy" aria-label="Notifications">
+				<button
+					type="button"
+					onclick={() => (showNotifications = true)}
+					class="relative text-navy/60 transition-colors hover:text-navy"
+					aria-label="Notifications"
+				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"
@@ -30,6 +39,11 @@
 							d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"
 						/>
 					</svg>
+					{#if unreadCount > 0}
+						<span class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-rust text-[9px] font-bold text-white">
+							{unreadCount > 9 ? '9+' : unreadCount}
+						</span>
+					{/if}
 				</button>
 				<a
 					href={data.user.role === 'chief' ? '/profile' : '/customer-profile'}
@@ -59,6 +73,8 @@
 	<main class="flex-1 overflow-y-auto bg-cream px-5 py-3 pb-4">
 		{@render children()}
 	</main>
+
+	<NotificationsPanel bind:open={showNotifications} bind:unreadCount />
 
 	<!-- Bottom nav -->
 	<nav class="fixed inset-x-0 bottom-0 z-30 border-t border-white/40 bg-white/20 shadow-[0_-1px_16px_rgba(0,0,0,0.06)] backdrop-blur-xl">

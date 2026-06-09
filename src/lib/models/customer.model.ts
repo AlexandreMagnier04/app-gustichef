@@ -1,5 +1,6 @@
 export interface Request {
     id_request: number;
+    title_request: string;
     description_request: string;
     expected_date_request: string;
     guests_request: number;
@@ -8,7 +9,7 @@ export interface Request {
     statut_request: string;
     id_service: number | null;
     id_customer: string;
-    id_chief: string;
+    id_chief: string | null;
 }
 
 export type CreateRequest = Omit<Request, 'id_request' | 'id_service'>;

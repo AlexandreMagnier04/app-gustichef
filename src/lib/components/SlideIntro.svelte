@@ -9,7 +9,7 @@
 	import slide8 from '$lib/assets/img/slide-8.jpeg';
 	import slide9 from '$lib/assets/img/slide-9.jpeg';
 	import slide10 from '$lib/assets/img/slide-10.jpeg';
-	import logo from '$lib/assets/img/logo-gusti.png';
+	import logo from '$lib/assets/img/gustichef-ecriture-orange.png';
 
 	let { active, onNext }: { active: number; onNext: () => void } = $props();
 

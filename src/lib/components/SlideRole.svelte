@@ -3,7 +3,7 @@
 	import OnboardingDots from './OnboardingDots.svelte';
 	import slide1 from '$lib/assets/img/slide-1.jpeg';
 	import logoGusti2 from '$lib/assets/img/logo-gusti2.png';
-	import gustichefEcriture from '$lib/assets/img/gustichef-ecriture.png';
+	import gustichefEcriture from '$lib/assets/img/gustichef-ecriture-verte.png';
 
 	let { active, onPrev }: { active: number; onPrev: () => void } = $props();
 

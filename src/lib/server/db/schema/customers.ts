@@ -10,8 +10,10 @@ export const customers = pgTable('customers', {
 
 // Demande de prestation émise par un client
 // id_service est nullable : la demande devient une prestation une fois acceptée
+// id_chief est nullable : null = demande ouverte visible par tous les chefs
 export const requests = pgTable('requests', {
 	id_request: serial('id_request').primaryKey(),
+	title_request: varchar('title_request', { length: 100 }).notNull(),
 	description_request: text('description_request').notNull(),
 	expected_date_request: date('expected_date_request').notNull(),
 	guests_request: integer('guests_request').notNull(),
@@ -20,7 +22,11 @@ export const requests = pgTable('requests', {
 	statut_request: varchar('statut_request', { length: 50 }).notNull(),
 	id_service: integer('id_service'),
 	id_customer: text('id_customer').notNull().references(() => customers.id_customer, { onDelete: 'cascade' }),
-	id_chief: text('id_chief').notNull(),
+	id_chief: text('id_chief'),
+	// Réponse du chef
+	chief_message: text('chief_message'),
+	chief_price_per_person: integer('chief_price_per_person'),
+	chief_menu_pdf_url: varchar('chief_menu_pdf_url', { length: 500 }),
 });
 
 export const customerRelations = relations(customers, ({ one }) => ({
