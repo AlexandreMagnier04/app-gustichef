@@ -11,15 +11,9 @@
 		return isNaN(n) ? null : String(Math.floor(n));
 	}
 
-	// Tags affichés : catégorie du chef (1er, rust) + spécialités (vert).
-	const visibleTags = $derived([
-		...(publication.chiefCategory
-			? [{ label: publication.chiefCategory, kind: 'category' as const }]
-			: []),
-		...publication.chiefSpecialties
-			.slice(0, 3)
-			.map((s) => ({ label: s, kind: 'specialty' as const }))
-	]);
+	const visibleTags = $derived(
+		publication.chiefSpecialties.slice(0, 3).map((s) => ({ label: s }))
+	);
 </script>
 
 <article class="overflow-hidden bg-[#FDF7F4]/60 shadow-[0_1px_6px_rgba(22,48,64,0.06)]">
@@ -66,7 +60,7 @@
 
 		<!-- Auteur : ancré bas-gauche, sans bandeau, juste posé sur le gradient -->
 		<a
-			href="/chefs/{publication.author.id}"
+			href="/chiefs/{publication.author.id}"
 			class="absolute right-3 bottom-3 left-3 flex items-center gap-2"
 		>
 			{#if publication.author.image}
@@ -117,20 +111,10 @@
 		<!-- Tags : pills plus petites et discrètes -->
 		{#if visibleTags.length > 0}
 			<div class="flex flex-wrap gap-1.5">
-				{#each visibleTags as t (t.label + t.kind)}
-					{#if t.kind === 'category'}
-						<span
-							class="rounded-full bg-rust/90 px-2.5 py-1 text-[10px] font-medium tracking-wide text-white"
-						>
-							{t.label}
-						</span>
-					{:else}
-						<span
-							class="rounded-full bg-emerald-700/85 px-2.5 py-1 text-[10px] font-medium tracking-wide text-white"
-						>
-							{t.label}
-						</span>
-					{/if}
+				{#each visibleTags as t (t.label)}
+					<span class="rounded-full bg-navy/85 px-2.5 py-1 text-[10px] font-medium tracking-wide text-white">
+						{t.label}
+					</span>
 				{/each}
 			</div>
 		{/if}
