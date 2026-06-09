@@ -1,10 +1,9 @@
 import { relations } from 'drizzle-orm';
 import { pgTable, text, decimal, serial, varchar, integer, primaryKey, date, timestamp } from 'drizzle-orm/pg-core';
-// `date` reste utilisé pour notices.date_notice
 import { users } from './auth';
 import { customers } from './customers';
 
-// Profil chef (héritage 1-1 avec users)
+// Profil chef
 export const chiefs = pgTable('chiefs', {
 	id_chief: text('id_chief').primaryKey().references(() => users.id, { onDelete: 'cascade' }),
 	bio_chief: text('bio_chief'),
@@ -17,12 +16,6 @@ export const specialties = pgTable('specialties', {
 	description_speciality: text('description_speciality'),
 });
 
-export const categories = pgTable('categories', {
-	id_category: serial('id_category').primaryKey(),
-	name_category: varchar('name_category', { length: 50 }).notNull().unique(),
-	image_url: varchar('image_url', { length: 255 }),
-});
-
 // M:N chiefs ↔ specialties
 export const chiefs_specialties = pgTable(
 	'chiefs_specialties',
@@ -33,17 +26,7 @@ export const chiefs_specialties = pgTable(
 	(table) => [primaryKey({ columns: [table.id_chief, table.id_speciality] })],
 );
 
-// M:N chiefs ↔ categories
-export const chiefs_categories = pgTable(
-	'chiefs_categories',
-	{
-		id_chief: text('id_chief').notNull().references(() => chiefs.id_chief, { onDelete: 'cascade' }),
-		id_category: integer('id_category').notNull().references(() => categories.id_category, { onDelete: 'cascade' }),
-	},
-	(table) => [primaryKey({ columns: [table.id_chief, table.id_category] })],
-);
-
-// Galerie du profil chef (écran 4) — voir MPD
+// Galerie du profil chef
 export const images_chef = pgTable('images_chef', {
 	id_image: serial('id_image').primaryKey(),
 	id_chief: text('id_chief').notNull().references(() => chiefs.id_chief, { onDelete: 'cascade' }),
@@ -64,7 +47,7 @@ export const menus = pgTable('menus', {
 	id_chief: text('id_chief').notNull().references(() => chiefs.id_chief, { onDelete: 'cascade' }),
 });
 
-// Photos d'un menu (carrousel) — voir MPD
+// Photos d'un menu
 export const images_menu = pgTable('images_menu', {
 	id_image: serial('id_image').primaryKey(),
 	id_menu: integer('id_menu').notNull().references(() => menus.id_menu, { onDelete: 'cascade' }),
@@ -73,7 +56,7 @@ export const images_menu = pgTable('images_menu', {
 	date_upload: timestamp('date_upload').defaultNow().notNull(),
 });
 
-// Avis laissé par un client sur un chef (référence les deux entités)
+// Avis laissé par un client sur un chef
 export const notices = pgTable('notices', {
 	id_notice: serial('id_notice').primaryKey(),
 	rating_notice: decimal('rating_notice', { precision: 2, scale: 1 }).notNull(),
@@ -90,9 +73,4 @@ export const chiefRelations = relations(chiefs, ({ one }) => ({
 export const chiefsSpecialtiesRelations = relations(chiefs_specialties, ({ one }) => ({
 	chief: one(chiefs, { fields: [chiefs_specialties.id_chief], references: [chiefs.id_chief] }),
 	speciality: one(specialties, { fields: [chiefs_specialties.id_speciality], references: [specialties.id_speciality] }),
-}));
-
-export const chiefsCategoriesRelations = relations(chiefs_categories, ({ one }) => ({
-	chief: one(chiefs, { fields: [chiefs_categories.id_chief], references: [chiefs.id_chief] }),
-	category: one(categories, { fields: [chiefs_categories.id_category], references: [categories.id_category] }),
 }));
