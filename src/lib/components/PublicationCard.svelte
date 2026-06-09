@@ -11,8 +11,13 @@
 		return isNaN(n) ? null : String(Math.floor(n));
 	}
 
+	const TAG_COLORS = ['bg-teal', 'bg-olive', 'bg-rust'] as const;
+
 	const visibleTags = $derived(
-		publication.chiefSpecialties.slice(0, 3).map((s) => ({ label: s }))
+		publication.chiefSpecialties.slice(0, 3).map((s, i) => ({
+			label: s,
+			color: TAG_COLORS[i % TAG_COLORS.length]
+		}))
 	);
 </script>
 
@@ -46,7 +51,7 @@
 
 		<!-- Badge prix : top-right, demi-pilule -->
 		{#if formatPrice(publication.price_publication)}
-			<div class="absolute top-3 right-0 rounded-l-full bg-navy/85 px-3 py-1 backdrop-blur-sm">
+			<div class="absolute top-3 right-0 rounded-l-full bg-teal px-3 py-1 backdrop-blur-sm">
 				<span class="text-[11px] font-medium text-cream">
 					Dès {formatPrice(publication.price_publication)} € / personne.
 				</span>
@@ -112,7 +117,7 @@
 		{#if visibleTags.length > 0}
 			<div class="flex flex-wrap gap-1.5">
 				{#each visibleTags as t (t.label)}
-					<span class="rounded-full bg-navy/85 px-2.5 py-1 text-[10px] font-medium tracking-wide text-white">
+					<span class="rounded-full {t.color} px-2.5 py-1 text-[10px] font-medium tracking-wide text-white">
 						{t.label}
 					</span>
 				{/each}

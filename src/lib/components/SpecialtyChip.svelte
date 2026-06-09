@@ -15,7 +15,7 @@
 <button class="flex shrink-0 flex-col items-center gap-1.5" onclick={onSelect}>
 	<div
 		class="h-17 w-17 overflow-hidden rounded-full border-2 shadow-sm transition-colors {selected
-			? 'border-rust'
+			? 'border-teal'
 			: 'border-transparent'}"
 	>
 		<img src={image} alt={label} class="h-full w-full object-cover" />

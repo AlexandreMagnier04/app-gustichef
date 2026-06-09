@@ -139,15 +139,15 @@
 		<div class="px-4 pb-3">
 			<button
 				onclick={() => (showNewPublication = true)}
-				class="flex w-full items-center justify-center gap-3 rounded-full bg-rust py-3 text-sm font-medium text-white shadow-sm transition-opacity hover:opacity-90"
+				class="flex w-full items-center justify-between rounded-2xl border border-dashed border-teal/40 bg-white px-4 py-3 transition-opacity hover:opacity-80"
 			>
-				Ajouter un nouveau post
-				<span class="flex h-6 w-6 items-center justify-center rounded-full bg-white/20">
+				<span class="text-sm font-medium text-navy">Ajouter un nouveau post</span>
+				<span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-teal text-white shadow-sm">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						viewBox="0 0 16 16"
 						fill="currentColor"
-						class="h-3.5 w-3.5"
+						class="h-4 w-4"
 					>
 						<path
 							d="M8 2a.75.75 0 0 1 .75.75v4.5h4.5a.75.75 0 0 1 0 1.5h-4.5v4.5a.75.75 0 0 1-1.5 0v-4.5h-4.5a.75.75 0 0 1 0-1.5h4.5v-4.5A.75.75 0 0 1 8 2Z"
