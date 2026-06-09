@@ -15,8 +15,6 @@ const config = {
 	},
 	kit: {
 		adapter: adapter(),
-		// Limite body pour les uploads de médias (20 MB + overhead multipart)
-		maxRequestBodySize: 22 * 1024 * 1024,
 	}
 };
 

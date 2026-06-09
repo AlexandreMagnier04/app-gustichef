@@ -15,13 +15,9 @@
 		[...new Map((profile?.specialties ?? []).map((s) => [s.id_speciality, s])).values()]
 	);
 
-	// Max 3 pills : 1 catégorie + 2 spécialités
-	const tagPills = $derived([
-		...(profile?.categories[0]
-			? [{ label: profile.categories[0].name_category, kind: 'category' as const }]
-			: []),
-		...uniqueSpecialties.slice(0, 2).map((s) => ({ label: s.name_speciality, kind: 'specialty' as const }))
-	]);
+	const tagPills = $derived(
+		uniqueSpecialties.slice(0, 3).map((s) => ({ label: s.name_speciality }))
+	);
 
 	const displayLoc = $derived(
 		profile?.user.localization && profile.user.localization !== 'Non renseigné'
@@ -102,19 +98,13 @@
 				{/if}
 			</div>
 
-			<!-- Pills catégorie + spécialités -->
+			<!-- Pills spécialités -->
 			{#if tagPills.length > 0}
 				<div class="mb-1 flex flex-wrap items-center gap-2">
-					{#each tagPills as tag (tag.label + tag.kind)}
-						{#if tag.kind === 'category'}
-							<span class="rounded-full bg-rust px-3 py-1 text-xs font-medium text-white">
-								{tag.label}
-							</span>
-						{:else}
-							<span class="rounded-full border border-navy/20 bg-white/80 px-3 py-1 text-xs font-medium text-navy/70">
-								{tag.label}
-							</span>
-						{/if}
+					{#each tagPills as tag (tag.label)}
+						<span class="rounded-full bg-navy/85 px-3 py-1 text-xs font-medium text-cream">
+							{tag.label}
+						</span>
 					{/each}
 				</div>
 			{/if}
@@ -149,8 +139,8 @@
 						{displayLoc}
 					</span>
 				{/if}
-				{#if displayLoc && profile?.categories[0]} · {/if}
-				{#if profile?.categories[0]}{profile.categories[0].name_category}{/if}
+				{#if displayLoc && uniqueSpecialties[0]} · {/if}
+				{#if uniqueSpecialties[0]}{uniqueSpecialties[0].name_speciality}{/if}
 			</p>
 
 			<a

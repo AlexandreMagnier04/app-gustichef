@@ -15,7 +15,7 @@
 	}
 </script>
 
-<a href="/chefs/{chief.id_chief}" class="block overflow-hidden rounded-2xl shadow-sm">
+<a href="/chiefs/{chief.id_chief}" class="block overflow-hidden rounded-2xl shadow-sm">
 	<div class="relative">
 		{#if chief.image}
 			<img

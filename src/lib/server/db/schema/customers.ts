@@ -2,7 +2,7 @@ import { relations } from 'drizzle-orm';
 import { pgTable, text, integer, serial, date, varchar } from 'drizzle-orm/pg-core';
 import { users } from './auth';
 
-// Profil client (héritage 1-1 avec users)
+// Profil client
 export const customers = pgTable('customers', {
 	id_customer: text('id_customer').primaryKey().references(() => users.id, { onDelete: 'cascade' }),
 	preferences_customer: text('preferences_customer').notNull(),

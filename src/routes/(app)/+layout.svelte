@@ -32,7 +32,7 @@
 					</svg>
 				</button>
 				<a
-					href="/profile"
+					href={data.user.role === 'chief' ? '/profile' : '/customer-profile'}
 					class="text-navy/60 transition-colors hover:text-navy"
 					aria-label="Profil"
 				>
@@ -108,9 +108,9 @@
 			</a>
 		{:else}
 			<a
-				href="/chefs"
+				href="/chiefs"
 				class="flex flex-col items-center gap-0.5 transition-colors {page.url.pathname.startsWith(
-					'/chefs'
+					'/chiefs'
 				)
 					? 'text-navy'
 					: 'text-navy/30'}"
