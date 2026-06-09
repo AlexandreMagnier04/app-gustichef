@@ -21,9 +21,8 @@
 	);
 </script>
 
-<article class="overflow-hidden bg-[#FDF7F4]/60 shadow-[0_1px_6px_rgba(22,48,64,0.06)]">
-	<!-- Zone photo : ratio 4/3 pour un cadrage cohérent quelle que soit la photo -->
-	<div class="relative aspect-[4/3] w-full">
+<article class="overflow-hidden bg-[#FDF7F4]/30">
+	<div class="relative aspect-square w-full">
 		{#if firstImage}
 			<img
 				src={firstImage.url}
@@ -49,9 +48,9 @@
 			</div>
 		{/if}
 
-		<!-- Badge prix : top-right, demi-pilule -->
+		<!-- Badge prix : top-right, rectangle collé au bord -->
 		{#if formatPrice(publication.price_publication)}
-			<div class="absolute top-3 right-0 rounded-l-full bg-teal px-3 py-1 backdrop-blur-sm">
+			<div class="absolute top-4 right-0 rounded-l-[5px] bg-teal px-3 py-1.5">
 				<span class="text-[11px] font-medium text-cream">
 					Dès {formatPrice(publication.price_publication)} € / personne.
 				</span>
@@ -111,8 +110,8 @@
 		</a>
 	</div>
 
-	<!-- Section info : padding généreux, sections bien espacées -->
-	<div class="space-y-3 px-4 pt-4 pb-4">
+	<!-- Section info -->
+	<div class="space-y-2.5 px-4 pt-3 pb-3.5">
 		<!-- Tags : pills plus petites et discrètes -->
 		{#if visibleTags.length > 0}
 			<div class="flex flex-wrap gap-1.5">
@@ -125,22 +124,29 @@
 		{/if}
 
 		<!-- Description -->
-		<p class="text-[13px] leading-relaxed text-navy/75">{publication.content_publication}</p>
+		<p class="line-clamp-3 text-[13px] leading-snug text-navy/65">{publication.content_publication}</p>
 
 		<!-- Footer : localisation + actions -->
 		<div class="flex items-center justify-between pt-1">
 			{#if publication.author.localization}
-				<div class="flex items-center gap-1 text-[11px] text-navy/55">
+				<div class="flex items-center gap-1 text-[11px] text-navy/50">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 16 16"
-						fill="currentColor"
-						class="h-3.5 w-3.5 text-rust"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke-width="1.8"
+						stroke="currentColor"
+						class="h-3.5 w-3.5 text-navy/40"
 					>
 						<path
-							fill-rule="evenodd"
-							d="m7.539 14.841.003.003.002.002a.755.755 0 0 0 .912 0l.002-.002.003-.003.012-.009a5.57 5.57 0 0 0 .19-.153 15.588 15.588 0 0 0 2.046-2.082c1.101-1.362 2.291-3.342 2.291-5.597A5 5 0 0 0 3 7c0 2.255 1.19 4.235 2.292 5.597a15.591 15.591 0 0 0 2.046 2.082 8.916 8.916 0 0 0 .189.153l.012.01ZM8 8.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"
-							clip-rule="evenodd"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+						/>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
 						/>
 					</svg>
 					{publication.author.localization}

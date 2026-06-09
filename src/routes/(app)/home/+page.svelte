@@ -68,7 +68,10 @@
 				const range = PRICE_RANGES[selectedPrice];
 				if (price < range.min || price >= range.max) return false;
 			}
-			if (selectedSpecialty && !p.chiefSpecialties.map(s => s.toLowerCase()).includes(selectedSpecialty.toLowerCase()))
+			if (
+				selectedSpecialty &&
+				!p.chiefSpecialties.map((s) => s.toLowerCase()).includes(selectedSpecialty.toLowerCase())
+			)
 				return false;
 			return true;
 		})
@@ -89,155 +92,106 @@
 	}
 </script>
 
-<!-- Tabs -->
-<div class="sticky top-0 z-10 flex">
-	<button
-		class="relative flex-1 py-3 text-sm font-medium transition-colors {activeTab === 'decouvrir'
-			? 'text-navy'
-			: 'text-navy/40'}"
-		onclick={() => (activeTab = 'decouvrir')}
-	>
-		découvrir
-		{#if activeTab === 'decouvrir'}
-			<span class="absolute bottom-0 left-1/2 h-0.5 w-16 -translate-x-1/2 rounded-full bg-rust"
-			></span>
-		{/if}
-	</button>
-	<button
-		class="relative flex-1 py-3 text-sm font-medium transition-colors {activeTab === 'demandes'
-			? 'text-navy'
-			: 'text-navy/40'}"
-		onclick={() => (activeTab = 'demandes')}
-	>
-		demandes
-		{#if activeTab === 'demandes'}
-			<span class="absolute bottom-0 left-1/2 h-0.5 w-16 -translate-x-1/2 rounded-full bg-rust"
-			></span>
-		{/if}
-	</button>
-</div>
-
-{#if activeTab === 'decouvrir'}
-	<!-- Spécialités -->
-	{#if data.specialties.length > 0}
-		<div class="scrollbar-none flex gap-3 overflow-x-auto px-4 py-3">
-			{#each data.specialties as s (s.id_speciality)}
-				<SpecialtyChip
-					label={s.name_speciality}
-					image={specialtyImage(s.name_speciality)}
-					selected={selectedSpecialty === s.name_speciality}
-					onSelect={() => {
-						selectedSpecialty = selectedSpecialty === s.name_speciality ? '' : s.name_speciality;
-					}}
-				/>
-			{/each}
-		</div>
-	{/if}
-
-	<!-- Bouton "Ajouter un nouveau post" — chef uniquement, entre catégories et filtres -->
-	{#if isChief}
-		<div class="px-4 pb-3">
-			<button
-				onclick={() => (showNewPublication = true)}
-				class="flex w-full items-center justify-between rounded-2xl border border-dashed border-teal/40 bg-white px-4 py-3 transition-opacity hover:opacity-80"
-			>
-				<span class="text-sm font-medium text-navy">Ajouter un nouveau post</span>
-				<span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-teal text-white shadow-sm">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 16 16"
-						fill="currentColor"
-						class="h-4 w-4"
-					>
-						<path
-							d="M8 2a.75.75 0 0 1 .75.75v4.5h4.5a.75.75 0 0 1 0 1.5h-4.5v4.5a.75.75 0 0 1-1.5 0v-4.5h-4.5a.75.75 0 0 1 0-1.5h4.5v-4.5A.75.75 0 0 1 8 2Z"
-						/>
-					</svg>
-				</span>
-			</button>
-		</div>
-	{/if}
-
-	<!-- Filtres ville + prix (deux pills) -->
-	<div class="relative flex items-center gap-3 px-4 pb-3">
-		<!-- Pill ville -->
-		<div class="relative">
-			<button
-				type="button"
-				onclick={() => (showCityFilter = !showCityFilter)}
-				class="inline-flex items-center gap-2 rounded-full border border-navy/15 bg-white px-4 py-1.5 text-sm text-navy/80"
-			>
-				{selectedCity || 'Ville'}
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 16 16"
-					fill="currentColor"
-					class="h-3.5 w-3.5 text-navy/50"
-				>
-					<path
-						fill-rule="evenodd"
-						d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
-						clip-rule="evenodd"
-					/>
-				</svg>
-			</button>
-			{#if showCityFilter}
-				<div class="absolute top-full left-0 z-30 mt-2">
-					<CityAutocomplete value={selectedCity} onSelect={onCitySelect} onClear={onCityClear} />
-				</div>
+<!-- Header sticky : tabs + chips + filtres -->
+<div class="-mx-5 sticky top-0 z-10 bg-cream">
+	<!-- Tabs -->
+	<div class="flex border-y border-navy/[0.07]">
+		<button
+			class="relative flex-1 py-3 text-sm font-semibold transition-colors {activeTab === 'decouvrir'
+				? 'text-navy'
+				: 'text-navy/40'}"
+			onclick={() => (activeTab = 'decouvrir')}
+		>
+			découvrir
+			{#if activeTab === 'decouvrir'}
+				<span class="absolute bottom-0 left-1/2 h-0.5 w-8 -translate-x-1/2 rounded-full bg-rust"></span>
 			{/if}
-		</div>
-
-		<!-- Pill prix -->
-		<div class="relative">
-			<button
-				type="button"
-				onclick={() => (showPriceFilter = !showPriceFilter)}
-				class="inline-flex items-center gap-2 rounded-full border border-navy/15 bg-white px-4 py-1.5 text-sm text-navy/80"
-			>
-				{selectedPrice ? PRICE_RANGES[selectedPrice].label : 'Prix'}
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 16 16"
-					fill="currentColor"
-					class="h-3.5 w-3.5 text-navy/50"
-				>
-					<path
-						fill-rule="evenodd"
-						d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
-						clip-rule="evenodd"
-					/>
-				</svg>
-			</button>
-			{#if showPriceFilter}
-				<ul
-					class="absolute top-full left-0 z-30 mt-2 w-44 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-lg"
-				>
-					<li>
-						<button
-							class="w-full px-4 py-2.5 text-left text-sm text-navy hover:bg-cream"
-							onclick={() => selectPrice('')}
-						>
-							Tous les prix
-						</button>
-					</li>
-					{#each Object.entries(PRICE_RANGES) as [key, range] (key)}
-						<li>
-							<button
-								class="w-full px-4 py-2.5 text-left text-sm text-navy hover:bg-cream"
-								onclick={() => selectPrice(key as 'low' | 'mid' | 'high')}
-							>
-								{range.label}
-							</button>
-						</li>
-					{/each}
-				</ul>
+		</button>
+		<button
+			class="relative flex-1 py-3 text-sm font-semibold transition-colors {activeTab === 'demandes'
+				? 'text-navy'
+				: 'text-navy/40'}"
+			onclick={() => (activeTab = 'demandes')}
+		>
+			demandes
+			{#if activeTab === 'demandes'}
+				<span class="absolute bottom-0 left-1/2 h-0.5 w-8 -translate-x-1/2 rounded-full bg-rust"></span>
 			{/if}
-		</div>
+		</button>
 	</div>
 
-	<!-- Feed pleine largeur — -mx-5 annule le px-5 du main -->
-	<div class="-mx-5 flex flex-col gap-4 pb-10">
+	{#if activeTab === 'decouvrir'}
+		<!-- Chips spécialités -->
+		{#if data.specialties.length > 0}
+			<div class="scrollbar-none flex gap-3 overflow-x-auto px-4 py-3">
+				{#each data.specialties as s (s.id_speciality)}
+					<SpecialtyChip
+						label={s.name_speciality}
+						image={specialtyImage(s.name_speciality)}
+						selected={selectedSpecialty === s.name_speciality}
+						onSelect={() => {
+							selectedSpecialty = selectedSpecialty === s.name_speciality ? '' : s.name_speciality;
+						}}
+					/>
+				{/each}
+			</div>
+		{/if}
+
+		<!-- Filtres ville + prix -->
+		<div class="flex items-center gap-3 px-4 pb-3">
+			<div class="relative">
+				<button
+					type="button"
+					onclick={() => (showCityFilter = !showCityFilter)}
+					class="inline-flex items-center gap-2 rounded-full border border-teal bg-[#FDF7F4] px-4 py-1.5 text-sm text-navy/80"
+				>
+					{selectedCity || 'Ville'}
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3.5 w-3.5 text-navy/50">
+						<path fill-rule="evenodd" d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+					</svg>
+				</button>
+				{#if showCityFilter}
+					<div class="absolute top-full left-0 z-30 mt-2">
+						<CityAutocomplete value={selectedCity} onSelect={onCitySelect} onClear={onCityClear} />
+					</div>
+				{/if}
+			</div>
+
+			<div class="relative">
+				<button
+					type="button"
+					onclick={() => (showPriceFilter = !showPriceFilter)}
+					class="inline-flex items-center gap-2 rounded-full border border-teal bg-[#FDF7F4] px-4 py-1.5 text-sm text-teal"
+				>
+					{selectedPrice ? PRICE_RANGES[selectedPrice].label : 'Prix'}
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3.5 w-3.5 text-navy/50">
+						<path fill-rule="evenodd" d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+					</svg>
+				</button>
+				{#if showPriceFilter}
+					<ul class="absolute top-full left-0 z-30 mt-2 w-44 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-lg">
+						<li>
+							<button class="w-full px-4 py-2.5 text-left text-sm text-navy hover:bg-[#FDF7F4]" onclick={() => selectPrice('')}>
+								Tous les prix
+							</button>
+						</li>
+						{#each Object.entries(PRICE_RANGES) as [key, range] (key)}
+							<li>
+								<button class="w-full px-4 py-2.5 text-left text-sm text-navy hover:bg-[#FDF7F4]" onclick={() => selectPrice(key as 'low' | 'mid' | 'high')}>
+									{range.label}
+								</button>
+							</li>
+						{/each}
+					</ul>
+				{/if}
+			</div>
+		</div>
+	{/if}
+</div>
+
+<!-- Feed / Demandes -->
+{#if activeTab === 'decouvrir'}
+	<div class="-mx-5 flex flex-col gap-2.5 pb-10">
 		{#each filteredPublications as publication (publication.id_publication)}
 			<PublicationCard {publication} />
 		{/each}
@@ -251,45 +205,49 @@
 					</button>
 				{:else}
 					<p class="text-sm text-navy/40">Aucune publication pour l'instant.</p>
-					{#if isChief}
-						<p class="mt-1 text-xs text-navy/40">Sois le premier à publier !</p>
-					{/if}
 				{/if}
 			</div>
 		{/if}
+
+		{#if isChief}
+			<button
+				onclick={() => (showNewPublication = true)}
+				class="mx-auto flex items-center gap-3 py-4 transition-opacity active:opacity-70"
+			>
+				<span class="flex h-10 w-10 items-center justify-center rounded-full bg-rust text-white">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
+						<path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
+					</svg>
+				</span>
+				<span class="text-sm font-semibold text-navy">Ajouter une publication</span>
+			</button>
+		{/if}
 	</div>
 {:else}
-	<!-- Demandes tab -->
 	<div class="flex flex-col items-center justify-center px-8 py-20 text-center">
-		<div class="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-cream">
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				fill="none"
-				viewBox="0 0 24 24"
-				stroke-width="1.5"
-				stroke="currentColor"
-				class="h-8 w-8 text-navy/40"
-			>
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z"
-				/>
+		<div class="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#FDF7F4]">
+			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-8 w-8 text-navy/40">
+				<path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" />
 			</svg>
 		</div>
 		<p class="font-medium text-navy">Aucune demande pour l'instant</p>
-		<p class="mt-1 text-sm text-navy/50">
-			Trouve un chef et envoie ta première demande de prestation.
-		</p>
-		<a
-			href="/chiefs"
-			class="mt-6 rounded-xl bg-navy px-6 py-3 text-sm font-medium text-cream transition-opacity hover:opacity-90"
-		>
+		<p class="mt-1 text-sm text-navy/50">Trouve un chef et envoie ta première demande de prestation.</p>
+		<a href="/chiefs" class="mt-6 rounded-xl bg-navy px-6 py-3 text-sm font-medium text-cream transition-opacity hover:opacity-90">
 			Trouver un chef
 		</a>
 	</div>
 {/if}
 
+<!-- FAB + publication (chef uniquement) -->
 {#if isChief}
+	<button
+		onclick={() => (showNewPublication = true)}
+		class="fixed right-4 bottom-20 z-20 flex h-13 w-13 items-center justify-center rounded-full bg-rust text-white shadow-lg transition-transform active:scale-95"
+		aria-label="Ajouter une publication"
+	>
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-6 w-6">
+			<path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
+		</svg>
+	</button>
 	<NewPublicationModal bind:open={showNewPublication} />
 {/if}
