@@ -1,20 +1,16 @@
 <script lang="ts">
 	import { validateChefStep1, registerChef, loginWithGoogle } from '$lib/services/auth.service';
-	import type { Category, Specialty } from '$lib/models/chief.model';
+	import type { Specialty } from '$lib/models/chief.model';
 	import logoGusti from '$lib/assets/img/logo-gusti.png';
 	import logoGustiBlanc from '$lib/assets/img/logo-gusti-blanc.png';
 	import bgConfirm from '$lib/assets/img/portrait-1.jpeg';
 
-	let { data } = $props<{ data: { specialties: Specialty[]; categories: Category[] } }>();
+	let { data } = $props<{ data: { specialties: Specialty[] } }>();
 
 	let availableSpecialties = $state<string[]>(
 		data.specialties.map((s: Specialty) => s.name_speciality)
 	);
-	let availableCategories = $state<string[]>(
-		data.categories.map((c: Category) => c.name_category)
-	);
 	let customSpecialtyInput = $state('');
-	let customCategoryInput = $state('');
 
 	function addCustomSpecialty() {
 		const name = customSpecialtyInput.trim();
@@ -39,22 +35,7 @@
 	// Étape 2
 	let profilePhotoPreview = $state<string | null>(null);
 	let bio = $state('');
-	let category = $state<string>('');
 	let specialties = $state<string[]>([]);
-
-	function selectCategory(c: string) {
-		category = c;
-	}
-
-	function addCustomCategory() {
-		const name = customCategoryInput.trim();
-		if (!name) return;
-		if (!availableCategories.includes(name)) {
-			availableCategories = [...availableCategories, name];
-		}
-		category = name;
-		customCategoryInput = '';
-	}
 
 	// Étape 3 (UI uniquement — MinIO requis)
 	let siret = $state('');
@@ -130,7 +111,6 @@
 			password,
 			cities,
 			bio,
-			category,
 			specialties,
 			siret
 		});
@@ -327,41 +307,6 @@
 						placeholder="ex : chief pâtissier, Traiteur..."
 						class="rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-rust"
 					/>
-				</div>
-
-				<div class="flex flex-col gap-2">
-					<label class="text-xs font-medium text-navy/70">
-						Catégorie <span class="text-gray-400">(1 seule — apparaîtra en premier sur tes publications)</span>
-					</label>
-					<div class="flex flex-wrap gap-2">
-						{#each availableCategories as c (c)}
-							<button
-								type="button"
-								onclick={() => selectCategory(c)}
-								class="rounded-full border px-3 py-1 text-xs transition-colors {category === c
-									? 'border-rust bg-rust text-white'
-									: 'border-gray-200 bg-white text-navy/70'}"
-							>
-								{c}
-							</button>
-						{/each}
-					</div>
-					<div class="flex gap-2">
-						<input
-							type="text"
-							bind:value={customCategoryInput}
-							placeholder="Ajouter une catégorie..."
-							onkeydown={(e) => e.key === 'Enter' && (e.preventDefault(), addCustomCategory())}
-							class="flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-rust"
-						/>
-						<button
-							type="button"
-							onclick={addCustomCategory}
-							class="rounded-lg bg-rust px-4 text-sm font-medium text-white"
-						>
-							+
-						</button>
-					</div>
 				</div>
 
 				<div class="flex flex-col gap-2">
