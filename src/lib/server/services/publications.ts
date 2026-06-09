@@ -3,8 +3,6 @@ import { db } from '$lib/server/db';
 import { publications, images_publication, tags, publications_tags } from '$lib/server/db/schema/social';
 import { users } from '$lib/server/db/schema/auth';
 import {
-	categories,
-	chiefs_categories,
 	chiefs_specialties,
 	specialties,
 } from '$lib/server/db/schema/chiefs';
@@ -46,7 +44,6 @@ export async function createPublication(
 			});
 
 			if (data.tags.length > 0) {
-				// Upsert des tags : INSERT ... ON CONFLICT (name) DO NOTHING, puis SELECT pour récupérer les IDs
 				await tx
 					.insert(tags)
 					.values(data.tags.map((name) => ({ name_tag: name })))
@@ -97,7 +94,7 @@ export async function getChiefPublicationImages(
 		.orderBy(images_publication.date_upload);
 }
 
-// Feed paginé enrichi (auteur + images + tags) — utilisé par la home
+// Feed paginé enrichi (auteur + images + tags + spécialités du chef) — utilisé par la home
 export async function getPublicationsFeed(page = 0): Promise<PublicationCard[]> {
 	const rows = await db
 		.select({
@@ -119,7 +116,7 @@ export async function getPublicationsFeed(page = 0): Promise<PublicationCard[]> 
 	const publicationIds = rows.map((r) => r.publication.id_publication);
 	const authorIds = [...new Set(rows.map((r) => r.author_id))];
 
-	const [allImages, allTags, allCategories, allSpecialties] = await Promise.all([
+	const [allImages, allTags, allSpecialties] = await Promise.all([
 		db
 			.select()
 			.from(images_publication)
@@ -133,14 +130,6 @@ export async function getPublicationsFeed(page = 0): Promise<PublicationCard[]> 
 			.from(publications_tags)
 			.innerJoin(tags, eq(tags.id_tag, publications_tags.id_tag))
 			.where(inArray(publications_tags.id_publication, publicationIds)),
-		db
-			.select({
-				id_chief: chiefs_categories.id_chief,
-				name_category: categories.name_category,
-			})
-			.from(chiefs_categories)
-			.innerJoin(categories, eq(categories.id_category, chiefs_categories.id_category))
-			.where(inArray(chiefs_categories.id_chief, authorIds)),
 		db
 			.select({
 				id_chief: chiefs_specialties.id_chief,
@@ -159,7 +148,6 @@ export async function getPublicationsFeed(page = 0): Promise<PublicationCard[]> 
 		tags: allTags
 			.filter((t) => t.id_publication === r.publication.id_publication)
 			.map((t) => ({ id_tag: t.id_tag, name_tag: t.name_tag })),
-		chiefCategory: allCategories.find((c) => c.id_chief === r.author_id)?.name_category ?? null,
 		chiefSpecialties: allSpecialties
 			.filter((s) => s.id_chief === r.author_id)
 			.map((s) => s.name_speciality),
