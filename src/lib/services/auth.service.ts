@@ -57,7 +57,6 @@ export type ChefSubmitData = Pick<User, 'firstname' | 'name' | 'email'> &
 		password: string;
 		cities: string[];
 	};
-// Note : SetupChiefProfileDto inclut désormais { bio?, category, specialties, siret? }
 
 export function validateChefStep1(data: Step1Data): FieldErrors {
 	if (data.password !== data.confirmPassword) {
@@ -105,7 +104,6 @@ export async function registerChef(data: ChefSubmitData): Promise<{ error?: stri
 
 	const profileParsed = setupChiefProfileDto.safeParse({
 		bio: data.bio,
-		category: data.category,
 		specialties: data.specialties,
 		siret: data.siret
 	});
