@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { invalidateAll } from '$app/navigation';
+	import { onMount } from 'svelte';
 	import logoImg from '$lib/assets/img/gustichef-ecriture-orange.png';
 	import gustichefEcriture from '$lib/assets/img/gustichef-ecriture-verte.png';
 	import NotificationsPanel from '$lib/components/NotificationsPanel.svelte';
@@ -8,6 +10,31 @@
 
 	let showNotifications = $state(false);
 	let unreadCount = $state(data.unreadNotificationsCount ?? 0);
+
+	// Synchronise le badge quand les données du layout se rechargent
+	$effect(() => {
+		unreadCount = data.unreadNotificationsCount ?? 0;
+	});
+
+	onMount(() => {
+		const es = new EventSource('/api/sse');
+		es.onmessage = (e) => {
+			try {
+				const payload = JSON.parse(e.data) as { type: string };
+				if (payload.type === 'notification') {
+					unreadCount += 1;
+				}
+				// Rafraîchit toutes les données de la page pour que les messages et notifs s'affichent instantanément
+				invalidateAll();
+			} catch {
+				// payload malformé, on ignore
+			}
+		};
+		es.onerror = () => {
+			// le navigateur se reconnecte automatiquement en cas d'erreur SSE
+		};
+		return () => es.close();
+	});
 </script>
 
 <div class="flex h-dvh flex-col overflow-hidden bg-cream py-3">

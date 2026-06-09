@@ -17,8 +17,8 @@ export interface ReservationDetail {
 	localization: string;
 	statut: string;
 	created_at: Date;
-	chief_firstname: string;
-	chief_name: string;
+	chief_firstname: string | null;
+	chief_name: string | null;
 	chief_image: string | null;
 	menu_title: string | null;
 	menu_description: string | null;

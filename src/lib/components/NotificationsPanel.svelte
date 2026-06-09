@@ -104,25 +104,33 @@
 		{:else}
 			<ul class="divide-y divide-navy/[0.06]">
 				{#each notifs as n (n.id_notification)}
-					<li class="flex items-start gap-3 px-5 py-3.5 {n.read ? 'bg-transparent' : 'bg-teal/[0.04]'}">
-						<!-- Icône -->
-						<div class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full {n.read ? 'bg-navy/8' : 'bg-teal/15'}">
-							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4 w-4 {n.read ? 'text-navy/40' : 'text-teal'}">
-								<path stroke-linecap="round" stroke-linejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 0 1-.825-.242m9.345-8.334a2.126 2.126 0 0 0-.476-.095 48.64 48.64 0 0 0-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0 0 11.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155" />
-							</svg>
-						</div>
+					{@const href = n.id_request ? `/messages/${n.id_request}` : null}
+					<li class="{n.read ? 'bg-transparent' : 'bg-teal/[0.04]'}">
+						<svelte:element
+							this={href ? 'a' : 'div'}
+							{href}
+							onclick={href ? close : undefined}
+							class="flex items-start gap-3 px-5 py-3.5 {href ? 'cursor-pointer active:bg-navy/[0.04]' : ''}"
+						>
+							<!-- Icône -->
+							<div class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full {n.read ? 'bg-navy/8' : 'bg-teal/15'}">
+								<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4 w-4 {n.read ? 'text-navy/40' : 'text-teal'}">
+									<path stroke-linecap="round" stroke-linejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 0 1-.825-.242m9.345-8.334a2.126 2.126 0 0 0-.476-.095 48.64 48.64 0 0 0-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0 0 11.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155" />
+								</svg>
+							</div>
 
-						<!-- Texte -->
-						<div class="min-w-0 flex-1">
-							<p class="text-[13px] font-semibold leading-snug text-navy">{n.title}</p>
-							<p class="mt-0.5 text-[12px] leading-snug text-navy/60">{n.body}</p>
-							<p class="mt-1 text-[11px] text-navy/35">{formatRelative(n.created_at)}</p>
-						</div>
+							<!-- Texte -->
+							<div class="min-w-0 flex-1">
+								<p class="text-[13px] font-semibold leading-snug text-navy">{n.title}</p>
+								<p class="mt-0.5 text-[12px] leading-snug text-navy/60">{n.body}</p>
+								<p class="mt-1 text-[11px] text-navy/35">{formatRelative(n.created_at)}</p>
+							</div>
 
-						<!-- Point non-lu -->
-						{#if !n.read}
-							<div class="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-teal"></div>
-						{/if}
+							<!-- Point non-lu -->
+							{#if !n.read}
+								<div class="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-teal"></div>
+							{/if}
+						</svelte:element>
 					</li>
 				{/each}
 			</ul>

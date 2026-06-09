@@ -4,6 +4,7 @@ import { conversations, messages } from '$lib/server/db/schema/messaging';
 import { requests } from '$lib/server/db/schema/customers';
 import { menus } from '$lib/server/db/schema/chiefs';
 import { users } from '$lib/server/db/schema/auth';
+import { publish, userChannel } from '$lib/server/db/pubsub';
 
 export interface ConversationListItem {
 	id_conversation: number;
@@ -53,6 +54,7 @@ export interface ConversationDetail {
 	messages: MessageItem[];
 }
 
+// Retourne toutes les conversations de l'utilisateur avec le dernier message et le nombre de non-lus
 export async function getConversationsForUser(userId: string, role: string): Promise<ConversationListItem[]> {
 	const isChief = role === 'chief';
 	const filter = isChief
@@ -117,6 +119,7 @@ export async function getConversationsForUser(userId: string, role: string): Pro
 	return result;
 }
 
+// Retourne le détail d'une conversation (messages + infos demande) et marque les messages reçus comme lus
 export async function getConversationDetail(convId: number, userId: string): Promise<ConversationDetail | null> {
 	const [conv] = await db
 		.select()
@@ -198,6 +201,7 @@ export async function getConversationDetail(convId: number, userId: string): Pro
 	};
 }
 
+// Crée une nouvelle conversation suite à la réponse d'un chef à une demande, avec le premier message
 export async function createConversation(
 	requestId: number,
 	chiefId: string,
@@ -221,6 +225,7 @@ export async function createConversation(
 	return conv.id_conversation;
 }
 
+// Ajoute un message dans une conversation et notifie les deux parties en temps réel via pg_notify
 export async function addMessage(
 	convId: number,
 	senderId: string,
@@ -237,12 +242,23 @@ export async function addMessage(
 		id_menu: menuId ?? null,
 		price_per_person: pricePerPerson ?? null,
 	});
-	await db
+	const [conv] = await db
 		.update(conversations)
 		.set({ last_message_at: new Date(), ...(type === 'menu_proposal' ? { statut: 'devis_envoye' } : {}) })
-		.where(eq(conversations.id_conversation, convId));
+		.where(eq(conversations.id_conversation, convId))
+		.returning();
+
+	// Notify both parties via pg_notify
+	if (conv) {
+		const payload = JSON.stringify({ type: 'message', convId });
+		await Promise.all([
+			publish(userChannel(conv.id_chief), payload),
+			publish(userChannel(conv.id_customer), payload),
+		]);
+	}
 }
 
+// Met à jour le statut d'une conversation (ex: devis_envoye → confirme / refuse)
 export async function updateConversationStatut(convId: number, statut: string): Promise<void> {
 	await db.update(conversations).set({ statut }).where(eq(conversations.id_conversation, convId));
 }

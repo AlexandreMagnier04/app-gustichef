@@ -31,13 +31,13 @@ export const POST = async ({ params, request, locals }) => {
 	// Mark request as responded
 	await db
 		.update(requests)
-		.set({ id_chief: user.id, statut_request: 'responded', chief_message: message.trim(), ...(price !== null ? { chief_price_per_person: price } : {}) })
+		.set({ id_chief: user.id, statut_request: 'responded' })
 		.where(eq(requests.id_request, id));
 
 	// Create the conversation
-	await createConversation(id, user.id, req.id_customer, message.trim(), price);
+	const convId = await createConversation(id, user.id, req.id_customer, message.trim(), price);
 
-	// Notify the customer
+	// Notify the customer — id_request in notification stores the conversation id for navigation
 	const [chef] = await db.select({ firstname: users.firstname, name: users.name, image: users.image }).from(users).where(eq(users.id, user.id));
 	const chefName = chef ? `${chef.firstname} ${chef.name}` : 'Un chef';
 	await createNotification(
@@ -45,7 +45,7 @@ export const POST = async ({ params, request, locals }) => {
 		'request_responded',
 		'Nouvelle proposition',
 		`${chefName} vous a envoyé une proposition pour « ${req.title_request} »`,
-		String(id),
+		String(convId),
 	);
 
 	return json({ ok: true });

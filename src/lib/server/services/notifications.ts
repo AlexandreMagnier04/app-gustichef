@@ -1,6 +1,7 @@
 import { and, eq, desc } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { notifications } from '$lib/server/db/schema/notifications';
+import { publish, userChannel } from '$lib/server/db/pubsub';
 
 export interface Notification {
 	id_notification: number;
@@ -27,6 +28,7 @@ export async function createNotification(
 		body,
 		id_request: idRequest ?? null,
 	});
+	await publish(userChannel(userId), JSON.stringify({ type: 'notification' }));
 }
 
 export async function getNotifications(userId: string): Promise<Notification[]> {
