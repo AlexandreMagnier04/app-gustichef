@@ -24,13 +24,10 @@ export interface Tag {
 }
 
 // Publication enrichie pour l'affichage dans le feed.
-// chiefCategory = catégorie unique du chef (1er tag affiché, accent rust).
-// chiefSpecialties = spécialités du chef (tags suivants, vert clair).
-// tags = tags spécifiques à la publication (cuisines sélectionnées au moment de la création).
+// chiefSpecialties = spécialités du chef (tags affichés sur la card).
 export interface PublicationCard extends Publication {
 	images: ImagePublication[];
 	tags: Tag[];
-	chiefCategory: string | null;
 	chiefSpecialties: string[];
 	author: {
 		id: string;

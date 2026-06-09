@@ -10,12 +10,6 @@ export interface Specialty {
     description_speciality: string | null;
 }
 
-export interface Category {
-    id_category: number;
-    name_category: string;
-    image_url: string | null;
-}
-
 export interface Notice {
     id_notice: number;
     rating_notice: string;
@@ -35,7 +29,6 @@ export interface ChiefProfile extends Chief {
         localization: string;
     };
     specialties: Specialty[];
-    categories: Category[];
 }
 
 export interface Menu {
@@ -50,7 +43,6 @@ export interface Menu {
     id_chief: string;
 }
 export type CreateMenu = Omit<Menu, 'id_menu'>;
-
 
 export type ChiefUpdate = Partial<Pick<Chief, 'bio_chief'>>;
 
