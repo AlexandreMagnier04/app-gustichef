@@ -1,9 +1,9 @@
 import { eq, min, avg, count, ilike, inArray } from 'drizzle-orm';
 import { error } from '@sveltejs/kit';
 import { db } from '$lib/server/db';
-import { chiefs, specialties, categories, chiefs_specialties, chiefs_categories, menus, notices } from '$lib/server/db/schema/chiefs';
+import { chiefs, specialties, chiefs_specialties, menus, notices } from '$lib/server/db/schema/chiefs';
 import { users } from '$lib/server/db/schema/auth';
-import type { Category, Chief, ChiefCard, ChiefProfile, Menu, Notice, Specialty } from '$lib/models/chief.model';
+import type { Chief, ChiefCard, ChiefProfile, Menu, Notice, Specialty } from '$lib/models/chief.model';
 import type { UpdateChiefDto, CreateMenuDto, UpdateMenuDto } from '$lib/dtos/chief.dto';
 import type { CreateNoticeDto } from '$lib/dtos/customer.dto';
 
@@ -54,7 +54,6 @@ export async function getSpecialties(): Promise<Specialty[]> {
 
 export type SetupChiefProfileInput = {
 	bio: string | undefined;
-	categoryName: string;
 	specialtyNames: string[];
 };
 
@@ -62,7 +61,6 @@ export async function setupChiefProfile(
 	userId: string,
 	input: SetupChiefProfileInput,
 ): Promise<void> {
-	// Vérifie que l'utilisateur existe et a bien le rôle 'chief' — refuse sinon.
 	const [user] = await db
 		.select({ role: users.role })
 		.from(users)
@@ -73,34 +71,11 @@ export async function setupChiefProfile(
 	if (user.role !== 'chief') throw error(403, 'Seul un chef peut créer un profil chef');
 
 	await db.transaction(async (tx) => {
-		// Insère le profil chef
 		await tx
 			.insert(chiefs)
 			.values({ id_chief: userId, bio_chief: input.bio ?? null })
 			.onConflictDoNothing();
 
-		// --- Catégorie (1 seule par chef) ---
-		// Upsert de la catégorie si elle n'existe pas, puis lien chef ↔ catégorie
-		await tx
-			.insert(categories)
-			.values({ name_category: input.categoryName })
-			.onConflictDoNothing();
-
-		const [cat] = await tx
-			.select({ id_category: categories.id_category })
-			.from(categories)
-			.where(eq(categories.name_category, input.categoryName))
-			.limit(1);
-
-		if (cat) {
-			// Remplace l'éventuelle catégorie précédente : on s'assure qu'il n'y en a qu'une
-			await tx.delete(chiefs_categories).where(eq(chiefs_categories.id_chief, userId));
-			await tx
-				.insert(chiefs_categories)
-				.values({ id_chief: userId, id_category: cat.id_category });
-		}
-
-		// --- Spécialités (N par chef) ---
 		if (input.specialtyNames.length === 0) return;
 
 		await tx
@@ -118,10 +93,6 @@ export async function setupChiefProfile(
 			.values(rows.map((r) => ({ id_chief: userId, id_speciality: r.id_speciality })))
 			.onConflictDoNothing();
 	});
-}
-
-export async function getCategories(): Promise<Category[]> {
-	return db.select().from(categories);
 }
 
 export async function getChiefById(id: string): Promise<ChiefProfile | null> {
@@ -143,25 +114,18 @@ export async function getChiefById(id: string): Promise<ChiefProfile | null> {
 	if (!result) return null;
 
 	const chiefSpecialties = await db
-		.select({ id_speciality: specialties.id_speciality, name_speciality: specialties.name_speciality, description_speciality: specialties.description_speciality })
+		.select({
+			id_speciality: specialties.id_speciality,
+			name_speciality: specialties.name_speciality,
+			description_speciality: specialties.description_speciality
+		})
 		.from(specialties)
 		.innerJoin(chiefs_specialties, eq(chiefs_specialties.id_speciality, specialties.id_speciality))
 		.where(eq(chiefs_specialties.id_chief, id));
 
-	const chiefCategories = await db
-		.select({
-			id_category: categories.id_category,
-			name_category: categories.name_category,
-			image_url: categories.image_url,
-		})
-		.from(categories)
-		.innerJoin(chiefs_categories, eq(chiefs_categories.id_category, categories.id_category))
-		.where(eq(chiefs_categories.id_chief, id));
-
 	return {
 		...result,
 		specialties: chiefSpecialties,
-		categories: chiefCategories
 	};
 }
 
@@ -222,6 +186,45 @@ export async function deleteMenu(id: number, chiefId: string): Promise<void> {
 	if (!existing) throw error(404, 'Menu introuvable');
 	if (existing.id_chief !== chiefId) throw error(403, 'Ce menu ne vous appartient pas');
 	await db.delete(menus).where(eq(menus.id_menu, id));
+}
+
+export async function getChiefReviewStats(chiefId: string): Promise<{ avg: number | null; count: number }> {
+	const [row] = await db
+		.select({
+			avg: avg(notices.rating_notice),
+			count: count(notices.id_notice),
+		})
+		.from(notices)
+		.where(eq(notices.id_chief, chiefId));
+	return {
+		avg: row?.avg != null ? parseFloat(row.avg) : null,
+		count: Number(row?.count ?? 0),
+	};
+}
+
+export interface NoticeWithCustomer extends Notice {
+	customer_firstname: string;
+	customer_name: string;
+	customer_image: string | null;
+}
+
+export async function getNoticesForChief(chiefId: string): Promise<NoticeWithCustomer[]> {
+	return db
+		.select({
+			id_notice: notices.id_notice,
+			rating_notice: notices.rating_notice,
+			comment_notice: notices.comment_notice,
+			date_notice: notices.date_notice,
+			id_customer: notices.id_customer,
+			id_chief: notices.id_chief,
+			customer_firstname: users.firstname,
+			customer_name: users.name,
+			customer_image: users.image,
+		})
+		.from(notices)
+		.innerJoin(users, eq(notices.id_customer, users.id))
+		.where(eq(notices.id_chief, chiefId))
+		.orderBy(notices.date_notice);
 }
 
 export async function createNotice(data: CreateNoticeDto & { id_customer: string }): Promise<Notice> {
