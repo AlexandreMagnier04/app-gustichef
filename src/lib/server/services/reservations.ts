@@ -1,7 +1,7 @@
 import { eq, or } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { reservations } from '$lib/server/db/schema/reservations';
-import { menus, chiefs } from '$lib/server/db/schema/chiefs';
+import { menus } from '$lib/server/db/schema/chiefs';
 import { users } from '$lib/server/db/schema/auth';
 
 export interface ReservationDetail {

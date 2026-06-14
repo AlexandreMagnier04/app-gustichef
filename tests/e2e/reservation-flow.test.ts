@@ -3,7 +3,7 @@ import { apiRequest, signUpAndLogin } from './helpers/client';
 
 describe('Reservation flow', () => {
 	it('client crée demande → chef répond → client accepte → réservation créée', async () => {
-		const { cookie: customerCookie, userId: customerId } = await signUpAndLogin({
+		const { cookie: customerCookie, userId: _customerId } = await signUpAndLogin({
 			role: 'customer'
 		});
 		const { cookie: chiefCookie, userId: chiefId } = await signUpAndLogin({ role: 'chief' });

@@ -4,7 +4,6 @@
 
 	let { data } = $props();
 	const r = $derived(data.reservation as ReservationDetail);
-	const isChief = $derived(data.user?.role === 'chief');
 	let cancelling = $state(false);
 
 	function formatDate(iso: string): string {
