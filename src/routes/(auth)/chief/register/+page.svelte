@@ -155,9 +155,8 @@
 			<p class="mb-4 text-sm text-rust">{error}</p>
 		{/if}
 
-		{#key step}
-			<!-- Étape 1 — Informations de compte -->
-			{#if step === 1}
+		<!-- Étape 1 — Informations de compte -->
+		{#if step === 1}
 				<h2 class="mb-1 text-base font-semibold text-navy">Créer mon compte chief</h2>
 				<p class="mb-6 text-xs text-gray-500">Étape 1/5 — Informations de compte</p>
 
@@ -569,7 +568,6 @@
 					<p class="mt-3 text-sm text-rust">{error}</p>
 				{/if}
 			{/if}
-		{/key}
 	</div>
 
 	<!-- Étape 5 — Confirmation -->

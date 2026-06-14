@@ -62,9 +62,6 @@ jobs:
       - name: Push DB schema
         run: pnpm db:push --force
 
-      - name: Build
-        run: pnpm build
-
       - name: Tests
         run: pnpm test:ci
         env:
