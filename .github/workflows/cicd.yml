@@ -53,6 +53,12 @@ jobs:
       - name: Type check
         run: pnpm check
 
+      - name: Create .env.test for CI
+        run: |
+          echo "DATABASE_URL=postgresql://ci:ci@localhost:5432/gustichef" > .env.test
+          echo "BETTER_AUTH_SECRET=ci-secret-not-for-production" >> .env.test
+          echo "ORIGIN=http://localhost:4173" >> .env.test
+
       - name: Push DB schema
         run: pnpm db:push
 
