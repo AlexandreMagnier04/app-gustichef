@@ -12,7 +12,7 @@
 		'Indienne',
 		'Méditerranéenne',
 		'Végétarienne',
-		'Sans gluten',
+		'Sans gluten'
 	];
 
 	let title = $state('');
@@ -85,7 +85,7 @@
 			guestsMin: guestsMin ? Number(guestsMin) : undefined,
 			guestsMax: guestsMax ? Number(guestsMax) : undefined,
 			tags: selectedCuisines,
-			file,
+			file
 		});
 
 		if (!res.ok) {
@@ -101,11 +101,7 @@
 
 {#if open}
 	<!-- Backdrop -->
-	<button
-		class="fixed inset-0 z-40 bg-black/40"
-		onclick={close}
-		aria-label="Fermer"
-	></button>
+	<button class="fixed inset-0 z-40 bg-black/40" onclick={close} aria-label="Fermer"></button>
 
 	<!-- Modal -->
 	<div
@@ -123,8 +119,15 @@
 			onclick={close}
 			aria-label="Fermer"
 		>
-			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-4 w-4">
-				<path d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z" />
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				viewBox="0 0 16 16"
+				fill="currentColor"
+				class="h-4 w-4"
+			>
+				<path
+					d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z"
+				/>
 			</svg>
 		</button>
 
@@ -141,13 +144,25 @@
 					<img src={preview} alt="Aperçu" class="h-full w-full rounded-2xl object-cover" />
 				{:else}
 					<div class="flex h-11 w-11 items-center justify-center rounded-full bg-rust text-white">
-						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5">
-							<path d="M12 3a1 1 0 0 1 .78.375l4 5a1 1 0 1 1-1.56 1.25L13 6.85V15a1 1 0 1 1-2 0V6.85L8.78 9.625a1 1 0 1 1-1.56-1.25l4-5A1 1 0 0 1 12 3Zm-7 14a1 1 0 0 1 1 1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-1a1 1 0 1 1 2 0v1a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3v-1a1 1 0 0 1 1-1Z" />
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 24 24"
+							fill="currentColor"
+							class="h-5 w-5"
+						>
+							<path
+								d="M12 3a1 1 0 0 1 .78.375l4 5a1 1 0 1 1-1.56 1.25L13 6.85V15a1 1 0 1 1-2 0V6.85L8.78 9.625a1 1 0 1 1-1.56-1.25l4-5A1 1 0 0 1 12 3Zm-7 14a1 1 0 0 1 1 1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-1a1 1 0 1 1 2 0v1a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3v-1a1 1 0 0 1 1-1Z"
+							/>
 						</svg>
 					</div>
 					<span class="text-xs text-navy/50">Ajouter une photo</span>
 				{/if}
-				<input type="file" accept="image/jpeg,image/png,image/webp" class="hidden" onchange={onFileChange} />
+				<input
+					type="file"
+					accept="image/jpeg,image/png,image/webp"
+					class="hidden"
+					onchange={onFileChange}
+				/>
 			</label>
 			<p class="mt-2 rounded-lg bg-navy/5 px-3 py-2 text-center text-[11px] text-navy/60">
 				Une belle photo attire 3x plus de clients ! Montrez votre talent en image
@@ -161,7 +176,7 @@
 				required
 				maxlength="100"
 				placeholder="Ex : Poulet rôti aux herbes de Provence"
-				class="w-full rounded-xl border border-navy/15 bg-white px-3 py-2.5 text-sm text-navy placeholder:text-navy/30 outline-none focus:border-navy"
+				class="w-full rounded-xl border border-navy/15 bg-white px-3 py-2.5 text-sm text-navy outline-none placeholder:text-navy/30 focus:border-navy"
 			/>
 
 			<!-- Description -->
@@ -172,7 +187,7 @@
 				maxlength="2000"
 				rows="3"
 				placeholder="Décrivez votre plat, ses saveurs, son origine..."
-				class="w-full rounded-xl border border-navy/15 bg-white px-3 py-2.5 text-sm text-navy placeholder:text-navy/30 outline-none focus:border-navy"
+				class="w-full rounded-xl border border-navy/15 bg-white px-3 py-2.5 text-sm text-navy outline-none placeholder:text-navy/30 focus:border-navy"
 			></textarea>
 
 			<!-- Prix -->
@@ -184,9 +199,11 @@
 					min="0"
 					step="0.01"
 					placeholder="Prix"
-					class="w-full rounded-full border border-navy/15 bg-white py-2 pr-7 pl-4 text-sm text-navy placeholder:text-navy/40 outline-none focus:border-navy"
+					class="w-full rounded-full border border-navy/15 bg-white py-2 pr-7 pl-4 text-sm text-navy outline-none placeholder:text-navy/40 focus:border-navy"
 				/>
-				<span class="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-navy/40">€</span>
+				<span class="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-navy/40"
+					>€</span
+				>
 			</div>
 
 			<!-- Type de cuisine -->
@@ -203,11 +220,20 @@
 					{/each}
 				</select>
 				{#each selectedCuisines as c (c)}
-					<span class="inline-flex items-center gap-1 rounded-full bg-navy/70 px-3 py-1.5 text-xs text-cream">
+					<span
+						class="inline-flex items-center gap-1 rounded-full bg-navy/70 px-3 py-1.5 text-xs text-cream"
+					>
 						{c}
 						<button type="button" onclick={() => removeCuisine(c)} aria-label="Retirer">
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3 w-3">
-								<path d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z" />
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 16 16"
+								fill="currentColor"
+								class="h-3 w-3"
+							>
+								<path
+									d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z"
+								/>
 							</svg>
 						</button>
 					</span>
@@ -224,7 +250,7 @@
 						bind:value={guestsMin}
 						min="1"
 						placeholder="Min : 2"
-						class="w-full rounded-xl border border-navy/15 bg-white px-3 py-2 text-sm text-navy placeholder:text-navy/30 outline-none focus:border-navy"
+						class="w-full rounded-xl border border-navy/15 bg-white px-3 py-2 text-sm text-navy outline-none placeholder:text-navy/30 focus:border-navy"
 					/>
 				</div>
 				<div class="flex-1">
@@ -234,7 +260,7 @@
 						bind:value={guestsMax}
 						min="1"
 						placeholder="Max : 12"
-						class="w-full rounded-xl border border-navy/15 bg-white px-3 py-2 text-sm text-navy placeholder:text-navy/30 outline-none focus:border-navy"
+						class="w-full rounded-xl border border-navy/15 bg-white px-3 py-2 text-sm text-navy outline-none placeholder:text-navy/30 focus:border-navy"
 					/>
 				</div>
 			</div>

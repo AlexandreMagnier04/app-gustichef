@@ -4,7 +4,7 @@ import {
 	getChiefById,
 	getMenusByChief,
 	getChiefReviewStats,
-	getNoticesForChief,
+	getNoticesForChief
 } from '$lib/server/services/chiefs';
 import { getChiefPublicationImages } from '$lib/server/services/publications';
 import type { PageServerLoad } from './$types';
@@ -18,7 +18,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		getMenusByChief(chiefId),
 		getChiefPublicationImages(chiefId),
 		getChiefReviewStats(chiefId),
-		getNoticesForChief(chiefId),
+		getNoticesForChief(chiefId)
 	]);
 
 	if (!profile) {

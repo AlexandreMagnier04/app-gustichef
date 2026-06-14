@@ -1,9 +1,11 @@
 import { test, expect } from '@playwright/test';
 
-test('page de login s\'affiche correctement', async ({ page }) => {
+test("page de login s'affiche correctement", async ({ page }) => {
 	await page.goto('/login');
 	await expect(page.locator('input[name="email"], input[type="email"]').first()).toBeVisible();
-	await expect(page.locator('input[name="password"], input[type="password"]').first()).toBeVisible();
+	await expect(
+		page.locator('input[name="password"], input[type="password"]').first()
+	).toBeVisible();
 });
 
 test('page protégée sans session → redirect vers /login', async ({ page }) => {
@@ -11,7 +13,7 @@ test('page protégée sans session → redirect vers /login', async ({ page }) =
 	await expect(page).toHaveURL(/\/login/);
 });
 
-test('login avec mauvais mot de passe → message d\'erreur visible', async ({ page }) => {
+test("login avec mauvais mot de passe → message d'erreur visible", async ({ page }) => {
 	await page.goto('/login');
 	await page.fill('input[name="email"], input[type="email"]', 'inexistant@test.com');
 	await page.fill('input[name="password"], input[type="password"]', 'mauvais');

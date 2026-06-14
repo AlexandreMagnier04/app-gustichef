@@ -12,7 +12,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 	const [customer, reservations] = await Promise.all([
 		getCustomerById(user.id),
-		getRequestsWithChiefDetails(user.id),
+		getRequestsWithChiefDetails(user.id)
 	]);
 
 	return { customer, reservations };

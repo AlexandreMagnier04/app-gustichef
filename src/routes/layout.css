@@ -3,11 +3,11 @@
 @plugin '@tailwindcss/typography';
 
 @theme {
-	--color-cream: #F0E8D9;
-	--color-rust: #B85C38;
+	--color-cream: #f0e8d9;
+	--color-rust: #b85c38;
 	--color-navy: #163040;
-	--color-teal: #0F4450;
-	--color-olive: #8B947E;
+	--color-teal: #0f4450;
+	--color-olive: #8b947e;
 	--font-sans: 'Dosis', sans-serif;
 	--font-script: 'Dancing Script', cursive;
 }
@@ -19,5 +19,7 @@
 }
 
 @keyframes scroll-left {
-	to { transform: translateX(-50%); }
+	to {
+		transform: translateX(-50%);
+	}
 }

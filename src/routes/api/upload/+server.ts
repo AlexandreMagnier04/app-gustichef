@@ -26,7 +26,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	const parsed = uploadImageDto.safeParse({
 		target: form.get('target'),
 		targetId: form.get('targetId'),
-		position: form.get('position') ?? 0,
+		position: form.get('position') ?? 0
 	});
 
 	if (!parsed.success) {

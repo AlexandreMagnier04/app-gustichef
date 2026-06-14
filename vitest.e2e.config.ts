@@ -11,6 +11,6 @@ export default defineConfig({
 		pool: 'forks',
 		fileParallelism: false,
 		testTimeout: 30000,
-		globalSetup: './tests/e2e/setup.ts',
-	},
+		globalSetup: './tests/e2e/setup.ts'
+	}
 });

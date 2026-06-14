@@ -8,13 +8,18 @@ export async function setup() {
 	server = spawn('pnpm', ['preview'], {
 		env: { ...process.env },
 		stdio: 'pipe',
-		shell: true,
+		shell: true
 	});
 
 	await new Promise<void>((resolve, reject) => {
 		const timeout = setTimeout(
-			() => reject(new Error('Timeout : le serveur E2E n\'a pas démarré en 30s. Avez-vous exécuté pnpm build ?')),
-			30000,
+			() =>
+				reject(
+					new Error(
+						"Timeout : le serveur E2E n'a pas démarré en 30s. Avez-vous exécuté pnpm build ?"
+					)
+				),
+			30000
 		);
 
 		server.stdout?.on('data', async (chunk: Buffer) => {

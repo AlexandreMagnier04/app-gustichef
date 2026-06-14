@@ -1,13 +1,19 @@
 import { z } from 'zod';
 
 export const MAX_IMAGE_SIZE = 20 * 1024 * 1024; // 20 MB
-export const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'] as const;
+export const ALLOWED_MIME_TYPES = [
+	'image/jpeg',
+	'image/png',
+	'image/webp',
+	'image/heic',
+	'image/heif'
+] as const;
 
 // Métadonnées d'upload — validées côté serveur, doublée d'un check binaire du buffer
 export const uploadImageDto = z.object({
 	target: z.enum(['chief', 'menu']),
 	targetId: z.union([z.string().min(1), z.number().int().positive()]),
-	position: z.coerce.number().int().min(0).default(0),
+	position: z.coerce.number().int().min(0).default(0)
 });
 
 export type UploadImageDto = z.infer<typeof uploadImageDto>;

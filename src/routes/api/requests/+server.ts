@@ -2,7 +2,11 @@ import { json, error } from '@sveltejs/kit';
 import { z } from 'zod';
 import { requireUser } from '$lib/server/services/auth';
 import { createRequestDto } from '$lib/dtos/customer.dto';
-import { createRequest, getRequestsByCustomer, getRequestsByChief } from '$lib/server/services/customers';
+import {
+	createRequest,
+	getRequestsByCustomer,
+	getRequestsByChief
+} from '$lib/server/services/customers';
 
 export const GET = async ({ locals }) => {
 	const user = requireUser(locals);

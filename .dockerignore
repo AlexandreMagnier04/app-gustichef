@@ -1,0 +1,104 @@
+# ===== Git =====
+.git
+.gitignore
+.gitattributes
+
+# ===== Documentation / Markdown =====
+README.md
+CHANGELOG.md
+LICENSE
+docs
+
+# ===== CI/CD =====
+.github
+.gitlab-ci.yml
+.circleci
+
+# ===== Dependencies (Docker les réinstalle) =====
+**/node_modules
+
+# ===== Builds (Docker les refait) =====
+**/dist
+**/build
+**/out
+**/.next
+**/.nuxt
+**/.vite
+**/.turbo
+**/.svelte-kit
+**/.cache
+**/*.tsbuildinfo
+
+# ===== Environnement (NE PAS embarquer les secrets dans l'image) =====
+**/.env
+**/.env.*
+!**/.env.example
+
+# ===== Tests / Coverage =====
+**/coverage
+**/.nyc_output
+**/test-results
+**/playwright-report
+**/e2e-results
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+**/__tests__
+**/test
+**/tests
+**/e2e
+
+# ===== IDE / OS =====
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
+
+# ===== Logs =====
+**/logs
+**/*.log
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+**/pnpm-debug.log*
+
+# ===== Caches d'outils =====
+**/.eslintcache
+**/.stylelintcache
+**/.parcel-cache
+**/.pnpm-store
+
+# ===== Storybook =====
+**/storybook-static
+
+# ===== Backups DB =====
+**/*.sql
+!**/prisma/migrations/**/*.sql
+**/*.dump
+**/*.sqlite
+**/*.sqlite3
+**/*.db
+
+# ===== Uploads locaux =====
+**/uploads
+**/tmp
+
+# ===== Docker (éviter récursion) =====
+docker-compose*.yml
+Dockerfile*
+.dockerignore
+
+# ===== Secrets / Certificats =====
+**/*.pem
+**/*.key
+**/*.crt
+
+# ===== Divers =====
+**/*.tgz
+.docker
+docker-data

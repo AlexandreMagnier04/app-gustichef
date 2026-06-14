@@ -1,7 +1,14 @@
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import { users, sessions, accounts, verifications } from '$lib/server/db/schema/auth';
-import { chiefs, menus, chiefs_specialties, notices, images_chef, images_menu } from '$lib/server/db/schema/chiefs';
+import {
+	chiefs,
+	menus,
+	chiefs_specialties,
+	notices,
+	images_chef,
+	images_menu
+} from '$lib/server/db/schema/chiefs';
 import { customers, requests } from '$lib/server/db/schema/customers';
 import { conversations, messages } from '$lib/server/db/schema/messaging';
 import { reservations } from '$lib/server/db/schema/reservations';
@@ -24,7 +31,7 @@ export async function seedUser(overrides: Partial<typeof users.$inferInsert> = {
 			localization: 'Paris',
 			createdAt: new Date(),
 			updatedAt: new Date(),
-			...overrides,
+			...overrides
 		})
 		.returning();
 	return user;

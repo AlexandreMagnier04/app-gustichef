@@ -7,7 +7,7 @@ import {
 	getConversationDetail,
 	addMessage,
 	getConversationsForUser,
-	updateConversationStatut,
+	updateConversationStatut
 } from '$lib/server/services/messaging';
 
 let chiefId: string;
@@ -33,7 +33,7 @@ beforeAll(async () => {
 			guests_request: 20,
 			localization_request: 'Paris',
 			statut_request: 'en_attente',
-			id_customer: customerId,
+			id_customer: customerId
 		})
 		.returning();
 	requestId = req.id_request;
@@ -45,7 +45,13 @@ afterAll(async () => {
 
 describe('createConversation', () => {
 	it('crée une conversation avec le message initial et retourne son id', async () => {
-		const id = await createConversation(requestId, chiefId, customerId, 'Bonjour, je suis intéressé', null);
+		const id = await createConversation(
+			requestId,
+			chiefId,
+			customerId,
+			'Bonjour, je suis intéressé',
+			null
+		);
 		expect(typeof id).toBe('number');
 		expect(id).toBeGreaterThan(0);
 	});
@@ -53,14 +59,20 @@ describe('createConversation', () => {
 
 describe('getConversationDetail', () => {
 	it('retourne le détail avec le message initial', async () => {
-		const convId = await createConversation(requestId, chiefId, customerId, 'Premier message', null);
+		const convId = await createConversation(
+			requestId,
+			chiefId,
+			customerId,
+			'Premier message',
+			null
+		);
 		const detail = await getConversationDetail(convId, customerId);
 		expect(detail).not.toBeNull();
 		expect(detail?.messages.length).toBeGreaterThanOrEqual(1);
 		expect(detail?.messages[0].content_message).toBe('Premier message');
 	});
 
-	it('retourne null si userId n\'a pas accès à la conversation', async () => {
+	it("retourne null si userId n'a pas accès à la conversation", async () => {
 		const convId = await createConversation(requestId, chiefId, customerId, 'Message privé', null);
 		const detail = await getConversationDetail(convId, 'intrus-id');
 		expect(detail).toBeNull();

@@ -16,7 +16,7 @@ export function userChannel(userId: string): string {
 
 export async function subscribe(
 	channel: string,
-	handler: (payload: string) => void,
+	handler: (payload: string) => void
 ): Promise<() => Promise<void>> {
 	const sql = getSql();
 	const meta = await sql.listen(channel, handler);

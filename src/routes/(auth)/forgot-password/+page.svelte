@@ -65,7 +65,11 @@
 
 			<a href="/login" class="mt-5 flex items-center justify-center gap-1 text-xs text-navy/60">
 				<svg viewBox="0 0 20 20" fill="currentColor" class="h-3 w-3" aria-hidden="true">
-					<path fill-rule="evenodd" d="M17 10a.75.75 0 0 1-.75.75H5.612l4.158 3.96a.75.75 0 1 1-1.04 1.08l-5.5-5.25a.75.75 0 0 1 0-1.08l5.5-5.25a.75.75 0 1 1 1.04 1.08L5.612 9.25H16.25A.75.75 0 0 1 17 10Z" clip-rule="evenodd" />
+					<path
+						fill-rule="evenodd"
+						d="M17 10a.75.75 0 0 1-.75.75H5.612l4.158 3.96a.75.75 0 1 1-1.04 1.08l-5.5-5.25a.75.75 0 0 1 0-1.08l5.5-5.25a.75.75 0 1 1 1.04 1.08L5.612 9.25H16.25A.75.75 0 0 1 17 10Z"
+						clip-rule="evenodd"
+					/>
 				</svg>
 				Retour à la connexion
 			</a>
@@ -78,7 +82,13 @@
 		<div class="w-full max-w-xs rounded-2xl bg-white p-8 text-center">
 			<div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-navy">
 				<svg viewBox="0 0 24 24" fill="none" class="h-8 w-8" aria-hidden="true">
-					<path d="M5 13l4 4L19 7" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+					<path
+						d="M5 13l4 4L19 7"
+						stroke="white"
+						stroke-width="2.5"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					/>
 				</svg>
 			</div>
 			<h2 class="mb-2 text-lg font-semibold text-navy">Email envoyé !</h2>

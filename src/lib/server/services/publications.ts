@@ -1,11 +1,13 @@
 import { desc, eq, inArray } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { publications, images_publication, tags, publications_tags } from '$lib/server/db/schema/social';
-import { users } from '$lib/server/db/schema/auth';
 import {
-	chiefs_specialties,
-	specialties,
-} from '$lib/server/db/schema/chiefs';
+	publications,
+	images_publication,
+	tags,
+	publications_tags
+} from '$lib/server/db/schema/social';
+import { users } from '$lib/server/db/schema/auth';
+import { chiefs_specialties, specialties } from '$lib/server/db/schema/chiefs';
 import { uploadFile, deleteFile } from '$lib/server/services/storage';
 import type { CreatePublicationDto } from '$lib/dtos/publication.dto';
 import type { Publication, PublicationCard } from '$lib/models/publication.model';
@@ -19,7 +21,7 @@ const FEED_PAGE_SIZE = 20;
 export async function createPublication(
 	userId: string,
 	data: CreatePublicationDto,
-	image: FileInput,
+	image: FileInput
 ): Promise<Publication> {
 	const uploaded = await uploadFile(`publications/${userId}`, image);
 
@@ -33,14 +35,14 @@ export async function createPublication(
 					price_publication: data.price !== undefined ? String(data.price) : null,
 					guests_min: data.guestsMin ?? null,
 					guests_max: data.guestsMax ?? null,
-					id_users: userId,
+					id_users: userId
 				})
 				.returning();
 
 			await tx.insert(images_publication).values({
 				id_publication: publication.id_publication,
 				url: uploaded.url,
-				position: 0,
+				position: 0
 			});
 
 			if (data.tags.length > 0) {
@@ -57,7 +59,7 @@ export async function createPublication(
 				await tx
 					.insert(publications_tags)
 					.values(
-						tagRows.map((t) => ({ id_publication: publication.id_publication, id_tag: t.id_tag })),
+						tagRows.map((t) => ({ id_publication: publication.id_publication, id_tag: t.id_tag }))
 					)
 					.onConflictDoNothing();
 			}
@@ -72,7 +74,7 @@ export async function createPublication(
 
 // Images des publications d'un chef — utilisé par la galerie du profil
 export async function getChiefPublicationImages(
-	chiefId: string,
+	chiefId: string
 ): Promise<{ id_image: number; id_publication: number; url: string; position: number }[]> {
 	const pubs = await db
 		.select({ id_publication: publications.id_publication })
@@ -87,7 +89,7 @@ export async function getChiefPublicationImages(
 			id_image: images_publication.id_image,
 			id_publication: images_publication.id_publication,
 			url: images_publication.url,
-			position: images_publication.position,
+			position: images_publication.position
 		})
 		.from(images_publication)
 		.where(inArray(images_publication.id_publication, pubIds))
@@ -103,7 +105,7 @@ export async function getPublicationsFeed(page = 0): Promise<PublicationCard[]> 
 			author_firstname: users.firstname,
 			author_name: users.name,
 			author_image: users.image,
-			author_localization: users.localization,
+			author_localization: users.localization
 		})
 		.from(publications)
 		.innerJoin(users, eq(users.id, publications.id_users))
@@ -125,7 +127,7 @@ export async function getPublicationsFeed(page = 0): Promise<PublicationCard[]> 
 			.select({
 				id_publication: publications_tags.id_publication,
 				id_tag: tags.id_tag,
-				name_tag: tags.name_tag,
+				name_tag: tags.name_tag
 			})
 			.from(publications_tags)
 			.innerJoin(tags, eq(tags.id_tag, publications_tags.id_tag))
@@ -133,11 +135,11 @@ export async function getPublicationsFeed(page = 0): Promise<PublicationCard[]> 
 		db
 			.select({
 				id_chief: chiefs_specialties.id_chief,
-				name_speciality: specialties.name_speciality,
+				name_speciality: specialties.name_speciality
 			})
 			.from(chiefs_specialties)
 			.innerJoin(specialties, eq(specialties.id_speciality, chiefs_specialties.id_speciality))
-			.where(inArray(chiefs_specialties.id_chief, authorIds)),
+			.where(inArray(chiefs_specialties.id_chief, authorIds))
 	]);
 
 	return rows.map((r) => ({
@@ -156,7 +158,7 @@ export async function getPublicationsFeed(page = 0): Promise<PublicationCard[]> 
 			firstname: r.author_firstname,
 			name: r.author_name,
 			image: r.author_image,
-			localization: r.author_localization,
-		},
+			localization: r.author_localization
+		}
 	}));
 }

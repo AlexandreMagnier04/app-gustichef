@@ -55,15 +55,16 @@ export interface ConversationDetail {
 }
 
 // Retourne toutes les conversations de l'utilisateur avec le dernier message et le nombre de non-lus
-export async function getConversationsForUser(userId: string, role: string): Promise<ConversationListItem[]> {
+export async function getConversationsForUser(
+	userId: string,
+	role: string
+): Promise<ConversationListItem[]> {
 	const isChief = role === 'chief';
 	const filter = isChief
 		? eq(conversations.id_chief, userId)
 		: eq(conversations.id_customer, userId);
 
-	const otherUsers = db.$with('other_users').as(
-		db.select().from(users)
-	);
+	const otherUsers = db.$with('other_users').as(db.select().from(users));
 	void otherUsers;
 
 	const rows = await db
@@ -75,7 +76,7 @@ export async function getConversationsForUser(userId: string, role: string): Pro
 			last_message_at: conversations.last_message_at,
 			request_title: requests.title_request,
 			request_guests: requests.guests_request,
-			request_type: requests.type_event_request,
+			request_type: requests.type_event_request
 		})
 		.from(conversations)
 		.leftJoin(requests, eq(conversations.id_request, requests.id_request))
@@ -101,11 +102,13 @@ export async function getConversationsForUser(userId: string, role: string): Pro
 		const unreadRows = await db
 			.select({ id: messages.id_message })
 			.from(messages)
-			.where(and(
-				eq(messages.id_conversation, row.id_conversation),
-				eq(messages.read_message, false),
-				ne(messages.id_sender, userId),
-			));
+			.where(
+				and(
+					eq(messages.id_conversation, row.id_conversation),
+					eq(messages.read_message, false),
+					ne(messages.id_sender, userId)
+				)
+			);
 
 		result.push({
 			...row,
@@ -113,21 +116,26 @@ export async function getConversationsForUser(userId: string, role: string): Pro
 			other_name: other?.name ?? '',
 			other_image: other?.image ?? null,
 			last_message: lastMsg?.content_message ?? null,
-			unread_count: unreadRows.length,
+			unread_count: unreadRows.length
 		});
 	}
 	return result;
 }
 
 // Retourne le détail d'une conversation (messages + infos demande) et marque les messages reçus comme lus
-export async function getConversationDetail(convId: number, userId: string): Promise<ConversationDetail | null> {
+export async function getConversationDetail(
+	convId: number,
+	userId: string
+): Promise<ConversationDetail | null> {
 	const [conv] = await db
 		.select()
 		.from(conversations)
-		.where(and(
-			eq(conversations.id_conversation, convId),
-			or(eq(conversations.id_chief, userId), eq(conversations.id_customer, userId)),
-		));
+		.where(
+			and(
+				eq(conversations.id_conversation, convId),
+				or(eq(conversations.id_chief, userId), eq(conversations.id_customer, userId))
+			)
+		);
 	if (!conv) return null;
 
 	const otherId = conv.id_chief === userId ? conv.id_customer : conv.id_chief;
@@ -136,7 +144,13 @@ export async function getConversationDetail(convId: number, userId: string): Pro
 		.from(users)
 		.where(eq(users.id, otherId));
 
-	let requestInfo = { title: null as string | null, guests: null as number | null, type: null as string | null, date: null as string | null, localization: null as string | null };
+	let requestInfo = {
+		title: null as string | null,
+		guests: null as number | null,
+		type: null as string | null,
+		date: null as string | null,
+		localization: null as string | null
+	};
 	if (conv.id_request) {
 		const [req] = await db
 			.select({
@@ -144,12 +158,18 @@ export async function getConversationDetail(convId: number, userId: string): Pro
 				guests_request: requests.guests_request,
 				type_event_request: requests.type_event_request,
 				expected_date_request: requests.expected_date_request,
-				localization_request: requests.localization_request,
+				localization_request: requests.localization_request
 			})
 			.from(requests)
 			.where(eq(requests.id_request, conv.id_request));
 		if (req) {
-			requestInfo = { title: req.title_request, guests: req.guests_request, type: req.type_event_request, date: req.expected_date_request, localization: req.localization_request };
+			requestInfo = {
+				title: req.title_request,
+				guests: req.guests_request,
+				type: req.type_event_request,
+				date: req.expected_date_request,
+				localization: req.localization_request
+			};
 		}
 	}
 
@@ -166,7 +186,7 @@ export async function getConversationDetail(convId: number, userId: string): Pro
 			read_message: messages.read_message,
 			menu_title: menus.title_menu,
 			menu_description: menus.description_menu,
-			menu_price: menus.price_menu,
+			menu_price: menus.price_menu
 		})
 		.from(messages)
 		.leftJoin(menus, eq(messages.id_menu, menus.id_menu))
@@ -177,11 +197,13 @@ export async function getConversationDetail(convId: number, userId: string): Pro
 	await db
 		.update(messages)
 		.set({ read_message: true })
-		.where(and(
-			eq(messages.id_conversation, convId),
-			eq(messages.read_message, false),
-			ne(messages.id_sender, userId),
-		));
+		.where(
+			and(
+				eq(messages.id_conversation, convId),
+				eq(messages.read_message, false),
+				ne(messages.id_sender, userId)
+			)
+		);
 
 	return {
 		id_conversation: conv.id_conversation,
@@ -197,7 +219,7 @@ export async function getConversationDetail(convId: number, userId: string): Pro
 		other_firstname: other?.firstname ?? '',
 		other_name: other?.name ?? '',
 		other_image: other?.image ?? null,
-		messages: msgs,
+		messages: msgs
 	};
 }
 
@@ -207,7 +229,7 @@ export async function createConversation(
 	chiefId: string,
 	customerId: string,
 	initialMessage: string,
-	pricePerPerson: number | null,
+	pricePerPerson: number | null
 ): Promise<number> {
 	const [conv] = await db
 		.insert(conversations)
@@ -219,7 +241,7 @@ export async function createConversation(
 		id_sender: chiefId,
 		content_message: initialMessage,
 		type: 'text',
-		price_per_person: pricePerPerson,
+		price_per_person: pricePerPerson
 	});
 
 	return conv.id_conversation;
@@ -232,7 +254,7 @@ export async function addMessage(
 	content: string,
 	type = 'text',
 	menuId?: number,
-	pricePerPerson?: number,
+	pricePerPerson?: number
 ): Promise<void> {
 	await db.insert(messages).values({
 		id_conversation: convId,
@@ -240,11 +262,14 @@ export async function addMessage(
 		content_message: content,
 		type,
 		id_menu: menuId ?? null,
-		price_per_person: pricePerPerson ?? null,
+		price_per_person: pricePerPerson ?? null
 	});
 	const [conv] = await db
 		.update(conversations)
-		.set({ last_message_at: new Date(), ...(type === 'menu_proposal' ? { statut: 'devis_envoye' } : {}) })
+		.set({
+			last_message_at: new Date(),
+			...(type === 'menu_proposal' ? { statut: 'devis_envoye' } : {})
+		})
 		.where(eq(conversations.id_conversation, convId))
 		.returning();
 
@@ -253,7 +278,7 @@ export async function addMessage(
 		const payload = JSON.stringify({ type: 'message', convId });
 		await Promise.all([
 			publish(userChannel(conv.id_chief), payload),
-			publish(userChannel(conv.id_customer), payload),
+			publish(userChannel(conv.id_customer), payload)
 		]);
 	}
 }

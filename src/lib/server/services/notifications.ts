@@ -19,14 +19,14 @@ export async function createNotification(
 	type: string,
 	title: string,
 	body: string,
-	idRequest?: string,
+	idRequest?: string
 ): Promise<void> {
 	await db.insert(notifications).values({
 		id_user: userId,
 		type,
 		title,
 		body,
-		id_request: idRequest ?? null,
+		id_request: idRequest ?? null
 	});
 	await publish(userChannel(userId), JSON.stringify({ type: 'notification' }));
 }
@@ -49,8 +49,5 @@ export async function getUnreadCount(userId: string): Promise<number> {
 }
 
 export async function markAllRead(userId: string): Promise<void> {
-	await db
-		.update(notifications)
-		.set({ read: true })
-		.where(eq(notifications.id_user, userId));
+	await db.update(notifications).set({ read: true }).where(eq(notifications.id_user, userId));
 }

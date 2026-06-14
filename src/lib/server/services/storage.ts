@@ -8,7 +8,7 @@ const client = new MinioClient({
 	port: Number(env.MINIO_PORT ?? 9000),
 	useSSL: env.MINIO_USE_SSL === 'true',
 	accessKey: env.MINIO_ROOT_USER ?? '',
-	secretKey: env.MINIO_ROOT_PASSWORD ?? '',
+	secretKey: env.MINIO_ROOT_PASSWORD ?? ''
 });
 
 const BUCKET = env.MINIO_BUCKET ?? 'gustichef';
@@ -36,10 +36,10 @@ async function ensureBucket(): Promise<void> {
 					Effect: 'Allow',
 					Principal: { AWS: ['*'] },
 					Action: ['s3:GetObject'],
-					Resource: [`arn:aws:s3:::${BUCKET}/*`],
-				},
-			],
-		}),
+					Resource: [`arn:aws:s3:::${BUCKET}/*`]
+				}
+			]
+		})
 	);
 
 	bucketInitialized = true;
@@ -54,7 +54,7 @@ export type UploadedFile = {
 // Retourne l'URL publique + la clé de l'objet (pour suppression ultérieure).
 export async function uploadFile(
 	prefix: string,
-	file: { buffer: Buffer; mimeType: string; originalName?: string },
+	file: { buffer: Buffer; mimeType: string; originalName?: string }
 ): Promise<UploadedFile> {
 	await ensureBucket();
 
@@ -62,12 +62,12 @@ export async function uploadFile(
 	const objectKey = `${prefix}/${randomUUID()}.${ext}`;
 
 	await client.putObject(BUCKET, objectKey, file.buffer, file.buffer.length, {
-		'Content-Type': file.mimeType,
+		'Content-Type': file.mimeType
 	});
 
 	return {
 		url: `${PUBLIC_URL}/${BUCKET}/${objectKey}`,
-		objectKey,
+		objectKey
 	};
 }
 

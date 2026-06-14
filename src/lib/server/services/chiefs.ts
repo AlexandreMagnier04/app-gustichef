@@ -1,9 +1,22 @@
 import { eq, min, avg, count, ilike, inArray } from 'drizzle-orm';
 import { error } from '@sveltejs/kit';
 import { db } from '$lib/server/db';
-import { chiefs, specialties, chiefs_specialties, menus, notices } from '$lib/server/db/schema/chiefs';
+import {
+	chiefs,
+	specialties,
+	chiefs_specialties,
+	menus,
+	notices
+} from '$lib/server/db/schema/chiefs';
 import { users } from '$lib/server/db/schema/auth';
-import type { Chief, ChiefCard, ChiefProfile, Menu, Notice, Specialty } from '$lib/models/chief.model';
+import type {
+	Chief,
+	ChiefCard,
+	ChiefProfile,
+	Menu,
+	Notice,
+	Specialty
+} from '$lib/models/chief.model';
 import type { UpdateChiefDto, CreateMenuDto, UpdateMenuDto } from '$lib/dtos/chief.dto';
 import type { CreateNoticeDto } from '$lib/dtos/customer.dto';
 
@@ -30,20 +43,14 @@ export async function getChiefsForHome(params: ChiefsHomeParams = {}): Promise<C
 			image: users.image,
 			min_price: min(menus.price_menu),
 			avg_rating: avg(notices.rating_notice),
-			review_count: count(notices.id_notice),
+			review_count: count(notices.id_notice)
 		})
 		.from(chiefs)
 		.innerJoin(users, eq(users.id, chiefs.id_chief))
 		.leftJoin(menus, eq(menus.id_chief, chiefs.id_chief))
 		.leftJoin(notices, eq(notices.id_chief, chiefs.id_chief))
 		.where(city ? ilike(users.localization, `%${city}%`) : undefined)
-		.groupBy(
-			chiefs.id_chief,
-			users.firstname,
-			users.name,
-			users.localization,
-			users.image,
-		)
+		.groupBy(chiefs.id_chief, users.firstname, users.name, users.localization, users.image)
 		.limit(HOME_PAGE_SIZE)
 		.offset(page * HOME_PAGE_SIZE);
 }
@@ -59,7 +66,7 @@ export type SetupChiefProfileInput = {
 
 export async function setupChiefProfile(
 	userId: string,
-	input: SetupChiefProfileInput,
+	input: SetupChiefProfileInput
 ): Promise<void> {
 	const [user] = await db
 		.select({ role: users.role })
@@ -125,7 +132,7 @@ export async function getChiefById(id: string): Promise<ChiefProfile | null> {
 
 	return {
 		...result,
-		specialties: chiefSpecialties,
+		specialties: chiefSpecialties
 	};
 }
 
@@ -161,7 +168,11 @@ export async function createMenu(data: CreateMenuDto & { id_chief: string }): Pr
 }
 
 export async function updateMenu(id: number, chiefId: string, data: UpdateMenuDto): Promise<Menu> {
-	const [existing] = await db.select({ id_chief: menus.id_chief }).from(menus).where(eq(menus.id_menu, id)).limit(1);
+	const [existing] = await db
+		.select({ id_chief: menus.id_chief })
+		.from(menus)
+		.where(eq(menus.id_menu, id))
+		.limit(1);
 	if (!existing) throw error(404, 'Menu introuvable');
 	if (existing.id_chief !== chiefId) throw error(403, 'Ce menu ne vous appartient pas');
 
@@ -174,7 +185,7 @@ export async function updateMenu(id: number, chiefId: string, data: UpdateMenuDt
 			...(data.type_menu !== undefined && { type_menu: data.type_menu }),
 			...(data.guests_min !== undefined && { guests_min: data.guests_min }),
 			...(data.guests_max !== undefined && { guests_max: data.guests_max }),
-			...(data.ingredients !== undefined && { ingredients: data.ingredients }),
+			...(data.ingredients !== undefined && { ingredients: data.ingredients })
 		})
 		.where(eq(menus.id_menu, id))
 		.returning();
@@ -182,23 +193,29 @@ export async function updateMenu(id: number, chiefId: string, data: UpdateMenuDt
 }
 
 export async function deleteMenu(id: number, chiefId: string): Promise<void> {
-	const [existing] = await db.select({ id_chief: menus.id_chief }).from(menus).where(eq(menus.id_menu, id)).limit(1);
+	const [existing] = await db
+		.select({ id_chief: menus.id_chief })
+		.from(menus)
+		.where(eq(menus.id_menu, id))
+		.limit(1);
 	if (!existing) throw error(404, 'Menu introuvable');
 	if (existing.id_chief !== chiefId) throw error(403, 'Ce menu ne vous appartient pas');
 	await db.delete(menus).where(eq(menus.id_menu, id));
 }
 
-export async function getChiefReviewStats(chiefId: string): Promise<{ avg: number | null; count: number }> {
+export async function getChiefReviewStats(
+	chiefId: string
+): Promise<{ avg: number | null; count: number }> {
 	const [row] = await db
 		.select({
 			avg: avg(notices.rating_notice),
-			count: count(notices.id_notice),
+			count: count(notices.id_notice)
 		})
 		.from(notices)
 		.where(eq(notices.id_chief, chiefId));
 	return {
 		avg: row?.avg != null ? parseFloat(row.avg) : null,
-		count: Number(row?.count ?? 0),
+		count: Number(row?.count ?? 0)
 	};
 }
 
@@ -219,7 +236,7 @@ export async function getNoticesForChief(chiefId: string): Promise<NoticeWithCus
 			id_chief: notices.id_chief,
 			customer_firstname: users.firstname,
 			customer_name: users.name,
-			customer_image: users.image,
+			customer_image: users.image
 		})
 		.from(notices)
 		.innerJoin(users, eq(notices.id_customer, users.id))
@@ -227,7 +244,9 @@ export async function getNoticesForChief(chiefId: string): Promise<NoticeWithCus
 		.orderBy(notices.date_notice);
 }
 
-export async function createNotice(data: CreateNoticeDto & { id_customer: string }): Promise<Notice> {
+export async function createNotice(
+	data: CreateNoticeDto & { id_customer: string }
+): Promise<Notice> {
 	const [notice] = await db
 		.insert(notices)
 		.values({

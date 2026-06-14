@@ -16,13 +16,13 @@ export const load: PageServerLoad = async ({ locals }) => {
 		getChiefById(user.id),
 		getMenusByChief(user.id),
 		getChiefPublicationImages(user.id),
-		getReservationsForUser(user.id),
+		getReservationsForUser(user.id)
 	]);
 
 	// Réservations à venir (statut confirme, date future)
 	const today = new Date().toISOString().split('T')[0];
 	const upcomingReservations = reservations.filter(
-		(r) => r.statut === 'confirme' && r.event_date >= today,
+		(r) => r.statut === 'confirme' && r.event_date >= today
 	);
 
 	return { profile, menus, galleryImages, reservations, upcomingReservations };

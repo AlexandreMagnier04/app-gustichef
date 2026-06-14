@@ -18,7 +18,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		type_menu: fd.get('type_menu') ?? 'plat',
 		guests_min: fd.get('guests_min') ?? undefined,
 		guests_max: fd.get('guests_max') ?? undefined,
-		ingredients: fd.getAll('ingredients[]').filter(Boolean),
+		ingredients: fd.getAll('ingredients[]').filter(Boolean)
 	};
 
 	const parsed = createMenuDto.safeParse(raw);
@@ -34,7 +34,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		await addMenuImage(menu.id_menu, user.id, {
 			buffer,
 			mimeType: photo.type,
-			originalName: photo.name,
+			originalName: photo.name
 		}).catch(() => {});
 	}
 

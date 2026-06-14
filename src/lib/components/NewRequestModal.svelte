@@ -6,7 +6,7 @@
 
 	let {
 		open = $bindable(false),
-		initialRequest = null,
+		initialRequest = null
 	}: {
 		open?: boolean;
 		initialRequest?: Request | null;
@@ -22,7 +22,7 @@
 		'Cocktail',
 		'Barbecue',
 		'Chef à domicile',
-		'Autre',
+		'Autre'
 	];
 
 	const GUEST_OPTIONS = [1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 25, 30, 40, 50];
@@ -81,9 +81,10 @@
 	async function submit(e: Event) {
 		e.preventDefault();
 		if (!title || description.length < 20) {
-			error = description.length < 20
-				? 'Décrivez votre événement en au moins 20 caractères.'
-				: 'Veuillez remplir tous les champs.';
+			error =
+				description.length < 20
+					? 'Décrivez votre événement en au moins 20 caractères.'
+					: 'Veuillez remplir tous les champs.';
 			return;
 		}
 		error = '';
@@ -99,8 +100,8 @@
 				expected_date_request: date,
 				guests_request: Number(guests),
 				type_event_request: eventType || undefined,
-				localization_request: city,
-			}),
+				localization_request: city
+			})
 		});
 
 		if (!res.ok) {
@@ -136,14 +137,23 @@
 			onclick={close}
 			aria-label="Fermer"
 		>
-			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-4 w-4">
-				<path d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z" />
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				viewBox="0 0 16 16"
+				fill="currentColor"
+				class="h-4 w-4"
+			>
+				<path
+					d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z"
+				/>
 			</svg>
 		</button>
 
 		<div class="px-6 pt-2">
 			<!-- Titre + progress -->
-			<h2 class="text-lg font-semibold text-navy">{isEdit ? 'Modifier la demande' : 'Nouvelle demande'}</h2>
+			<h2 class="text-lg font-semibold text-navy">
+				{isEdit ? 'Modifier la demande' : 'Nouvelle demande'}
+			</h2>
 			<div class="mt-2 flex items-center gap-1.5">
 				<span class="h-2 w-6 rounded-full {step >= 1 ? 'bg-teal' : 'bg-navy/20'}"></span>
 				<span class="h-2 w-2 rounded-full {step >= 2 ? 'bg-teal' : 'bg-navy/20'}"></span>
@@ -168,8 +178,17 @@
 									<option value={n}>{n} personne{n > 1 ? 's' : ''}</option>
 								{/each}
 							</select>
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="pointer-events-none absolute top-1/2 right-3.5 h-4 w-4 -translate-y-1/2 text-navy/40">
-								<path fill-rule="evenodd" d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 16 16"
+								fill="currentColor"
+								class="pointer-events-none absolute top-1/2 right-3.5 h-4 w-4 -translate-y-1/2 text-navy/40"
+							>
+								<path
+									fill-rule="evenodd"
+									d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
+									clip-rule="evenodd"
+								/>
 							</svg>
 						</div>
 					</div>
@@ -185,8 +204,17 @@
 								min={new Date().toISOString().split('T')[0]}
 								class="w-full appearance-none rounded-full border border-navy/20 bg-white py-2.5 pr-10 pl-4 text-sm text-navy outline-none focus:border-teal [&::-webkit-calendar-picker-indicator]:opacity-0"
 							/>
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="pointer-events-none absolute top-1/2 right-3.5 h-4 w-4 -translate-y-1/2 text-navy/40">
-								<path fill-rule="evenodd" d="M4 1.75a.75.75 0 0 1 1.5 0V3h5V1.75a.75.75 0 0 1 1.5 0V3A2.5 2.5 0 0 1 14.5 5.5v6a2.5 2.5 0 0 1-2.5 2.5H4A2.5 2.5 0 0 1 1.5 11.5v-6A2.5 2.5 0 0 1 4 3V1.75ZM3 7v4.5A1 1 0 0 0 4 12.5h8a1 1 0 0 0 1-1V7H3Z" clip-rule="evenodd" />
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 16 16"
+								fill="currentColor"
+								class="pointer-events-none absolute top-1/2 right-3.5 h-4 w-4 -translate-y-1/2 text-navy/40"
+							>
+								<path
+									fill-rule="evenodd"
+									d="M4 1.75a.75.75 0 0 1 1.5 0V3h5V1.75a.75.75 0 0 1 1.5 0V3A2.5 2.5 0 0 1 14.5 5.5v6a2.5 2.5 0 0 1-2.5 2.5H4A2.5 2.5 0 0 1 1.5 11.5v-6A2.5 2.5 0 0 1 4 3V1.75ZM3 7v4.5A1 1 0 0 0 4 12.5h8a1 1 0 0 0 1-1V7H3Z"
+									clip-rule="evenodd"
+								/>
 							</svg>
 						</div>
 					</div>
@@ -204,8 +232,17 @@
 									<option value={t}>{t}</option>
 								{/each}
 							</select>
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="pointer-events-none absolute top-1/2 right-3.5 h-4 w-4 -translate-y-1/2 text-navy/40">
-								<path fill-rule="evenodd" d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 16 16"
+								fill="currentColor"
+								class="pointer-events-none absolute top-1/2 right-3.5 h-4 w-4 -translate-y-1/2 text-navy/40"
+							>
+								<path
+									fill-rule="evenodd"
+									d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
+									clip-rule="evenodd"
+								/>
 							</svg>
 						</div>
 					</div>
@@ -214,7 +251,9 @@
 					<div>
 						<label class="mb-1.5 block text-sm font-medium text-navy">Choisissez votre ville</label>
 						{#if city}
-							<div class="flex items-center gap-2 rounded-full border border-teal bg-white py-2.5 pl-4 pr-3">
+							<div
+								class="flex items-center gap-2 rounded-full border border-teal bg-white py-2.5 pr-3 pl-4"
+							>
 								<span class="flex-1 text-sm text-navy">{city}</span>
 								<button
 									type="button"
@@ -222,8 +261,15 @@
 									class="flex h-5 w-5 items-center justify-center rounded-full bg-navy/10 text-navy/60"
 									aria-label="Effacer"
 								>
-									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3 w-3">
-										<path d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z" />
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 16 16"
+										fill="currentColor"
+										class="h-3 w-3"
+									>
+										<path
+											d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z"
+										/>
 									</svg>
 								</button>
 							</div>
@@ -262,20 +308,22 @@
 							required
 							maxlength="100"
 							placeholder="Titre du post"
-							class="w-full rounded-xl border border-navy/15 bg-white px-3 py-2.5 text-sm text-navy placeholder:text-navy/30 outline-none focus:border-teal"
+							class="w-full rounded-xl border border-navy/15 bg-white px-3 py-2.5 text-sm text-navy outline-none placeholder:text-navy/30 focus:border-teal"
 						/>
 					</div>
 
 					<!-- Description -->
 					<div>
-						<label class="mb-1.5 block text-sm font-medium text-navy">Décrivez votre événement</label>
+						<label class="mb-1.5 block text-sm font-medium text-navy"
+							>Décrivez votre événement</label
+						>
 						<textarea
 							bind:value={description}
 							required
 							maxlength="2000"
 							rows="5"
 							placeholder="Dites-nous tout ! Quel moment souhaitez-vous partager ? Décrivez l'ambiance de votre événement et vos envies gourmandes pour que nos chefs puissent vous proposer l'expérience parfaite."
-							class="w-full resize-none rounded-xl border border-navy/15 bg-white px-3 py-2.5 text-sm text-navy placeholder:text-navy/30 outline-none focus:border-teal"
+							class="w-full resize-none rounded-xl border border-navy/15 bg-white px-3 py-2.5 text-sm text-navy outline-none placeholder:text-navy/30 focus:border-teal"
 						></textarea>
 					</div>
 
@@ -286,7 +334,10 @@
 					<div class="flex gap-3">
 						<button
 							type="button"
-							onclick={() => { step = 1; error = ''; }}
+							onclick={() => {
+								step = 1;
+								error = '';
+							}}
 							class="flex-1 rounded-xl border border-navy/20 py-3.5 text-sm font-medium text-navy/70 transition-opacity active:opacity-70"
 						>
 							Retour
@@ -294,10 +345,17 @@
 						<button
 							type="submit"
 							disabled={submitting}
-							class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-teal py-3.5 text-sm font-semibold text-cream shadow-sm transition-opacity disabled:opacity-60 active:opacity-80"
+							class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-teal py-3.5 text-sm font-semibold text-cream shadow-sm transition-opacity active:opacity-80 disabled:opacity-60"
 						>
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
-								<path d="M3.105 2.288a.75.75 0 0 0-.826.95l1.414 4.926A1.5 1.5 0 0 0 5.135 9.25h6.115a.75.75 0 0 1 0 1.5H5.135a1.5 1.5 0 0 0-1.442 1.086l-1.414 4.926a.75.75 0 0 0 .826.95 28.897 28.897 0 0 0 15.293-7.155.75.75 0 0 0 0-1.114A28.897 28.897 0 0 0 3.105 2.288Z" />
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 20 20"
+								fill="currentColor"
+								class="h-4 w-4"
+							>
+								<path
+									d="M3.105 2.288a.75.75 0 0 0-.826.95l1.414 4.926A1.5 1.5 0 0 0 5.135 9.25h6.115a.75.75 0 0 1 0 1.5H5.135a1.5 1.5 0 0 0-1.442 1.086l-1.414 4.926a.75.75 0 0 0 .826.95 28.897 28.897 0 0 0 15.293-7.155.75.75 0 0 0 0-1.114A28.897 28.897 0 0 0 3.105 2.288Z"
+								/>
 							</svg>
 							{submitting ? 'Envoi...' : isEdit ? 'Enregistrer' : 'Envoyer ma proposition'}
 						</button>

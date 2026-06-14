@@ -6,7 +6,7 @@ describe('createMenuDto', () => {
 		title_menu: 'Menu du jour',
 		description_menu: 'Un repas savoureux',
 		price_menu: 29.99,
-		type_menu: 'plat' as const,
+		type_menu: 'plat' as const
 	};
 
 	it('valide un menu minimal', () => {
@@ -51,18 +51,26 @@ describe('updateMenuDto', () => {
 
 describe('setupChiefProfileDto', () => {
 	it('valide avec specialties', () => {
-		expect(setupChiefProfileDto.safeParse({ specialties: ['Japonaise', 'Italienne'] }).success).toBe(true);
+		expect(
+			setupChiefProfileDto.safeParse({ specialties: ['Japonaise', 'Italienne'] }).success
+		).toBe(true);
 	});
 	it('rejette plus de 3 specialties', () => {
-		expect(setupChiefProfileDto.safeParse({ specialties: ['A', 'B', 'C', 'D'] }).success).toBe(false);
+		expect(setupChiefProfileDto.safeParse({ specialties: ['A', 'B', 'C', 'D'] }).success).toBe(
+			false
+		);
 	});
 	it('accepte tableau vide', () => {
 		expect(setupChiefProfileDto.safeParse({ specialties: [] }).success).toBe(true);
 	});
 	it('accepte bio optionnelle', () => {
-		expect(setupChiefProfileDto.safeParse({ specialties: [], bio: 'Je suis chef' }).success).toBe(true);
+		expect(setupChiefProfileDto.safeParse({ specialties: [], bio: 'Je suis chef' }).success).toBe(
+			true
+		);
 	});
 	it('rejette bio > 200 caractères', () => {
-		expect(setupChiefProfileDto.safeParse({ specialties: [], bio: 'a'.repeat(201) }).success).toBe(false);
+		expect(setupChiefProfileDto.safeParse({ specialties: [], bio: 'a'.repeat(201) }).success).toBe(
+			false
+		);
 	});
 });

@@ -8,12 +8,21 @@ export const signInDto = z.object({
 
 // DTOs pour l'inscription
 export const signUpDto = z.object({
-	name: z.string().min(2, { message: 'Au moins 2 caractères' }).max(50, { message: 'Maximum 50 caractères' }),
-	firstname: z.string().min(2, { message: 'Au moins 2 caractères' }).max(50, { message: 'Maximum 50 caractères' }),
+	name: z
+		.string()
+		.min(2, { message: 'Au moins 2 caractères' })
+		.max(50, { message: 'Maximum 50 caractères' }),
+	firstname: z
+		.string()
+		.min(2, { message: 'Au moins 2 caractères' })
+		.max(50, { message: 'Maximum 50 caractères' }),
 	email: z.email({ error: 'Email invalide' }),
 	password: z.string().min(8, { message: 'Au moins 8 caractères' }),
 	role: z.enum(['chief', 'customer']),
-	localization: z.string().min(2, { message: 'Localisation requise' }).max(128, { message: 'Maximum 128 caractères' })
+	localization: z
+		.string()
+		.min(2, { message: 'Localisation requise' })
+		.max(128, { message: 'Maximum 128 caractères' })
 });
 
 // DTO pour la réinitialisation du mot de passe

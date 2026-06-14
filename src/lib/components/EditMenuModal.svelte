@@ -5,7 +5,7 @@
 		open = $bindable(false),
 		menu,
 		onUpdated,
-		onDeleted,
+		onDeleted
 	}: {
 		open: boolean;
 		menu: Menu | null;
@@ -81,8 +81,10 @@
 		if (!menu) return;
 		errors = {};
 		if (!title.trim()) errors.title = 'Nom requis';
-		if (!description.trim() || description.trim().length < 2) errors.description = 'Au moins 2 caractères';
-		if (!price || isNaN(parseFloat(price)) || parseFloat(price) <= 0) errors.price = 'Prix invalide';
+		if (!description.trim() || description.trim().length < 2)
+			errors.description = 'Au moins 2 caractères';
+		if (!price || isNaN(parseFloat(price)) || parseFloat(price) <= 0)
+			errors.price = 'Prix invalide';
 		if (Object.keys(errors).length > 0) return;
 
 		submitting = true;
@@ -107,7 +109,8 @@
 				if (fieldErrors.title_menu?.[0]) errors.title = fieldErrors.title_menu[0];
 				if (fieldErrors.description_menu?.[0]) errors.description = fieldErrors.description_menu[0];
 				if (fieldErrors.price_menu?.[0]) errors.price = fieldErrors.price_menu[0];
-				if (!Object.values(errors).some(Boolean)) errors.global = body?.message ?? 'Erreur lors de la mise à jour';
+				if (!Object.values(errors).some(Boolean))
+					errors.global = body?.message ?? 'Erreur lors de la mise à jour';
 			}
 		} catch {
 			errors.global = 'Erreur réseau';
@@ -140,24 +143,35 @@
 	<div
 		class="fixed inset-0 z-50 flex items-end justify-center bg-black/40"
 		role="presentation"
-		onclick={(e) => { if (e.target === e.currentTarget) close(); }}
+		onclick={(e) => {
+			if (e.target === e.currentTarget) close();
+		}}
 	>
 		<div class="w-full max-w-md overflow-hidden rounded-t-3xl bg-cream">
 			<div class="flex justify-center pt-3 pb-1">
 				<div class="h-1 w-10 rounded-full bg-navy/20"></div>
 			</div>
 
-			<div class="flex items-center justify-between px-5 pb-4 pt-2">
+			<div class="flex items-center justify-between px-5 pt-2 pb-4">
 				<h2 class="text-base font-semibold text-navy">Modifier ce plat</h2>
-				<button onclick={close} class="flex h-7 w-7 items-center justify-center rounded-full bg-navy/8 text-navy/60">
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-4 w-4">
-						<path d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z" />
+				<button
+					onclick={close}
+					class="flex h-7 w-7 items-center justify-center rounded-full bg-navy/8 text-navy/60"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 16 16"
+						fill="currentColor"
+						class="h-4 w-4"
+					>
+						<path
+							d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z"
+						/>
 					</svg>
 				</button>
 			</div>
 
 			<div class="max-h-[80vh] overflow-y-auto px-5 pb-8">
-
 				<!-- Photo du menu -->
 				<label class="mb-5 block cursor-pointer">
 					<input type="file" accept="image/*" class="hidden" onchange={onPhotoChange} />
@@ -166,15 +180,37 @@
 							<img src={photoPreview} alt="" class="h-full w-full object-cover" />
 						{:else}
 							<div class="flex h-full items-center justify-center text-navy/20">
-								<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="h-12 w-12">
-									<path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Z" />
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke-width="1"
+									stroke="currentColor"
+									class="h-12 w-12"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Z"
+									/>
 								</svg>
 							</div>
 						{/if}
-						<div class="absolute inset-x-0 bottom-0 flex items-center justify-center gap-1.5 bg-black/30 py-2">
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3.5 w-3.5 text-white">
-								<path d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.263a1.75 1.75 0 0 0 0-2.474Z" />
-								<path d="M4.75 3.5A2.25 2.25 0 0 0 2.5 5.75v5.5A2.25 2.25 0 0 0 4.75 13.5h5.5A2.25 2.25 0 0 0 12.5 11.25V9a.75.75 0 0 0-1.5 0v2.25a.75.75 0 0 1-.75.75h-5.5a.75.75 0 0 1-.75-.75v-5.5a.75.75 0 0 1 .75-.75H7A.75.75 0 0 0 7 2H4.75Z" />
+						<div
+							class="absolute inset-x-0 bottom-0 flex items-center justify-center gap-1.5 bg-black/30 py-2"
+						>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 16 16"
+								fill="currentColor"
+								class="h-3.5 w-3.5 text-white"
+							>
+								<path
+									d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.263a1.75 1.75 0 0 0 0-2.474Z"
+								/>
+								<path
+									d="M4.75 3.5A2.25 2.25 0 0 0 2.5 5.75v5.5A2.25 2.25 0 0 0 4.75 13.5h5.5A2.25 2.25 0 0 0 12.5 11.25V9a.75.75 0 0 0-1.5 0v2.25a.75.75 0 0 1-.75.75h-5.5a.75.75 0 0 1-.75-.75v-5.5a.75.75 0 0 1 .75-.75H7A.75.75 0 0 0 7 2H4.75Z"
+								/>
 							</svg>
 							<span class="text-xs font-medium text-white">Modifier la photo</span>
 						</div>
@@ -214,7 +250,7 @@
 							bind:value={price}
 							class="w-full rounded-xl border border-navy/15 bg-white px-4 py-3 pr-8 text-sm text-navy outline-none focus:border-rust/40"
 						/>
-						<span class="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-navy/40">€</span>
+						<span class="absolute top-1/2 right-4 -translate-y-1/2 text-sm text-navy/40">€</span>
 					</div>
 					{#if errors.price}<p class="mt-1 text-xs text-rust">{errors.price}</p>{/if}
 				</div>
@@ -223,11 +259,21 @@
 				<div class="mb-4 flex gap-3">
 					<div class="flex-1">
 						<label class="mb-1.5 block text-sm font-medium text-navy">Convives min</label>
-						<input type="number" min="1" bind:value={guestsMin} class="w-full rounded-xl border border-navy/15 bg-white px-4 py-3 text-sm text-navy outline-none focus:border-rust/40" />
+						<input
+							type="number"
+							min="1"
+							bind:value={guestsMin}
+							class="w-full rounded-xl border border-navy/15 bg-white px-4 py-3 text-sm text-navy outline-none focus:border-rust/40"
+						/>
 					</div>
 					<div class="flex-1">
 						<label class="mb-1.5 block text-sm font-medium text-navy">Convives max</label>
-						<input type="number" min="1" bind:value={guestsMax} class="w-full rounded-xl border border-navy/15 bg-white px-4 py-3 text-sm text-navy outline-none focus:border-rust/40" />
+						<input
+							type="number"
+							min="1"
+							bind:value={guestsMax}
+							class="w-full rounded-xl border border-navy/15 bg-white px-4 py-3 text-sm text-navy outline-none focus:border-rust/40"
+						/>
 					</div>
 				</div>
 
@@ -242,20 +288,43 @@
 							onkeydown={onKeydown}
 							class="flex-1 rounded-xl border border-navy/15 bg-white px-4 py-2.5 text-sm text-navy placeholder-navy/30 outline-none focus:border-rust/40"
 						/>
-						<button type="button" onclick={addIngredient} class="flex h-10 w-10 items-center justify-center rounded-xl bg-rust text-white">
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-4 w-4">
-								<path d="M8 2a.75.75 0 0 1 .75.75v4.5h4.5a.75.75 0 0 1 0 1.5h-4.5v4.5a.75.75 0 0 1-1.5 0v-4.5h-4.5a.75.75 0 0 1 0-1.5h4.5v-4.5A.75.75 0 0 1 8 2Z" />
+						<button
+							type="button"
+							onclick={addIngredient}
+							class="flex h-10 w-10 items-center justify-center rounded-xl bg-rust text-white"
+						>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 16 16"
+								fill="currentColor"
+								class="h-4 w-4"
+							>
+								<path
+									d="M8 2a.75.75 0 0 1 .75.75v4.5h4.5a.75.75 0 0 1 0 1.5h-4.5v4.5a.75.75 0 0 1-1.5 0v-4.5h-4.5a.75.75 0 0 1 0-1.5h4.5v-4.5A.75.75 0 0 1 8 2Z"
+								/>
 							</svg>
 						</button>
 					</div>
 					{#if ingredients.length > 0}
 						<div class="mt-2 flex flex-wrap gap-1.5">
 							{#each ingredients as ing (ing)}
-								<span class="flex items-center gap-1 rounded-full bg-navy/8 px-3 py-1 text-xs font-medium text-navy">
+								<span
+									class="flex items-center gap-1 rounded-full bg-navy/8 px-3 py-1 text-xs font-medium text-navy"
+								>
 									{ing}
-									<button onclick={() => removeIngredient(ing)} class="ml-0.5 text-navy/40 hover:text-navy">
-										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3 w-3">
-											<path d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z" />
+									<button
+										onclick={() => removeIngredient(ing)}
+										class="ml-0.5 text-navy/40 hover:text-navy"
+									>
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											viewBox="0 0 16 16"
+											fill="currentColor"
+											class="h-3 w-3"
+										>
+											<path
+												d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z"
+											/>
 										</svg>
 									</button>
 								</span>
@@ -263,8 +332,17 @@
 						</div>
 					{/if}
 					<p class="mt-2 flex items-start gap-1.5 text-xs text-navy/50">
-						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="mt-0.5 h-3.5 w-3.5 shrink-0 text-rust/70">
-							<path fill-rule="evenodd" d="M6.701 2.25c.577-1 2.02-1 2.598 0l5.196 9a1.5 1.5 0 0 1-1.299 2.25H2.804a1.5 1.5 0 0 1-1.3-2.25l5.197-9ZM8 4a.75.75 0 0 1 .75.75v3a.75.75 0 0 1-1.5 0v-3A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" />
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 16 16"
+							fill="currentColor"
+							class="mt-0.5 h-3.5 w-3.5 shrink-0 text-rust/70"
+						>
+							<path
+								fill-rule="evenodd"
+								d="M6.701 2.25c.577-1 2.02-1 2.598 0l5.196 9a1.5 1.5 0 0 1-1.299 2.25H2.804a1.5 1.5 0 0 1-1.3-2.25l5.197-9ZM8 4a.75.75 0 0 1 .75.75v3a.75.75 0 0 1-1.5 0v-3A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
+								clip-rule="evenodd"
+							/>
 						</svg>
 						Allergènes : œufs, produits laitiers, fruits à coque. Sur demande sans gluten.
 					</p>
@@ -281,14 +359,39 @@
 					class="flex w-full items-center justify-center gap-2 rounded-2xl bg-rust py-4 text-sm font-semibold text-white shadow-sm disabled:opacity-60"
 				>
 					{#if submitting}
-						<svg class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-							<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-							<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 0 1 8-8V0C5.373 0 0 5.373 0 12h4z"></path>
+						<svg
+							class="h-4 w-4 animate-spin"
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 24 24"
+						>
+							<circle
+								class="opacity-25"
+								cx="12"
+								cy="12"
+								r="10"
+								stroke="currentColor"
+								stroke-width="4"
+							></circle>
+							<path
+								class="opacity-75"
+								fill="currentColor"
+								d="M4 12a8 8 0 0 1 8-8V0C5.373 0 0 5.373 0 12h4z"
+							></path>
 						</svg>
 					{:else}
-						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-4 w-4">
-							<path d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.263a1.75 1.75 0 0 0 0-2.474Z" />
-							<path d="M4.75 3.5A2.25 2.25 0 0 0 2.5 5.75v5.5A2.25 2.25 0 0 0 4.75 13.5h5.5A2.25 2.25 0 0 0 12.5 11.25V9a.75.75 0 0 0-1.5 0v2.25a.75.75 0 0 1-.75.75h-5.5a.75.75 0 0 1-.75-.75v-5.5a.75.75 0 0 1 .75-.75H7A.75.75 0 0 0 7 2H4.75Z" />
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 16 16"
+							fill="currentColor"
+							class="h-4 w-4"
+						>
+							<path
+								d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.263a1.75 1.75 0 0 0 0-2.474Z"
+							/>
+							<path
+								d="M4.75 3.5A2.25 2.25 0 0 0 2.5 5.75v5.5A2.25 2.25 0 0 0 4.75 13.5h5.5A2.25 2.25 0 0 0 12.5 11.25V9a.75.75 0 0 0-1.5 0v2.25a.75.75 0 0 1-.75.75h-5.5a.75.75 0 0 1-.75-.75v-5.5a.75.75 0 0 1 .75-.75H7A.75.75 0 0 0 7 2H4.75Z"
+							/>
 						</svg>
 					{/if}
 					{submitting ? 'Enregistrement…' : 'Enregistrer les modifications'}
@@ -322,7 +425,6 @@
 						</div>
 					</div>
 				{/if}
-
 			</div>
 		</div>
 	</div>

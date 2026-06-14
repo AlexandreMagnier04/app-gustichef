@@ -54,8 +54,6 @@ export async function updateCustomer(id: string, data: CustomerUpdate): Promise<
 	return updated;
 }
 
-
-
 export async function createRequest(customerId: string, data: CreateRequestDto): Promise<Request> {
 	// Crée le profil client s'il n'existe pas encore (utilisateurs sans onboarding complet)
 	await db
@@ -93,7 +91,7 @@ export async function getRequestsWithChiefDetails(customerId: string): Promise<R
 			chief_firstname: users.firstname,
 			chief_name: users.name,
 			chief_image: users.image,
-			chief_specialty: specialties.name_speciality,
+			chief_specialty: specialties.name_speciality
 		})
 		.from(requests)
 		.leftJoin(users, eq(requests.id_chief, users.id))
@@ -125,7 +123,7 @@ export async function getRequestsByChief(): Promise<RequestWithCustomer[]> {
 			id_customer: requests.id_customer,
 			customer_firstname: users.firstname,
 			customer_name: users.name,
-			customer_image: users.image,
+			customer_image: users.image
 		})
 		.from(requests)
 		.innerJoin(customers, eq(requests.id_customer, customers.id_customer))

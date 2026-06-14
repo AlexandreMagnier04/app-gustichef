@@ -6,7 +6,7 @@ import {
 	getMenusByChief,
 	getMenuById,
 	updateMenu,
-	deleteMenu,
+	deleteMenu
 } from '$lib/server/services/chiefs';
 
 let chiefUserId: string;
@@ -29,7 +29,7 @@ describe('createMenu', () => {
 			description_menu: 'Description test',
 			price_menu: 25.0,
 			type_menu: 'plat',
-			id_chief: chiefUserId,
+			id_chief: chiefUserId
 		});
 		expect(menu.id_menu).toBeDefined();
 		expect(menu.title_menu).toBe('Menu test');
@@ -42,7 +42,7 @@ describe('createMenu', () => {
 			description_menu: 'Petites bouchées apéritives',
 			price_menu: 8.5,
 			type_menu: 'extra',
-			id_chief: chiefUserId,
+			id_chief: chiefUserId
 		});
 		expect(menu.type_menu).toBe('extra');
 	});
@@ -83,9 +83,11 @@ describe('updateMenu', () => {
 		expect(updated.title_menu).toBe('Titre modifié');
 	});
 
-	it('lève une erreur si le menu n\'appartient pas au chef', async () => {
+	it("lève une erreur si le menu n'appartient pas au chef", async () => {
 		const [first] = await getMenusByChief(chiefUserId);
-		await expect(updateMenu(first.id_menu, 'autre-chef-id', { title_menu: 'Hack' })).rejects.toThrow();
+		await expect(
+			updateMenu(first.id_menu, 'autre-chef-id', { title_menu: 'Hack' })
+		).rejects.toThrow();
 	});
 });
 
@@ -96,19 +98,19 @@ describe('deleteMenu', () => {
 			description_menu: 'Sera supprimé',
 			price_menu: 10,
 			type_menu: 'extra',
-			id_chief: chiefUserId,
+			id_chief: chiefUserId
 		});
 		await expect(deleteMenu(menu.id_menu, chiefUserId)).resolves.not.toThrow();
 		expect(await getMenuById(menu.id_menu)).toBeNull();
 	});
 
-	it('lève une erreur si le menu n\'appartient pas au chef', async () => {
+	it("lève une erreur si le menu n'appartient pas au chef", async () => {
 		const menu = await createMenu({
 			title_menu: 'Protégé',
 			description_menu: 'Ne peut pas être supprimé par un autre',
 			price_menu: 15,
 			type_menu: 'plat',
-			id_chief: chiefUserId,
+			id_chief: chiefUserId
 		});
 		await expect(deleteMenu(menu.id_menu, 'autre-chef-id')).rejects.toThrow();
 	});

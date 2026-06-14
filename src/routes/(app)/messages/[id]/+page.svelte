@@ -46,7 +46,7 @@
 		await fetch(`/api/conversations/${conv.id_conversation}/messages`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ content: messageText.trim() }),
+			body: JSON.stringify({ content: messageText.trim() })
 		});
 		messageText = '';
 		sending = false;
@@ -58,14 +58,16 @@
 		await fetch(`/api/conversations/${conv.id_conversation}/propose-menu`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ id_menu: menuId }),
+			body: JSON.stringify({ id_menu: menuId })
 		});
 		await invalidateAll();
 	}
 
 	async function acceptProposal() {
 		accepting = true;
-		const res = await fetch(`/api/conversations/${conv.id_conversation}/accept`, { method: 'POST' });
+		const res = await fetch(`/api/conversations/${conv.id_conversation}/accept`, {
+			method: 'POST'
+		});
 		if (res.ok) {
 			const { id_reservation } = await res.json();
 			await goto(`/reservations/${id_reservation}`);
@@ -80,7 +82,9 @@
 		await invalidateAll();
 	}
 
-	const hasMenuProposal = $derived(conv.messages.some((m: MessageItem) => m.type === 'menu_proposal'));
+	const hasMenuProposal = $derived(
+		conv.messages.some((m: MessageItem) => m.type === 'menu_proposal')
+	);
 	const canAccept = $derived(!isChief && conv.statut === 'devis_envoye' && hasMenuProposal);
 </script>
 
@@ -88,14 +92,25 @@
 	<!-- Header -->
 	<div class="flex shrink-0 items-center gap-3 border-b border-navy/[0.07] bg-cream px-4 py-3">
 		<a href="/messages" class="flex h-8 w-8 items-center justify-center rounded-full text-navy/60">
-			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
-				<path fill-rule="evenodd" d="M17 10a.75.75 0 0 1-.75.75H5.612l4.158 3.96a.75.75 0 1 1-1.04 1.08l-5.5-5.25a.75.75 0 0 1 0-1.08l5.5-5.25a.75.75 0 1 1 1.04 1.08L5.612 9.25H16.25A.75.75 0 0 1 17 10Z" clip-rule="evenodd" />
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				viewBox="0 0 20 20"
+				fill="currentColor"
+				class="h-5 w-5"
+			>
+				<path
+					fill-rule="evenodd"
+					d="M17 10a.75.75 0 0 1-.75.75H5.612l4.158 3.96a.75.75 0 1 1-1.04 1.08l-5.5-5.25a.75.75 0 0 1 0-1.08l5.5-5.25a.75.75 0 1 1 1.04 1.08L5.612 9.25H16.25A.75.75 0 0 1 17 10Z"
+					clip-rule="evenodd"
+				/>
 			</svg>
 		</a>
 		{#if conv.other_image}
 			<img src={conv.other_image} alt="" class="h-9 w-9 rounded-full object-cover" />
 		{:else}
-			<div class="flex h-9 w-9 items-center justify-center rounded-full bg-cream text-navy/40 font-semibold">
+			<div
+				class="flex h-9 w-9 items-center justify-center rounded-full bg-cream font-semibold text-navy/40"
+			>
 				{conv.other_firstname[0] ?? '?'}
 			</div>
 		{/if}
@@ -112,8 +127,8 @@
 	{#if conv.request_title}
 		<div class="mx-4 mt-3 shrink-0 overflow-hidden rounded-xl border border-navy/[0.08] bg-white">
 			<div class="flex items-center gap-3 px-3 py-2.5">
-				<div class="h-1 w-1 rounded-full bg-rust shrink-0"></div>
-				<div class="flex-1 min-w-0">
+				<div class="h-1 w-1 shrink-0 rounded-full bg-rust"></div>
+				<div class="min-w-0 flex-1">
 					<p class="truncate text-[12px] font-semibold text-navy">{conv.request_title}</p>
 					{#if conv.request_date || conv.request_guests}
 						<p class="text-[11px] text-navy/50">
@@ -122,43 +137,62 @@
 						</p>
 					{/if}
 				</div>
-				<a href="/home" class="shrink-0 text-[11px] font-medium text-rust">Voir le détail &rsaquo;</a>
+				<a href="/home" class="shrink-0 text-[11px] font-medium text-rust"
+					>Voir le détail &rsaquo;</a
+				>
 			</div>
 		</div>
 	{/if}
 
 	<!-- Messages -->
-	<div id="msg-list" class="flex-1 overflow-y-auto px-4 py-3 space-y-3">
+	<div id="msg-list" class="flex-1 space-y-3 overflow-y-auto px-4 py-3">
 		{#each conv.messages as msg (msg.id_message)}
 			{@const isMine = msg.id_sender === myId}
 
 			{#if msg.type === 'system'}
 				<div class="flex justify-center">
-					<span class="rounded-full bg-navy/8 px-3 py-1 text-[11px] text-navy/50">{msg.content_message}</span>
+					<span class="rounded-full bg-navy/8 px-3 py-1 text-[11px] text-navy/50"
+						>{msg.content_message}</span
+					>
 				</div>
-
 			{:else if msg.type === 'menu_proposal'}
 				{@const isRefused = conv.statut === 'refuse'}
 				<!-- Menu proposal card -->
 				<div class="flex {isMine ? 'justify-end' : 'justify-start'}">
-					<div class="relative max-w-[80%] overflow-hidden rounded-2xl border {isRefused ? 'border-navy/[0.05] opacity-50' : 'border-navy/[0.08]'} bg-white shadow-sm">
+					<div
+						class="relative max-w-[80%] overflow-hidden rounded-2xl border {isRefused
+							? 'border-navy/[0.05] opacity-50'
+							: 'border-navy/[0.08]'} bg-white shadow-sm"
+					>
 						{#if isRefused}
-							<div class="absolute top-2 right-2 rounded-full bg-navy/10 px-2 py-0.5 text-[10px] font-semibold text-navy/40 uppercase tracking-wide">Refusé</div>
+							<div
+								class="absolute top-2 right-2 rounded-full bg-navy/10 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-navy/40 uppercase"
+							>
+								Refusé
+							</div>
 						{/if}
-						<div class="bg-rust/10 px-4 py-2 text-[11px] font-semibold text-rust uppercase tracking-wide">
+						<div
+							class="bg-rust/10 px-4 py-2 text-[11px] font-semibold tracking-wide text-rust uppercase"
+						>
 							Menu proposé
 						</div>
 						<div class="p-3">
 							<p class="text-sm font-semibold text-navy">{msg.menu_title ?? 'Menu'}</p>
 							{#if msg.menu_price}
-								<p class="mt-0.5 text-[12px] text-rust font-medium">Dès {msg.menu_price} € / convive</p>
+								<p class="mt-0.5 text-[12px] font-medium text-rust">
+									Dès {msg.menu_price} € / convive
+								</p>
 							{/if}
 							{#if msg.menu_description}
-								<p class="mt-1.5 line-clamp-3 text-[12px] text-navy/60 leading-snug">{msg.menu_description}</p>
+								<p class="mt-1.5 line-clamp-3 text-[12px] leading-snug text-navy/60">
+									{msg.menu_description}
+								</p>
 							{/if}
 							{#if msg.price_per_person}
 								<p class="mt-2 rounded-lg bg-cream px-2 py-1.5 text-[12px] text-navy/70">
-									Prix proposé : <span class="font-semibold text-rust">{msg.price_per_person} € / convive</span>
+									Prix proposé : <span class="font-semibold text-rust"
+										>{msg.price_per_person} € / convive</span
+									>
 								</p>
 							{/if}
 							{#if msg.id_menu}
@@ -167,8 +201,17 @@
 									class="mt-2.5 flex items-center gap-1 text-[12px] font-medium text-teal"
 								>
 									Voir le menu complet
-									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3.5 w-3.5">
-										<path fill-rule="evenodd" d="M6.22 4.22a.75.75 0 0 1 1.06 0l3.25 3.25a.75.75 0 0 1 0 1.06l-3.25 3.25a.75.75 0 0 1-1.06-1.06L8.94 8 6.22 5.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 16 16"
+										fill="currentColor"
+										class="h-3.5 w-3.5"
+									>
+										<path
+											fill-rule="evenodd"
+											d="M6.22 4.22a.75.75 0 0 1 1.06 0l3.25 3.25a.75.75 0 0 1 0 1.06l-3.25 3.25a.75.75 0 0 1-1.06-1.06L8.94 8 6.22 5.28a.75.75 0 0 1 0-1.06Z"
+											clip-rule="evenodd"
+										/>
 									</svg>
 								</a>
 							{/if}
@@ -198,15 +241,20 @@
 						{/if}
 					</div>
 				</div>
-
 			{:else}
 				<!-- Text message -->
 				<div class="flex {isMine ? 'justify-end' : 'justify-start'}">
 					<div class="max-w-[78%]">
-						<div class="rounded-2xl px-3.5 py-2.5 text-sm leading-snug {isMine ? 'rounded-br-sm bg-teal text-white' : 'rounded-bl-sm bg-white text-navy shadow-sm border border-navy/[0.07]'}">
+						<div
+							class="rounded-2xl px-3.5 py-2.5 text-sm leading-snug {isMine
+								? 'rounded-br-sm bg-teal text-white'
+								: 'rounded-bl-sm border border-navy/[0.07] bg-white text-navy shadow-sm'}"
+						>
 							{msg.content_message}
 						</div>
-						<p class="mt-1 text-[10px] {isMine ? 'text-right text-navy/30' : 'text-navy/30'}">{formatTime(msg.created_at)}</p>
+						<p class="mt-1 text-[10px] {isMine ? 'text-right text-navy/30' : 'text-navy/30'}">
+							{formatTime(msg.created_at)}
+						</p>
 					</div>
 				</div>
 			{/if}
@@ -224,8 +272,15 @@
 						onclick={() => (showMenuPicker = !showMenuPicker)}
 						class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-rust py-2.5 text-[13px] font-semibold text-white transition-opacity active:opacity-80"
 					>
-						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
-							<path d="M3.105 2.288a.75.75 0 0 0-.826.95l1.414 4.926A1.5 1.5 0 0 0 5.135 9.25h6.115a.75.75 0 0 1 0 1.5H5.135a1.5 1.5 0 0 0-1.442 1.086l-1.414 4.926a.75.75 0 0 0 .826.95 28.897 28.897 0 0 0 15.293-7.155.75.75 0 0 0 0-1.114A28.897 28.897 0 0 0 3.105 2.288Z" />
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 20 20"
+							fill="currentColor"
+							class="h-4 w-4"
+						>
+							<path
+								d="M3.105 2.288a.75.75 0 0 0-.826.95l1.414 4.926A1.5 1.5 0 0 0 5.135 9.25h6.115a.75.75 0 0 1 0 1.5H5.135a1.5 1.5 0 0 0-1.442 1.086l-1.414 4.926a.75.75 0 0 0 .826.95 28.897 28.897 0 0 0 15.293-7.155.75.75 0 0 0 0-1.114A28.897 28.897 0 0 0 3.105 2.288Z"
+							/>
 						</svg>
 						Envoyer un devis
 					</button>
@@ -236,7 +291,9 @@
 			{#if showMenuPicker}
 				<div class="relative z-20 mb-2.5 overflow-hidden rounded-xl border border-navy/10 bg-white">
 					{#if data.chiefMenus.length === 0}
-						<p class="px-4 py-3 text-sm text-navy/50">Aucun menu créé. <a href="/profile" class="text-rust underline">Créer un menu</a></p>
+						<p class="px-4 py-3 text-sm text-navy/50">
+							Aucun menu créé. <a href="/profile" class="text-rust underline">Créer un menu</a>
+						</p>
 					{:else}
 						{#each data.chiefMenus as menu (menu.id_menu)}
 							<button
@@ -250,8 +307,17 @@
 										<p class="text-[12px] text-rust">Dès {menu.price_menu} € / convive</p>
 									{/if}
 								</div>
-								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="mt-0.5 h-4 w-4 shrink-0 text-navy/30">
-									<path fill-rule="evenodd" d="M6.22 4.22a.75.75 0 0 1 1.06 0l3.25 3.25a.75.75 0 0 1 0 1.06l-3.25 3.25a.75.75 0 0 1-1.06-1.06L8.94 8 6.22 5.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 0 16 16"
+									fill="currentColor"
+									class="mt-0.5 h-4 w-4 shrink-0 text-navy/30"
+								>
+									<path
+										fill-rule="evenodd"
+										d="M6.22 4.22a.75.75 0 0 1 1.06 0l3.25 3.25a.75.75 0 0 1 0 1.06l-3.25 3.25a.75.75 0 0 1-1.06-1.06L8.94 8 6.22 5.28a.75.75 0 0 1 0-1.06Z"
+										clip-rule="evenodd"
+									/>
 								</svg>
 							</button>
 						{/each}
@@ -267,16 +333,23 @@
 					type="text"
 					bind:value={messageText}
 					placeholder="Écrire un message..."
-					class="flex-1 rounded-full border border-navy/15 bg-white px-4 py-2.5 text-sm text-navy placeholder:text-navy/30 outline-none focus:border-navy/40"
+					class="flex-1 rounded-full border border-navy/15 bg-white px-4 py-2.5 text-sm text-navy outline-none placeholder:text-navy/30 focus:border-navy/40"
 				/>
 				<button
 					type="submit"
 					disabled={sending || !messageText.trim()}
-					class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-rust text-white transition-opacity disabled:opacity-40 active:opacity-80"
+					class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-rust text-white transition-opacity active:opacity-80 disabled:opacity-40"
 					aria-label="Envoyer"
 				>
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
-						<path d="M3.105 2.288a.75.75 0 0 0-.826.95l1.414 4.926A1.5 1.5 0 0 0 5.135 9.25h6.115a.75.75 0 0 1 0 1.5H5.135a1.5 1.5 0 0 0-1.442 1.086l-1.414 4.926a.75.75 0 0 0 .826.95 28.897 28.897 0 0 0 15.293-7.155.75.75 0 0 0 0-1.114A28.897 28.897 0 0 0 3.105 2.288Z" />
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 20 20"
+						fill="currentColor"
+						class="h-4 w-4"
+					>
+						<path
+							d="M3.105 2.288a.75.75 0 0 0-.826.95l1.414 4.926A1.5 1.5 0 0 0 5.135 9.25h6.115a.75.75 0 0 1 0 1.5H5.135a1.5 1.5 0 0 0-1.442 1.086l-1.414 4.926a.75.75 0 0 0 .826.95 28.897 28.897 0 0 0 15.293-7.155.75.75 0 0 0 0-1.114A28.897 28.897 0 0 0 3.105 2.288Z"
+						/>
 					</svg>
 				</button>
 			</form>
@@ -288,5 +361,6 @@
 
 <!-- Menu picker backdrop -->
 {#if showMenuPicker}
-	<button class="fixed inset-0 z-10" onclick={() => (showMenuPicker = false)} aria-label="Fermer"></button>
+	<button class="fixed inset-0 z-10" onclick={() => (showMenuPicker = false)} aria-label="Fermer"
+	></button>
 {/if}

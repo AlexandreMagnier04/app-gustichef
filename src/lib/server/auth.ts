@@ -18,7 +18,7 @@ export const auth = betterAuth({
 	socialProviders: {
 		google: {
 			clientId: env.GOOGLE_CLIENT_ID,
-			clientSecret: env.GOOGLE_CLIENT_SECRET,
+			clientSecret: env.GOOGLE_CLIENT_SECRET
 		}
 	},
 	user: {
@@ -27,13 +27,11 @@ export const auth = betterAuth({
 			firstname: { type: 'string', required: false, defaultValue: '' },
 			role: { type: 'string', required: false, defaultValue: 'customer' },
 			localization: { type: 'string', required: false, defaultValue: '' },
-			upload_profile_picture: { type: 'string', required: false },
+			upload_profile_picture: { type: 'string', required: false }
 		}
 	},
 	session: { modelName: 'sessions' },
 	account: { modelName: 'accounts' },
 	verification: { modelName: 'verifications' },
-	plugins: [
-		sveltekitCookies(getRequestEvent)
-	]
+	plugins: [sveltekitCookies(getRequestEvent)]
 });

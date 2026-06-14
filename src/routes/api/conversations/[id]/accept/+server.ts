@@ -31,10 +31,21 @@ export const POST = async ({ params, locals }) => {
 		.limit(1);
 
 	// Get request details for reservation
-	let reqData = { title: 'Prestation', guests: 1, date: new Date().toISOString().split('T')[0], localization: '' };
+	let reqData = {
+		title: 'Prestation',
+		guests: 1,
+		date: new Date().toISOString().split('T')[0],
+		localization: ''
+	};
 	if (conv.id_request) {
 		const [req] = await db.select().from(requests).where(eq(requests.id_request, conv.id_request));
-		if (req) reqData = { title: req.title_request, guests: req.guests_request, date: req.expected_date_request, localization: req.localization_request };
+		if (req)
+			reqData = {
+				title: req.title_request,
+				guests: req.guests_request,
+				date: req.expected_date_request,
+				localization: req.localization_request
+			};
 	}
 
 	const reservationId = await createReservation({
@@ -46,21 +57,24 @@ export const POST = async ({ params, locals }) => {
 		price_per_person: proposal?.price_per_person ?? 0,
 		guests: reqData.guests,
 		event_date: reqData.date,
-		localization: reqData.localization,
+		localization: reqData.localization
 	});
 
 	await updateConversationStatut(id, 'confirme');
 	await addMessage(id, user.id, 'Réservation confirmée ✓', 'system');
 
 	// Notify chef
-	const [customer] = await db.select({ firstname: users.firstname, name: users.name }).from(users).where(eq(users.id, user.id));
+	const [customer] = await db
+		.select({ firstname: users.firstname, name: users.name })
+		.from(users)
+		.where(eq(users.id, user.id));
 	const customerName = customer ? `${customer.firstname} ${customer.name}` : 'Le client';
 	await createNotification(
 		conv.id_chief,
 		'reservation_confirmed',
 		'Réservation confirmée !',
 		`${customerName} a confirmé votre prestation « ${reqData.title} »`,
-		String(id),
+		String(id)
 	);
 
 	return json({ id_reservation: reservationId });

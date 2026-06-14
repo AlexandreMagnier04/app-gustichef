@@ -116,7 +116,9 @@
 		{#if visibleTags.length > 0}
 			<div class="flex flex-wrap gap-1.5">
 				{#each visibleTags as t (t.label)}
-					<span class="rounded-full {t.color} px-2.5 py-1 text-[10px] font-medium tracking-wide text-white">
+					<span
+						class="rounded-full {t.color} px-2.5 py-1 text-[10px] font-medium tracking-wide text-white"
+					>
 						{t.label}
 					</span>
 				{/each}
@@ -124,7 +126,9 @@
 		{/if}
 
 		<!-- Description -->
-		<p class="line-clamp-3 text-[13px] leading-snug text-navy/65">{publication.content_publication}</p>
+		<p class="line-clamp-3 text-[13px] leading-snug text-navy/65">
+			{publication.content_publication}
+		</p>
 
 		<!-- Footer : localisation + actions -->
 		<div class="flex items-center justify-between pt-1">

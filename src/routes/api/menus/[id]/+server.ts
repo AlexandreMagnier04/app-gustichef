@@ -21,7 +21,7 @@ export const PATCH: RequestHandler = async ({ request, params, locals }) => {
 		type_menu: fd.get('type_menu') ?? undefined,
 		guests_min: fd.get('guests_min') ?? undefined,
 		guests_max: fd.get('guests_max') ?? undefined,
-		ingredients: fd.getAll('ingredients[]').filter(Boolean),
+		ingredients: fd.getAll('ingredients[]').filter(Boolean)
 	};
 
 	const parsed = updateMenuDto.safeParse(raw);
@@ -37,7 +37,7 @@ export const PATCH: RequestHandler = async ({ request, params, locals }) => {
 		await addMenuImage(menu.id_menu, user.id, {
 			buffer,
 			mimeType: photo.type,
-			originalName: photo.name,
+			originalName: photo.name
 		}).catch(() => {});
 	}
 

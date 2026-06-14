@@ -38,14 +38,17 @@ export const POST = async ({ params, request, locals }) => {
 	const convId = await createConversation(id, user.id, req.id_customer, message.trim(), price);
 
 	// Notify the customer — id_request in notification stores the conversation id for navigation
-	const [chef] = await db.select({ firstname: users.firstname, name: users.name, image: users.image }).from(users).where(eq(users.id, user.id));
+	const [chef] = await db
+		.select({ firstname: users.firstname, name: users.name, image: users.image })
+		.from(users)
+		.where(eq(users.id, user.id));
 	const chefName = chef ? `${chef.firstname} ${chef.name}` : 'Un chef';
 	await createNotification(
 		req.id_customer,
 		'request_responded',
 		'Nouvelle proposition',
 		`${chefName} vous a envoyé une proposition pour « ${req.title_request} »`,
-		String(convId),
+		String(convId)
 	);
 
 	return json({ ok: true });

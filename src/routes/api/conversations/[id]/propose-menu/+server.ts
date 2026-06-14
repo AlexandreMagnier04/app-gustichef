@@ -17,11 +17,17 @@ export const POST = async ({ params, request, locals }) => {
 	if (!id_menu) throw error(400, 'Menu requis');
 
 	// Verify the menu belongs to this chef
-	const [menu] = await db.select().from(menus).where(and(eq(menus.id_menu, id_menu), eq(menus.id_chief, user.id)));
+	const [menu] = await db
+		.select()
+		.from(menus)
+		.where(and(eq(menus.id_menu, id_menu), eq(menus.id_chief, user.id)));
 	if (!menu) throw error(404, 'Menu introuvable');
 
 	// Verify the chef owns this conversation
-	const [conv] = await db.select().from(conversations).where(and(eq(conversations.id_conversation, id), eq(conversations.id_chief, user.id)));
+	const [conv] = await db
+		.select()
+		.from(conversations)
+		.where(and(eq(conversations.id_conversation, id), eq(conversations.id_chief, user.id)));
 	if (!conv) throw error(404, 'Conversation introuvable');
 
 	await addMessage(id, user.id, `${menu.title_menu}`, 'menu_proposal', id_menu);

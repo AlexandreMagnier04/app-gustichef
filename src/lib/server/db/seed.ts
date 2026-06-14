@@ -27,10 +27,7 @@ const SPECIALTIES = [
 async function seed() {
 	console.log('Seeding specialties...');
 	for (const name of SPECIALTIES) {
-		await db
-			.insert(specialties)
-			.values({ name_speciality: name })
-			.onConflictDoNothing();
+		await db.insert(specialties).values({ name_speciality: name }).onConflictDoNothing();
 	}
 
 	console.log('Seed done.');

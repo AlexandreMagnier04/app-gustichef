@@ -10,10 +10,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	const id = parseInt(params.id);
 	if (isNaN(id)) throw error(400, 'ID invalide');
 
-	const [menu, images] = await Promise.all([
-		getMenuById(id),
-		getMenuImages(id),
-	]);
+	const [menu, images] = await Promise.all([getMenuById(id), getMenuImages(id)]);
 
 	if (!menu) throw error(404, 'Menu introuvable');
 

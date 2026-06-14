@@ -8,8 +8,8 @@ export default defineConfig({
 	resolve: {
 		alias: {
 			$lib: resolve('./src/lib'),
-			'$env/dynamic/private': resolve('./tests/mocks/env-private.ts'),
-		},
+			'$env/dynamic/private': resolve('./tests/mocks/env-private.ts')
+		}
 	},
 	test: {
 		include: ['tests/integration/**/*.test.ts'],
@@ -17,6 +17,6 @@ export default defineConfig({
 		globals: true,
 		pool: 'forks',
 		fileParallelism: false,
-		testTimeout: 10000,
-	},
+		testTimeout: 10000
+	}
 });

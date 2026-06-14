@@ -12,7 +12,7 @@ type FileInput = { buffer: Buffer; mimeType: string; originalName?: string };
 export async function addChiefImage(
 	chiefId: string,
 	file: FileInput,
-	position = 0,
+	position = 0
 ): Promise<ImageChef> {
 	// Vérifie que le chef existe
 	const [chief] = await db
@@ -51,7 +51,7 @@ export async function addMenuImage(
 	menuId: number,
 	requestingChiefId: string,
 	file: FileInput,
-	position = 0,
+	position = 0
 ): Promise<ImageMenu> {
 	// Vérifie que le menu existe ET appartient bien au chef qui upload
 	const [menu] = await db

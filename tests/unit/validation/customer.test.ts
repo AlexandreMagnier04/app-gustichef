@@ -7,7 +7,7 @@ describe('createRequestDto', () => {
 		description_request: 'Un dîner pour 50 personnes pour un mariage en plein air',
 		expected_date_request: '2026-09-15',
 		guests_request: 50,
-		localization_request: 'Paris 75001',
+		localization_request: 'Paris 75001'
 	};
 
 	it('valide une demande minimale', () => {
@@ -17,10 +17,14 @@ describe('createRequestDto', () => {
 		expect(createRequestDto.safeParse({ ...valid, title_request: 'AB' }).success).toBe(false);
 	});
 	it('rejette description < 20 caractères', () => {
-		expect(createRequestDto.safeParse({ ...valid, description_request: 'Trop court' }).success).toBe(false);
+		expect(
+			createRequestDto.safeParse({ ...valid, description_request: 'Trop court' }).success
+		).toBe(false);
 	});
 	it('rejette date invalide', () => {
-		expect(createRequestDto.safeParse({ ...valid, expected_date_request: 'pas-une-date' }).success).toBe(false);
+		expect(
+			createRequestDto.safeParse({ ...valid, expected_date_request: 'pas-une-date' }).success
+		).toBe(false);
 	});
 	it('rejette guests_request négatif', () => {
 		expect(createRequestDto.safeParse({ ...valid, guests_request: -1 }).success).toBe(false);
@@ -43,7 +47,9 @@ describe('createRequestDto', () => {
 
 describe('createNoticeDto', () => {
 	it('valide un avis correct', () => {
-		expect(createNoticeDto.safeParse({ rating_notice: 4.5, id_chief: 'chief-id-123' }).success).toBe(true);
+		expect(
+			createNoticeDto.safeParse({ rating_notice: 4.5, id_chief: 'chief-id-123' }).success
+		).toBe(true);
 	});
 	it('valide note 0', () => {
 		expect(createNoticeDto.safeParse({ rating_notice: 0, id_chief: 'id' }).success).toBe(true);
@@ -61,6 +67,9 @@ describe('createNoticeDto', () => {
 		expect(createNoticeDto.safeParse({ rating_notice: 4, id_chief: '' }).success).toBe(false);
 	});
 	it('accepte commentaire optionnel', () => {
-		expect(createNoticeDto.safeParse({ rating_notice: 3.5, id_chief: 'id', comment_notice: 'Très bien' }).success).toBe(true);
+		expect(
+			createNoticeDto.safeParse({ rating_notice: 3.5, id_chief: 'id', comment_notice: 'Très bien' })
+				.success
+		).toBe(true);
 	});
 });

@@ -3,10 +3,14 @@ import { signInDto, signUpDto, chefSignUpStep1Dto } from '$lib/dtos/auth.dto';
 
 describe('signInDto', () => {
 	it('valide email + password corrects', () => {
-		expect(signInDto.safeParse({ email: 'test@test.com', password: 'password123' }).success).toBe(true);
+		expect(signInDto.safeParse({ email: 'test@test.com', password: 'password123' }).success).toBe(
+			true
+		);
 	});
 	it('rejette email invalide', () => {
-		expect(signInDto.safeParse({ email: 'pas-un-email', password: 'password123' }).success).toBe(false);
+		expect(signInDto.safeParse({ email: 'pas-un-email', password: 'password123' }).success).toBe(
+			false
+		);
 	});
 	it('rejette password vide', () => {
 		expect(signInDto.safeParse({ email: 'test@test.com', password: '' }).success).toBe(false);
@@ -20,7 +24,7 @@ describe('signUpDto', () => {
 		email: 'jean@test.com',
 		password: 'password123',
 		role: 'customer' as const,
-		localization: 'Paris',
+		localization: 'Paris'
 	};
 	it('valide les champs corrects', () => {
 		expect(signUpDto.safeParse(valid).success).toBe(true);
@@ -46,8 +50,8 @@ describe('chefSignUpStep1Dto', () => {
 				name: 'Dupont',
 				firstname: 'Jean',
 				email: 'jean@test.com',
-				password: 'password123',
-			}).success,
+				password: 'password123'
+			}).success
 		).toBe(true);
 	});
 	it('rejette password < 8 caractères', () => {
@@ -56,8 +60,8 @@ describe('chefSignUpStep1Dto', () => {
 				name: 'Dupont',
 				firstname: 'Jean',
 				email: 'jean@test.com',
-				password: 'court',
-			}).success,
+				password: 'court'
+			}).success
 		).toBe(false);
 	});
 });

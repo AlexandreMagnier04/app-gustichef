@@ -16,7 +16,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
 	await setupChiefProfile(user.id, {
 		bio: parsed.data.bio,
-		specialtyNames: parsed.data.specialties,
+		specialtyNames: parsed.data.specialties
 	});
 
 	return json({ success: true });

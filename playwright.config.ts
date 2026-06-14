@@ -10,20 +10,20 @@ export default defineConfig({
 
 	use: {
 		baseURL: 'http://localhost:5173',
-		trace: 'on-first-retry',
+		trace: 'on-first-retry'
 	},
 
 	projects: [
 		{
 			name: 'chromium',
-			use: { ...devices['Desktop Chrome'] },
-		},
+			use: { ...devices['Desktop Chrome'] }
+		}
 	],
 
 	webServer: {
 		command: 'pnpm dev',
 		url: 'http://localhost:5173',
 		reuseExistingServer: !process.env.CI,
-		timeout: 120_000,
-	},
+		timeout: 120_000
+	}
 });

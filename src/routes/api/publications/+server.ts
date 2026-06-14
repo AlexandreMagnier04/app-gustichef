@@ -29,7 +29,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		price: form.get('price') || undefined,
 		guestsMin: form.get('guestsMin') || undefined,
 		guestsMax: form.get('guestsMax') || undefined,
-		tags: form.getAll('tags').map(String).filter(Boolean),
+		tags: form.getAll('tags').map(String).filter(Boolean)
 	});
 
 	if (!parsed.success) {
@@ -40,7 +40,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	const publication = await createPublication(user.id, parsed.data, {
 		buffer,
 		mimeType: file.type,
-		originalName: file.name,
+		originalName: file.name
 	});
 
 	return json({ publication });

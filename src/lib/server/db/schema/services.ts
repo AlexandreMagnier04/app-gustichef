@@ -8,6 +8,10 @@ export const services = pgTable('services', {
 	date_service: date('date_service').notNull(),
 	price_service: decimal('price_service', { precision: 5, scale: 2 }).notNull(),
 	statut_service: varchar('statut_service', { length: 50 }).notNull(),
-	id_customer: text('id_customer').notNull().references(() => customers.id_customer, { onDelete: 'cascade' }),
-	id_chief: text('id_chief').notNull().references(() => chiefs.id_chief, { onDelete: 'cascade' }),
+	id_customer: text('id_customer')
+		.notNull()
+		.references(() => customers.id_customer, { onDelete: 'cascade' }),
+	id_chief: text('id_chief')
+		.notNull()
+		.references(() => chiefs.id_chief, { onDelete: 'cascade' })
 });

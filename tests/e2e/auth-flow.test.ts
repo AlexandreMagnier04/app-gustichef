@@ -31,7 +31,7 @@ describe('Auth flow', () => {
 		const { email } = await signUpAndLogin({ password: 'correct123!' });
 		const { res } = await apiRequest('/api/auth/sign-in/email', {
 			method: 'POST',
-			body: JSON.stringify({ email, password: 'mauvais' }),
+			body: JSON.stringify({ email, password: 'mauvais' })
 		});
 		expect(res.status).not.toBe(200);
 	});

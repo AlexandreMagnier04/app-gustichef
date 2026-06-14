@@ -150,7 +150,6 @@
 				></div>
 			{/each}
 		</div>
-		f
 
 		{#if error}
 			<p class="mb-4 text-sm text-rust">{error}</p>
@@ -260,10 +259,8 @@
 				Déjà inscrit ?
 				<a href="/login" class="font-medium text-navy">Se connecter</a>
 			</p>
-		{/if}
-
-		<!-- Étape 2 — Profil professionnel -->
-		{#if step === 2}
+		{:else if step === 2}
+			<!-- Étape 2 — Profil professionnel -->
 			<h2 class="mb-1 text-base font-semibold text-navy">Profil professionnel</h2>
 			<p class="mb-6 text-xs text-gray-500">Étape 2/5 — Personnalise ton profil</p>
 
@@ -299,7 +296,7 @@
 					<span class="text-xs text-gray-400">Ajouter une photo</span>
 				</div>
 
-				<div class="flex-cofl flex gap-1">
+				<div class="flex flex-col gap-1">
 					<label class="text-xs font-medium text-navy/70">Titre professionnel (optionnel)</label>
 					<input
 						type="text"
@@ -363,10 +360,8 @@
 					Continuer
 				</button>
 			</div>
-		{/if}
-
-		<!-- Étape 3 — Vérification identité -->
-		{#if step === 3}
+		{:else if step === 3}
+			<!-- Étape 3 — Vérification identité -->
 			<h2 class="mb-1 text-base font-semibold text-navy">Vérification identité</h2>
 			<p class="mb-6 text-xs text-gray-500">Étape 3/5 — Sécurisez votre compte</p>
 
@@ -452,10 +447,8 @@
 					Continuer
 				</button>
 			</div>
-		{/if}
-
-		<!-- Étape 4 — Zone & Tarifs -->
-		{#if step === 4}
+		{:else if step === 4}
+			<!-- Étape 4 — Zone & Tarifs -->
 			<h2 class="mb-1 text-base font-semibold text-navy">Zone & Tarifs</h2>
 			<p class="mb-6 text-xs text-gray-500">Étape 4/5 — Définis ta zone et tes prix</p>
 
@@ -613,7 +606,7 @@
 					Vous recevrez un email dès validation de votre profil chef.
 				</p>
 				<a href="/login" class="block w-full rounded-xl bg-rust py-3 text-sm font-medium text-white"
-					>f Retour à la connexion
+					>Retour à la connexion
 				</a>
 			</div>
 		</div>

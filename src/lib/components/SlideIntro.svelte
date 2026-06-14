@@ -72,12 +72,15 @@
 	/* translateX(-50%) = exactement une moitié du track (= un exemplaire des 9 images)
 	   La bande étant doublée, le point de reprise est invisible */
 	@keyframes band-left {
-		from { transform: translateX(0); }
-		to   { transform: translateX(-25%); }
+		from {
+			transform: translateX(0);
+		}
+		to {
+			transform: translateX(-25%);
+		}
 	}
 	.band-left {
 		animation: band-left linear infinite;
 		will-change: transform;
 	}
-
 </style>

@@ -16,7 +16,7 @@ export type CreatePublicationResult =
 
 // Appelle POST /api/publications en multipart/form-data.
 export async function createPublication(
-	input: CreatePublicationInput,
+	input: CreatePublicationInput
 ): Promise<CreatePublicationResult> {
 	const form = new FormData();
 	form.set('file', input.file);
@@ -34,7 +34,7 @@ export async function createPublication(
 		const err =
 			typeof body.error === 'string'
 				? body.error
-				: (Object.values(body.error ?? {}).flat()[0] as string) ?? 'Erreur inconnue';
+				: ((Object.values(body.error ?? {}).flat()[0] as string) ?? 'Erreur inconnue');
 		return { ok: false, error: err };
 	}
 	return { ok: true, publication: body.publication };

@@ -7,7 +7,7 @@ import {
 	createReservation,
 	getReservationById,
 	cancelReservation,
-	getReservationsForUser,
+	getReservationsForUser
 } from '$lib/server/services/reservations';
 
 let chiefId: string;
@@ -26,7 +26,12 @@ beforeAll(async () => {
 
 	const [conv] = await testDb
 		.insert(conversations)
-		.values({ id_chief: chiefId, id_customer: customerId, statut: 'a_repondre', last_message_at: new Date() })
+		.values({
+			id_chief: chiefId,
+			id_customer: customerId,
+			statut: 'a_repondre',
+			last_message_at: new Date()
+		})
 		.returning();
 	convId = conv.id_conversation;
 });
@@ -45,7 +50,7 @@ describe('createReservation', () => {
 			price_per_person: 80,
 			guests: 30,
 			event_date: '2026-09-15',
-			localization: 'Paris 75001',
+			localization: 'Paris 75001'
 		});
 		expect(typeof id).toBe('number');
 		expect(id).toBeGreaterThan(0);
@@ -62,7 +67,7 @@ describe('getReservationById', () => {
 			price_per_person: 50,
 			guests: 10,
 			event_date: '2026-10-01',
-			localization: 'Lyon',
+			localization: 'Lyon'
 		});
 		const resa = await getReservationById(id, customerId);
 		expect(resa).not.toBeNull();
@@ -79,7 +84,7 @@ describe('getReservationById', () => {
 			price_per_person: 60,
 			guests: 15,
 			event_date: '2026-10-05',
-			localization: 'Marseille',
+			localization: 'Marseille'
 		});
 		const resa = await getReservationById(id, chiefId);
 		expect(resa).not.toBeNull();
@@ -95,7 +100,7 @@ describe('getReservationById', () => {
 			price_per_person: 50,
 			guests: 10,
 			event_date: '2026-11-01',
-			localization: 'Nice',
+			localization: 'Nice'
 		});
 		const resa = await getReservationById(id, 'utilisateur-inconnu');
 		expect(resa).toBeNull();
@@ -112,7 +117,7 @@ describe('cancelReservation', () => {
 			price_per_person: 45,
 			guests: 5,
 			event_date: '2026-12-01',
-			localization: 'Bordeaux',
+			localization: 'Bordeaux'
 		});
 		await cancelReservation(id, customerId);
 		const resa = await getReservationById(id, customerId);

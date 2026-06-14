@@ -10,13 +10,11 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 
 	const [publications, specialties] = await Promise.all([
 		getPublicationsFeed(page),
-		getSpecialties(),
+		getSpecialties()
 	]);
 
 	const requests =
-		user.role === 'chief'
-			? await getRequestsByChief()
-			: await getRequestsByCustomer(user.id);
+		user.role === 'chief' ? await getRequestsByChief() : await getRequestsByCustomer(user.id);
 
 	return { publications, specialties, page, requests };
 };

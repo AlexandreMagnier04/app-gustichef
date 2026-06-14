@@ -26,7 +26,7 @@ export const GET: RequestHandler = async ({ locals }) => {
 		cancel() {
 			unsub?.();
 			controller = null;
-		},
+		}
 	});
 
 	return new Response(stream, {
@@ -34,7 +34,7 @@ export const GET: RequestHandler = async ({ locals }) => {
 			'Content-Type': 'text/event-stream',
 			'Cache-Control': 'no-cache',
 			Connection: 'keep-alive',
-			'X-Accel-Buffering': 'no',
-		},
+			'X-Accel-Buffering': 'no'
+		}
 	});
 };

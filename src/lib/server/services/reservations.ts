@@ -40,7 +40,10 @@ export async function createReservation(data: {
 	return res.id_reservation;
 }
 
-export async function getReservationById(id: number, userId: string): Promise<ReservationDetail | null> {
+export async function getReservationById(
+	id: number,
+	userId: string
+): Promise<ReservationDetail | null> {
 	const rows = await db
 		.select({
 			id_reservation: reservations.id_reservation,
@@ -60,7 +63,7 @@ export async function getReservationById(id: number, userId: string): Promise<Re
 			chief_image: users.image,
 			menu_title: menus.title_menu,
 			menu_description: menus.description_menu,
-			menu_price: menus.price_menu,
+			menu_price: menus.price_menu
 		})
 		.from(reservations)
 		.leftJoin(users, eq(reservations.id_chief, users.id))
@@ -101,7 +104,7 @@ export async function getReservationsForUser(userId: string): Promise<Reservatio
 			chief_image: users.image,
 			menu_title: menus.title_menu,
 			menu_description: menus.description_menu,
-			menu_price: menus.price_menu,
+			menu_price: menus.price_menu
 		})
 		.from(reservations)
 		.leftJoin(users, eq(reservations.id_chief, users.id))
