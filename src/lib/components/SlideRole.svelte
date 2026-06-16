@@ -52,20 +52,10 @@
 				<!-- bind:group={role} : lie les radios à la variable role — quand on coche "chief", role = 'chief' -->
 				<!-- sr-only : le vrai input radio est invisible, c'est le label entier qui est cliquable -->
 				<input type="radio" name="role" value="chief" bind:group={role} class="sr-only" />
-				<svg
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="1.5"
-					class="size-5 shrink-0 text-stone-500"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						d="M12 8.25v-1.5m0 1.5c-1.355 0-2.697.056-4.024.166C6.845 8.51 6 9.473 6 10.608v2.513m6-4.871c1.355 0 2.697.056 4.024.166C17.155 8.51 18 9.473 18 10.608v2.513m-3-4.87v-1.5m-6 1.5v-1.5m12 9.75-1.5.75a3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 1-3 0L6 18m12-3H6.75"
-					/>
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-5 shrink-0 text-stone-500">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M6 13.5V15h12v-1.5M8.5 13.5V11a3.5 3.5 0 0 1 2-3.15A3 3 0 1 1 14 7.85 3.5 3.5 0 0 1 15.5 11v2.5M9 16.5v1a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1" />
 				</svg>
-				<span class="flex-1 text-[0.95rem] text-stone-700">chief</span>
+				<span class="flex-1 text-[0.95rem] text-stone-700">Chef</span>
 				<!-- Indicateur visuel custom du radio — change de style selon role -->
 				<div
 					class="size-5 shrink-0 rounded-full border-2 transition-all"
@@ -82,18 +72,8 @@
 				class:border-stone-200={role !== 'customer'}
 			>
 				<input type="radio" name="role" value="customer" bind:group={role} class="sr-only" />
-				<svg
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="1.5"
-					class="size-5 shrink-0 text-stone-500"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
-					/>
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-5 shrink-0 text-stone-500">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
 				</svg>
 				<span class="flex-1 text-[0.95rem] text-stone-700">Particulier</span>
 				<div

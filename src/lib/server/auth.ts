@@ -4,6 +4,7 @@ import { sveltekitCookies } from 'better-auth/svelte-kit';
 import { env } from '$env/dynamic/private';
 import { getRequestEvent } from '$app/server';
 import { db } from '$lib/server/db';
+import { sendPasswordResetMail } from '$lib/server/mail';
 
 export const auth = betterAuth({
 	baseURL: env.ORIGIN,
@@ -12,7 +13,7 @@ export const auth = betterAuth({
 	emailAndPassword: {
 		enabled: true,
 		sendResetPassword: async ({ user, url }) => {
-			console.log(`Reset password link for ${user.email}: ${url}`);
+			await sendPasswordResetMail(user.email, url);
 		}
 	},
 	socialProviders: {
@@ -33,5 +34,12 @@ export const auth = betterAuth({
 	session: { modelName: 'sessions' },
 	account: { modelName: 'accounts' },
 	verification: { modelName: 'verifications' },
+	advanced: {
+		useSecureCookies: env.ORIGIN?.startsWith('https') ?? false
+	},
+	accountLinking: {
+		enabled: true,
+		trustedProviders: ['google']
+	},
 	plugins: [sveltekitCookies(getRequestEvent)]
 });

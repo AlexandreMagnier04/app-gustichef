@@ -52,11 +52,8 @@ export async function signUpAndLogin(
 	});
 
 	// Extraire le cookie de session depuis les headers set-cookie
-	const rawCookie = signInRes.headers.get('set-cookie') ?? '';
-	const cookie = rawCookie
-		.split(',')
-		.map((c) => c.split(';')[0].trim())
-		.join('; ');
+	const cookies = (signInRes.headers as Headers & { getSetCookie?: () => string[] }).getSetCookie?.() ?? [];
+	const cookie = cookies.map((c) => c.split(';')[0].trim()).join('; ');
 
 	const { data: sessionData } = await apiRequest('/api/auth/get-session', { cookie });
 	const userId = (sessionData as { user?: { id: string } })?.user?.id ?? '';
