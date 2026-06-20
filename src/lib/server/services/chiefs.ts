@@ -220,13 +220,11 @@ export async function getChiefReviewStats(
 }
 
 export interface NoticeWithCustomer extends Notice {
-	customer_firstname: string;
-	customer_name: string;
-	customer_image: string | null;
+	customer: { firstname: string; name: string; image: string | null };
 }
 
 export async function getNoticesForChief(chiefId: string): Promise<NoticeWithCustomer[]> {
-	return db
+	const rows = await db
 		.select({
 			id_notice: notices.id_notice,
 			rating_notice: notices.rating_notice,
@@ -234,14 +232,19 @@ export async function getNoticesForChief(chiefId: string): Promise<NoticeWithCus
 			date_notice: notices.date_notice,
 			id_customer: notices.id_customer,
 			id_chief: notices.id_chief,
-			customer_firstname: users.firstname,
-			customer_name: users.name,
-			customer_image: users.image
+			firstname: users.firstname,
+			name: users.name,
+			image: users.image
 		})
 		.from(notices)
 		.innerJoin(users, eq(notices.id_customer, users.id))
 		.where(eq(notices.id_chief, chiefId))
 		.orderBy(notices.date_notice);
+
+	return rows.map(({ firstname, name, image, ...rest }) => ({
+		...rest,
+		customer: { firstname, name, image }
+	}));
 }
 
 export async function createNotice(

@@ -5,54 +5,7 @@ import { requests } from '$lib/server/db/schema/customers';
 import { menus } from '$lib/server/db/schema/chiefs';
 import { users } from '$lib/server/db/schema/auth';
 import { publish, userChannel } from '$lib/server/db/pubsub';
-
-export interface ConversationListItem {
-	id_conversation: number;
-	id_chief: string;
-	id_customer: string;
-	statut: string;
-	last_message_at: Date;
-	other_firstname: string;
-	other_name: string;
-	other_image: string | null;
-	request_title: string | null;
-	request_guests: number | null;
-	request_type: string | null;
-	last_message: string | null;
-	unread_count: number;
-}
-
-export interface MessageItem {
-	id_message: number;
-	id_conversation: number;
-	id_sender: string;
-	content_message: string;
-	type: string;
-	id_menu: number | null;
-	price_per_person: number | null;
-	created_at: Date;
-	read_message: boolean;
-	menu_title: string | null;
-	menu_description: string | null;
-	menu_price: string | null;
-}
-
-export interface ConversationDetail {
-	id_conversation: number;
-	id_chief: string;
-	id_customer: string;
-	statut: string;
-	id_request: number | null;
-	request_title: string | null;
-	request_guests: number | null;
-	request_type: string | null;
-	request_date: string | null;
-	request_localization: string | null;
-	other_firstname: string;
-	other_name: string;
-	other_image: string | null;
-	messages: MessageItem[];
-}
+import type { ConversationListItem, ConversationDetail } from '$lib/models/messaging.model';
 
 // Retourne toutes les conversations de l'utilisateur avec le dernier message et le nombre de non-lus
 export async function getConversationsForUser(
@@ -149,6 +102,7 @@ export async function getConversationDetail(
 		guests: null as number | null,
 		type: null as string | null,
 		date: null as string | null,
+		time: null as string | null,
 		localization: null as string | null
 	};
 	if (conv.id_request) {
@@ -158,6 +112,7 @@ export async function getConversationDetail(
 				guests_request: requests.guests_request,
 				type_event_request: requests.type_event_request,
 				expected_date_request: requests.expected_date_request,
+				expected_time_request: requests.expected_time_request,
 				localization_request: requests.localization_request
 			})
 			.from(requests)
@@ -168,6 +123,7 @@ export async function getConversationDetail(
 				guests: req.guests_request,
 				type: req.type_event_request,
 				date: req.expected_date_request,
+				time: req.expected_time_request,
 				localization: req.localization_request
 			};
 		}
@@ -215,6 +171,7 @@ export async function getConversationDetail(
 		request_guests: requestInfo.guests,
 		request_type: requestInfo.type,
 		request_date: requestInfo.date,
+		request_time: requestInfo.time,
 		request_localization: requestInfo.localization,
 		other_firstname: other?.firstname ?? '',
 		other_name: other?.name ?? '',

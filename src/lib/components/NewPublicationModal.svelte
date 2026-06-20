@@ -105,7 +105,7 @@
 
 	<!-- Modal -->
 	<div
-		class="fixed inset-x-0 bottom-0 z-50 max-h-[92dvh] overflow-y-auto rounded-t-3xl bg-cream pb-8"
+		class="fixed inset-x-0 bottom-0 z-50 max-h-[92dvh] overflow-y-auto rounded-t-3xl bg-white pb-8"
 		role="dialog"
 		aria-modal="true"
 	>

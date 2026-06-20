@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation';
 	import CityAutocomplete from './CityAutocomplete.svelte';
+	import DatePicker from './DatePicker.svelte';
 
 	import type { Request } from '$lib/models/customer.model';
 
@@ -30,14 +31,23 @@
 	let step = $state<1 | 2>(1);
 	let guests = $state('');
 	let date = $state('');
+	let time = $state('');
 	let eventType = $state('');
 	let city = $state('');
 	let title = $state('');
 	let description = $state('');
 	let submitting = $state(false);
+	let step1Submitted = $state(false);
 	let error = $state('');
 
 	const isEdit = $derived(!!initialRequest);
+
+	// Erreur step 1 calculée en temps réel
+	const step1Error = $derived(
+		step1Submitted && (!date || !guests || !city)
+			? 'Veuillez renseigner la date, les convives et la ville.'
+			: ''
+	);
 
 	$effect(() => {
 		if (open && initialRequest) {
@@ -55,11 +65,13 @@
 		step = 1;
 		guests = '';
 		date = '';
+		time = '';
 		eventType = '';
 		city = '';
 		title = '';
 		description = '';
 		error = '';
+		step1Submitted = false;
 		submitting = false;
 	}
 
@@ -70,21 +82,15 @@
 
 	function toStep2(e: Event) {
 		e.preventDefault();
-		if (!guests || !date || !city) {
-			error = 'Veuillez remplir tous les champs obligatoires.';
-			return;
-		}
-		error = '';
+		step1Submitted = true;
+		if (!date || !guests || !city) return;
 		step = 2;
 	}
 
 	async function submit(e: Event) {
 		e.preventDefault();
-		if (!title || description.length < 20) {
-			error =
-				description.length < 20
-					? 'Décrivez votre événement en au moins 20 caractères.'
-					: 'Veuillez remplir tous les champs.';
+		if (!title) {
+			error = 'Veuillez remplir tous les champs.';
 			return;
 		}
 		error = '';
@@ -122,7 +128,7 @@
 
 	<!-- Modal bottom sheet -->
 	<div
-		class="fixed inset-x-0 bottom-0 z-50 max-h-[92dvh] overflow-y-auto rounded-t-3xl bg-[#FDF7F4] pb-8"
+		class="fixed inset-x-0 bottom-0 z-50 max-h-[92dvh] overflow-y-auto rounded-t-3xl bg-white pb-8"
 		role="dialog"
 		aria-modal="true"
 	>
@@ -164,9 +170,24 @@
 
 			{#if step === 1}
 				<form onsubmit={toStep2} class="flex flex-col gap-5">
+					<!-- Date + Heure côte à côte -->
+					<div>
+						<label class="mb-1.5 block text-sm font-medium text-navy">Date et heure</label>
+						<div class="flex gap-2">
+							<div class="flex-1">
+								<DatePicker bind:value={date} onSelect={(v) => (date = v)} min={new Date().toISOString().split('T')[0]} placeholder="Choisir une date" />
+							</div>
+							<input
+								type="time"
+								bind:value={time}
+								class="w-28 shrink-0 rounded-full border border-navy/20 bg-white px-3 py-2.5 text-sm text-navy outline-none focus:border-teal"
+							/>
+						</div>
+					</div>
+
 					<!-- Convives -->
 					<div>
-						<label class="mb-1.5 block text-sm font-medium text-navy">Nombre des convives</label>
+						<label class="mb-1.5 block text-sm font-medium text-navy">Nombre de convives</label>
 						<div class="relative">
 							<select
 								bind:value={guests}
@@ -175,48 +196,32 @@
 							>
 								<option value="">Convives</option>
 								{#each GUEST_OPTIONS as n (n)}
-									<option value={n}>{n} personne{n > 1 ? 's' : ''}</option>
+									<option value={String(n)}>{n} personne{n > 1 ? 's' : ''}</option>
 								{/each}
 							</select>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 16 16"
-								fill="currentColor"
-								class="pointer-events-none absolute top-1/2 right-3.5 h-4 w-4 -translate-y-1/2 text-navy/40"
-							>
-								<path
-									fill-rule="evenodd"
-									d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
-									clip-rule="evenodd"
-								/>
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="pointer-events-none absolute top-1/2 right-3.5 h-4 w-4 -translate-y-1/2 text-navy/40">
+								<path fill-rule="evenodd" d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
 							</svg>
 						</div>
 					</div>
 
-					<!-- Date -->
+					<!-- Ville -->
 					<div>
-						<label class="mb-1.5 block text-sm font-medium text-navy">Date</label>
-						<div class="relative">
-							<input
-								type="date"
-								bind:value={date}
-								required
-								min={new Date().toISOString().split('T')[0]}
-								class="w-full appearance-none rounded-full border border-navy/20 bg-white py-2.5 pr-10 pl-4 text-sm text-navy outline-none focus:border-teal [&::-webkit-calendar-picker-indicator]:opacity-0"
-							/>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 16 16"
-								fill="currentColor"
-								class="pointer-events-none absolute top-1/2 right-3.5 h-4 w-4 -translate-y-1/2 text-navy/40"
-							>
-								<path
-									fill-rule="evenodd"
-									d="M4 1.75a.75.75 0 0 1 1.5 0V3h5V1.75a.75.75 0 0 1 1.5 0V3A2.5 2.5 0 0 1 14.5 5.5v6a2.5 2.5 0 0 1-2.5 2.5H4A2.5 2.5 0 0 1 1.5 11.5v-6A2.5 2.5 0 0 1 4 3V1.75ZM3 7v4.5A1 1 0 0 0 4 12.5h8a1 1 0 0 0 1-1V7H3Z"
-									clip-rule="evenodd"
-								/>
-							</svg>
-						</div>
+						<label class="mb-1.5 block text-sm font-medium text-navy">Choisissez votre ville</label>
+						{#if city}
+							<div class="flex items-center gap-2 rounded-full border border-teal bg-white py-2.5 pr-3 pl-4">
+								<span class="flex-1 text-sm text-navy">{city}</span>
+								<button type="button" onclick={() => (city = '')} class="flex h-5 w-5 items-center justify-center rounded-full bg-navy/10 text-navy/60" aria-label="Effacer">
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3 w-3">
+										<path d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z" />
+									</svg>
+								</button>
+							</div>
+						{:else}
+							<div class="rounded-full border border-navy/20 bg-white px-4 py-2.5">
+								<CityAutocomplete value={city} onSelect={(v) => (city = v)} onClear={() => (city = '')} />
+							</div>
+						{/if}
 					</div>
 
 					<!-- Type d'événement -->
@@ -232,67 +237,19 @@
 									<option value={t}>{t}</option>
 								{/each}
 							</select>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 16 16"
-								fill="currentColor"
-								class="pointer-events-none absolute top-1/2 right-3.5 h-4 w-4 -translate-y-1/2 text-navy/40"
-							>
-								<path
-									fill-rule="evenodd"
-									d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
-									clip-rule="evenodd"
-								/>
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="pointer-events-none absolute top-1/2 right-3.5 h-4 w-4 -translate-y-1/2 text-navy/40">
+								<path fill-rule="evenodd" d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
 							</svg>
 						</div>
 					</div>
 
-					<!-- Ville -->
-					<div>
-						<label class="mb-1.5 block text-sm font-medium text-navy">Choisissez votre ville</label>
-						{#if city}
-							<div
-								class="flex items-center gap-2 rounded-full border border-teal bg-white py-2.5 pr-3 pl-4"
-							>
-								<span class="flex-1 text-sm text-navy">{city}</span>
-								<button
-									type="button"
-									onclick={() => (city = '')}
-									class="flex h-5 w-5 items-center justify-center rounded-full bg-navy/10 text-navy/60"
-									aria-label="Effacer"
-								>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										viewBox="0 0 16 16"
-										fill="currentColor"
-										class="h-3 w-3"
-									>
-										<path
-											d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z"
-										/>
-									</svg>
-								</button>
-							</div>
-						{:else}
-							<div class="relative">
-								<div class="rounded-full border border-navy/20 bg-white px-4 py-2.5">
-									<CityAutocomplete
-										value={city}
-										onSelect={(v) => (city = v)}
-										onClear={() => (city = '')}
-									/>
-								</div>
-							</div>
-						{/if}
-					</div>
-
-					{#if error}
-						<p class="text-sm text-rust">{error}</p>
+					{#if step1Error}
+						<p class="text-sm text-rust">{step1Error}</p>
 					{/if}
 
 					<button
 						type="submit"
-						class="w-full rounded-xl bg-teal py-3.5 text-sm font-semibold text-cream shadow-sm transition-opacity active:opacity-80"
+						class="w-full rounded-xl bg-navy py-3.5 text-sm font-semibold text-white shadow-sm transition-opacity active:opacity-80"
 					>
 						Continuer
 					</button>
@@ -319,7 +276,6 @@
 						>
 						<textarea
 							bind:value={description}
-							required
 							maxlength="2000"
 							rows="5"
 							placeholder="Dites-nous tout ! Quel moment souhaitez-vous partager ? Décrivez l'ambiance de votre événement et vos envies gourmandes pour que nos chefs puissent vous proposer l'expérience parfaite."

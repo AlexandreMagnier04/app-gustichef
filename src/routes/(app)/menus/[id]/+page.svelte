@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import EditMenuModal from '$lib/components/EditMenuModal.svelte';
+	import BookingWizard from '$lib/components/BookingWizard.svelte';
 	import { goto } from '$app/navigation';
 
 	let { data }: { data: PageData } = $props();
@@ -8,10 +9,11 @@
 	const menu = $derived(data.menu);
 	const images = $derived(data.images);
 	const coverImage = $derived(images[0]?.url ?? null);
-
 	const isOwner = $derived(data.user?.id === menu.id_chief);
+	const isCustomer = $derived(data.user?.role === 'customer');
 
 	let showEdit = $state(false);
+	let showBooking = $state(false);
 
 	function onUpdated() {
 		showEdit = false;
@@ -20,6 +22,11 @@
 
 	function onDeleted() {
 		goto('/profile');
+	}
+
+	function onBookingSuccess(conversationId: number) {
+		showBooking = false;
+		goto('/messages/' + conversationId);
 	}
 </script>
 
@@ -114,26 +121,24 @@
 			</p>
 		</div>
 
-		<!-- Bouton éditer (chef propriétaire uniquement) -->
+		<!-- Bouton éditer (chef propriétaire) ou Réserver ce plat (client) -->
 		{#if isOwner}
 			<button
 				onclick={() => (showEdit = true)}
 				class="mt-8 flex w-full items-center justify-center gap-2 rounded-2xl bg-rust py-4 text-sm font-semibold text-white shadow-sm"
 			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 16 16"
-					fill="currentColor"
-					class="h-4 w-4"
-				>
-					<path
-						d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.263a1.75 1.75 0 0 0 0-2.474Z"
-					/>
-					<path
-						d="M4.75 3.5A2.25 2.25 0 0 0 2.5 5.75v5.5A2.25 2.25 0 0 0 4.75 13.5h5.5A2.25 2.25 0 0 0 12.5 11.25V9a.75.75 0 0 0-1.5 0v2.25a.75.75 0 0 1-.75.75h-5.5a.75.75 0 0 1-.75-.75v-5.5a.75.75 0 0 1 .75-.75H7A.75.75 0 0 0 7 2H4.75Z"
-					/>
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-4 w-4">
+					<path d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.263a1.75 1.75 0 0 0 0-2.474Z" />
+					<path d="M4.75 3.5A2.25 2.25 0 0 0 2.5 5.75v5.5A2.25 2.25 0 0 0 4.75 13.5h5.5A2.25 2.25 0 0 0 12.5 11.25V9a.75.75 0 0 0-1.5 0v2.25a.75.75 0 0 1-.75.75h-5.5a.75.75 0 0 1-.75-.75v-5.5a.75.75 0 0 1 .75-.75H7A.75.75 0 0 0 7 2H4.75Z" />
 				</svg>
-				éditer ce plat
+				Éditer ce plat
+			</button>
+		{:else if isCustomer && menu.type_menu !== 'extra'}
+			<button
+				onclick={() => (showBooking = true)}
+				class="mt-8 flex w-full items-center justify-center gap-2 rounded-2xl bg-navy py-4 text-sm font-semibold text-white shadow-sm"
+			>
+				Réserver ce plat
 			</button>
 		{/if}
 	</div>
@@ -141,4 +146,20 @@
 
 {#if isOwner}
 	<EditMenuModal bind:open={showEdit} {menu} {onUpdated} {onDeleted} />
+{/if}
+
+{#if showBooking}
+	<BookingWizard
+		menuId={menu.id_menu}
+		menuTitle={menu.title_menu}
+		menuImage={coverImage}
+		pricePerPerson={Math.floor(parseFloat(menu.price_menu))}
+		guestsMin={menu.guests_min ?? 1}
+		guestsMax={menu.guests_max ?? 50}
+		chiefId={menu.id_chief}
+		chiefFirstname={data.chiefUser?.firstname ?? 'Le chef'}
+		chiefExtras={data.chiefExtras}
+		onclose={() => (showBooking = false)}
+		onsuccess={onBookingSuccess}
+	/>
 {/if}

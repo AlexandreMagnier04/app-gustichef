@@ -3,6 +3,8 @@
 	import type { Menu } from '$lib/models/chief.model';
 	import NewMenuModal from '$lib/components/NewMenuModal.svelte';
 	import EditMenuModal from '$lib/components/EditMenuModal.svelte';
+	import { signOut } from '$lib/auth-client';
+	import { goto } from '$app/navigation';
 
 	let { data }: { data: PageData } = $props();
 
@@ -454,56 +456,73 @@
 			{:else}
 				<div class="flex flex-col gap-3">
 					{#each allReservations as res (res.id_reservation)}
-						<a
-							href="/reservations/{res.id_reservation}"
-							class="flex items-center gap-4 rounded-2xl bg-white px-4 py-3.5 shadow-[0_2px_8px_rgba(5,30,35,0.06)]"
-						>
-							<div
-								class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl {res.statut ===
-								'confirme'
-									? 'bg-teal/10'
-									: res.statut === 'annule'
-										? 'bg-navy/8'
-										: 'bg-rust/10'}"
-							>
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									viewBox="0 0 20 20"
-									fill="currentColor"
-									class="h-5 w-5 {res.statut === 'confirme'
-										? 'text-teal'
-										: res.statut === 'annule'
-											? 'text-navy/30'
-											: 'text-rust'}"
-								>
-									<path
-										fill-rule="evenodd"
-										d="M5.75 2a.75.75 0 0 1 .75.75V4h7V2.75a.75.75 0 0 1 1.5 0V4h.25A2.75 2.75 0 0 1 18 6.75v8.5A2.75 2.75 0 0 1 15.25 18H4.75A2.75 2.75 0 0 1 2 15.25v-8.5A2.75 2.75 0 0 1 4.75 4H5V2.75A.75.75 0 0 1 5.75 2Zm-1 5.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h10.5c.69 0 1.25-.56 1.25-1.25v-6.5c0-.69-.56-1.25-1.25-1.25H4.75Z"
-										clip-rule="evenodd"
-									/>
-								</svg>
+						<div class="overflow-hidden rounded-2xl bg-white shadow-[0_2px_8px_rgba(5,30,35,0.06)]">
+							<!-- Header client + badge statut -->
+							<div class="flex items-center justify-between px-4 pt-4 pb-3">
+								<div class="flex items-center gap-2.5">
+									{#if res.customer?.image}
+										<img src={res.customer?.image} alt="" class="h-9 w-9 rounded-full object-cover" />
+									{:else}
+										<div class="flex h-9 w-9 items-center justify-center rounded-full bg-navy/10 text-[13px] font-bold text-navy/50">
+											{(res.customer?.firstname?.[0] ?? '?').toUpperCase()}
+										</div>
+									{/if}
+									<div>
+										<p class="text-[13px] font-semibold text-navy">{res.customer?.firstname} {res.customer?.name}</p>
+										<p class="text-[11px] text-navy/50">{res.title}</p>
+									</div>
+								</div>
+								<span class="shrink-0 rounded-full px-2.5 py-1 text-[10px] font-semibold {res.statut === 'confirme' ? 'bg-teal/10 text-teal' : res.statut === 'annule' ? 'bg-navy/8 text-navy/40' : 'bg-rust/10 text-rust'}">
+									{res.statut === 'confirme' ? 'Confirmée' : res.statut === 'annule' ? 'Annulée' : res.statut}
+								</span>
 							</div>
-							<div class="min-w-0 flex-1">
-								<p class="truncate text-sm font-semibold text-navy">{res.title}</p>
-								<p class="mt-0.5 text-xs text-navy/50">
-									{formatDate(res.event_date)} · {res.guests} pers.
-								</p>
+
+							<!-- Séparateur -->
+							<div class="mx-4 h-px bg-navy/6"></div>
+
+							<!-- Infos event -->
+							<div class="grid grid-cols-2 gap-x-4 gap-y-2.5 px-4 py-3">
+								<div class="flex items-center gap-2">
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3.5 w-3.5 shrink-0 text-navy/40">
+										<path fill-rule="evenodd" d="M4 1.75a.75.75 0 0 1 1.5 0V3h5V1.75a.75.75 0 0 1 1.5 0V3h.25A2.75 2.75 0 0 1 15 5.75v7.5A2.75 2.75 0 0 1 12.25 16H3.75A2.75 2.75 0 0 1 1 13.25v-7.5A2.75 2.75 0 0 1 3.75 3H4V1.75ZM3.75 6a.75.75 0 0 0-.75.75v5.5c0 .414.336.75.75.75h8.5a.75.75 0 0 0 .75-.75v-5.5a.75.75 0 0 0-.75-.75H3.75Z" clip-rule="evenodd" />
+									</svg>
+									<span class="text-[12px] text-navy/70 capitalize">{formatDate(res.event_date)}{res.event_time ? ' · ' + res.event_time : ''}</span>
+								</div>
+								{#if res.localization}
+									<div class="flex items-center gap-2">
+										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3.5 w-3.5 shrink-0 text-navy/40">
+											<path fill-rule="evenodd" d="M8 1a5 5 0 1 0 0 10A5 5 0 0 0 8 1ZM6.5 8a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Z" clip-rule="evenodd" />
+											<path d="M9.5 14.5a1.5 1.5 0 0 1-3 0v-.878A6.98 6.98 0 0 1 1 7.5h1.5A5.5 5.5 0 0 0 8 13a5.5 5.5 0 0 0 5.5-5.5H15a6.98 6.98 0 0 1-5.5 6.122V14.5Z" />
+										</svg>
+										<span class="text-[12px] text-navy/70">{res.localization}</span>
+									</div>
+								{/if}
+								<div class="flex items-center gap-2">
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3.5 w-3.5 shrink-0 text-navy/40">
+										<path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
+									</svg>
+									<span class="text-[12px] text-navy/70">{res.guests} convive{res.guests > 1 ? 's' : ''}</span>
+								</div>
+								{#if res.price_per_person}
+									<div class="flex items-center gap-2">
+										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3.5 w-3.5 shrink-0 text-navy/40">
+											<path d="M10.621 1.596a.75.75 0 0 0-1.242-.832l-7.5 11.25a.75.75 0 0 0 .621 1.166h9.5a.75.75 0 0 0 .75-.75V9.75a.75.75 0 0 0-1.5 0v2.5H4.118l6.503-9.654Zm1.629 4.404a.75.75 0 0 0-1.5 0v1.5a.75.75 0 0 0 1.5 0V6Z" />
+										</svg>
+										<span class="text-[12px] font-medium text-rust">{res.price_per_person} € / pers.</span>
+									</div>
+								{/if}
 							</div>
-							<span
-								class="shrink-0 rounded-full px-2.5 py-1 text-[10px] font-semibold {res.statut ===
-								'confirme'
-									? 'bg-teal/10 text-teal'
-									: res.statut === 'annule'
-										? 'bg-navy/8 text-navy/40'
-										: 'bg-rust/10 text-rust'}"
-							>
-								{res.statut === 'confirme'
-									? 'Confirmé'
-									: res.statut === 'annule'
-										? 'Annulé'
-										: res.statut}
-							</span>
-						</a>
+
+							<!-- Actions -->
+							<div class="flex gap-2 border-t border-navy/6 px-4 py-3">
+								<a href="/reservations/{res.id_reservation}" class="flex-1 rounded-xl border border-navy/15 py-2.5 text-center text-[12px] font-semibold text-navy transition-opacity active:opacity-70">
+									Voir les détails
+								</a>
+								<a href="/messages/{res.id_conversation}" class="flex-1 rounded-xl bg-rust py-2.5 text-center text-[12px] font-semibold text-white transition-opacity active:opacity-70">
+									Contacter
+								</a>
+							</div>
+						</div>
 					{/each}
 				</div>
 			{/if}
@@ -512,6 +531,21 @@
 		{:else if activeTab === 'avis'}
 			<p class="py-12 text-center text-sm text-navy/40">Aucun avis pour l'instant.</p>
 		{/if}
+
+		<!-- Déconnexion -->
+		<div class="mt-6 px-4">
+			<button
+				type="button"
+				onclick={async () => { await signOut(); goto('/login'); }}
+				class="flex w-full items-center justify-center gap-2 rounded-2xl border border-navy/10 bg-white py-3.5 text-sm font-semibold text-navy/60 transition-opacity active:opacity-70"
+			>
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
+					<path fill-rule="evenodd" d="M3 4.25A2.25 2.25 0 0 1 5.25 2h5.5A2.25 2.25 0 0 1 13 4.25v2a.75.75 0 0 1-1.5 0v-2a.75.75 0 0 0-.75-.75h-5.5a.75.75 0 0 0-.75.75v11.5c0 .414.336.75.75.75h5.5a.75.75 0 0 0 .75-.75v-2a.75.75 0 0 1 1.5 0v2A2.25 2.25 0 0 1 10.75 18h-5.5A2.25 2.25 0 0 1 3 15.75V4.25Z" clip-rule="evenodd" />
+					<path fill-rule="evenodd" d="M19 10a.75.75 0 0 0-.75-.75H8.704l1.048-1.08a.75.75 0 1 0-1.004-1.114l-2.5 2.5a.75.75 0 0 0 0 1.087l2.5 2.5a.75.75 0 1 0 1.004-1.114l-1.048-1.08h9.546A.75.75 0 0 0 19 10Z" clip-rule="evenodd" />
+				</svg>
+				Se déconnecter
+			</button>
+		</div>
 	</div>
 </div>
 

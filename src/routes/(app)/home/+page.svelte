@@ -344,8 +344,8 @@
 						<div class="flex items-start justify-between gap-3">
 							<h3 class="text-[15px] leading-snug font-semibold text-navy">{r.title_request}</h3>
 							<div class="flex shrink-0 items-center gap-1.5">
-								{#if r.customer_image}
-									<img src={r.customer_image} alt="" class="h-7 w-7 rounded-full object-cover" />
+								{#if r.customer.image}
+									<img src={r.customer.image} alt="" class="h-7 w-7 rounded-full object-cover" />
 								{:else}
 									<div
 										class="flex h-7 w-7 items-center justify-center rounded-full bg-cream text-navy/40"
@@ -364,7 +364,7 @@
 										</svg>
 									</div>
 								{/if}
-								<span class="text-xs text-navy/60">{r.customer_firstname} {r.customer_name}</span>
+								<span class="text-xs text-navy/60">{r.customer.firstname} {r.customer.name}</span>
 							</div>
 						</div>
 

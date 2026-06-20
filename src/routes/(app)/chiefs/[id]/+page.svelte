@@ -314,9 +314,9 @@
 						<div class="rounded-2xl bg-white p-4 shadow-[0_2px_8px_rgba(5,30,35,0.06)]">
 							<div class="flex items-center justify-between gap-3">
 								<div class="flex items-center gap-3">
-									{#if notice.customer_image}
+									{#if notice.customer.image}
 										<img
-											src={notice.customer_image}
+											src={notice.customer.image}
 											alt=""
 											class="h-10 w-10 rounded-full object-cover"
 										/>
@@ -324,13 +324,13 @@
 										<div
 											class="flex h-10 w-10 items-center justify-center rounded-full bg-navy/8 text-xs font-bold text-navy"
 										>
-											{notice.customer_firstname[0]}{notice.customer_name[0]}
+											{notice.customer.firstname[0]}{notice.customer.name[0]}
 										</div>
 									{/if}
 									<div>
 										<p class="text-sm font-semibold text-navy">
-											{notice.customer_firstname}
-											{notice.customer_name}
+											{notice.customer.firstname}
+											{notice.customer.name}
 										</p>
 										<p class="text-xs text-navy/40">{formatDate(notice.date_notice)}</p>
 									</div>

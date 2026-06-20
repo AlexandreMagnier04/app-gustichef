@@ -1,3 +1,4 @@
+
 export interface Chief {
 	id_chief: string;
 	bio_chief: string | null;
@@ -19,13 +20,12 @@ export interface Notice {
 	id_chief: string;
 }
 
-// chief enrichi : données user jointes pour l'affichage
 export interface ChiefProfile extends Chief {
 	user: {
-		name: string;
 		firstname: string;
-		email: string;
+		name: string;
 		image: string | null;
+		email: string;
 		localization: string;
 	};
 	specialties: Specialty[];
@@ -50,8 +50,8 @@ export interface ChiefCard {
 	id_chief: string;
 	firstname: string;
 	name: string;
-	localization: string;
 	image: string | null;
+	localization: string;
 	min_price: string | null;
 	avg_rating: string | null;
 	review_count: number;

@@ -1,3 +1,4 @@
+
 export type UserRole = 'customer' | 'chief';
 
 export interface User {

@@ -2,8 +2,10 @@
 	import { page } from '$app/state';
 	import { invalidateAll } from '$app/navigation';
 	import { onMount } from 'svelte';
-	import logoImg from '$lib/assets/img/gustichef-ecriture-orange.png';
-	import gustichefEcriture from '$lib/assets/img/gustichef-ecriture-verte.png';
+	import logoRondOrange from '$lib/assets/img/logo-gusti-rond-orange.png';
+	import ecritureOrange from '$lib/assets/img/gustichef-ecriture-orange.png';
+	import logoRondVert from '$lib/assets/img/logo-gusti-rond-vert.png';
+	import ecritureVerte2 from '$lib/assets/img/gustichef-ecriture-verte-2.png';
 	import NotificationsPanel from '$lib/components/NotificationsPanel.svelte';
 
 	let { children, data } = $props();
@@ -40,12 +42,22 @@
 <div class="flex h-dvh flex-col overflow-hidden bg-cream py-3">
 	<!-- Header -->
 	<header class="shrink-0 px-5">
-		<div class="flex items-center justify-between">
-			<div class="flex items-center gap-2.5">
-				<img src={logoImg} alt="" class="h-9 w-9 object-contain" />
-				<img src={gustichefEcriture} alt="Gustichef" class="h-7 object-contain" />
+		<div class="relative flex items-center justify-center">
+			<div class="absolute left-0">
+				{#if data.user.role === 'chief'}
+					<img src={logoRondOrange} alt="" class="h-9 w-9 object-contain" />
+				{:else}
+					<img src={logoRondVert} alt="" class="h-9 w-9 object-contain" />
+				{/if}
 			</div>
-			<div class="flex items-center gap-4">
+			<div>
+				{#if data.user.role === 'chief'}
+					<img src={ecritureOrange} alt="Gustichef" class="h-10 object-contain" />
+				{:else}
+					<img src={ecritureVerte2} alt="Gustichef" class="h-10 object-contain" />
+				{/if}
+			</div>
+			<div class="absolute right-0 flex items-center gap-4">
 				<button
 					type="button"
 					onclick={() => (showNotifications = true)}

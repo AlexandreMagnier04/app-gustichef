@@ -138,9 +138,9 @@
 							{request.title_request}
 						</h3>
 						<div class="flex shrink-0 items-center gap-1.5">
-							{#if request.customer_image}
+							{#if request.customer.image}
 								<img
-									src={request.customer_image}
+									src={request.customer.image}
 									alt=""
 									class="h-7 w-7 rounded-full object-cover"
 								/>
@@ -163,7 +163,7 @@
 								</div>
 							{/if}
 							<span class="text-xs text-navy/60"
-								>{request.customer_firstname} {request.customer_name}</span
+								>{request.customer.firstname} {request.customer.name}</span
 							>
 						</div>
 					</div>

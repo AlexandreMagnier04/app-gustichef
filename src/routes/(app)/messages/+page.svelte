@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ConversationListItem } from '$lib/server/services/messaging';
+	import type { ConversationListItem } from '$lib/models/messaging.model';
 
 	let { data } = $props();
 

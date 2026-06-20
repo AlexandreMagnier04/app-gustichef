@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import type { ReservationDetail } from '$lib/server/services/reservations';
+	import type { ReservationDetail } from '$lib/models/reservation.model';
 
 	let { data } = $props();
 	const r = $derived(data.reservation as ReservationDetail);
@@ -65,7 +65,7 @@
 		<!-- Event info -->
 		<div>
 			<h2 class="text-lg font-bold text-navy">{r.title}</h2>
-			<p class="mt-0.5 text-sm text-navy/60">{r.chief_firstname} {r.chief_name}</p>
+			<p class="mt-0.5 text-sm text-navy/60">{r.chief?.firstname} {r.chief?.name}</p>
 		</div>
 
 		<div class="space-y-2.5">
@@ -185,7 +185,7 @@
 				href="/messages/{r.id_conversation}"
 				class="flex w-full items-center justify-center rounded-xl bg-rust py-3.5 text-sm font-semibold text-white transition-opacity active:opacity-80"
 			>
-				Contacter {r.chief_firstname}
+				Contacter {r.chief?.firstname}
 			</a>
 		</div>
 	</div>

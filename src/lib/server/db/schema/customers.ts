@@ -11,18 +11,17 @@ export const customers = pgTable('customers', {
 });
 
 // Demande de prestation émise par un client
-// id_service est nullable : la demande devient une prestation une fois acceptée
 // id_chief est nullable : null = demande ouverte visible par tous les chefs
 export const requests = pgTable('requests', {
 	id_request: serial('id_request').primaryKey(),
 	title_request: varchar('title_request', { length: 100 }).notNull(),
 	description_request: text('description_request').notNull(),
 	expected_date_request: date('expected_date_request').notNull(),
+	expected_time_request: varchar('expected_time_request', { length: 5 }),
 	guests_request: integer('guests_request').notNull(),
 	type_event_request: varchar('type_event_request', { length: 50 }),
 	localization_request: varchar('localization_request', { length: 100 }).notNull(),
 	statut_request: varchar('statut_request', { length: 50 }).notNull(),
-	id_service: integer('id_service'),
 	id_customer: text('id_customer')
 		.notNull()
 		.references(() => customers.id_customer, { onDelete: 'cascade' }),
