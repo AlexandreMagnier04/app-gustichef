@@ -175,7 +175,12 @@
 						<label class="mb-1.5 block text-sm font-medium text-navy">Date et heure</label>
 						<div class="flex gap-2">
 							<div class="flex-1">
-								<DatePicker bind:value={date} onSelect={(v) => (date = v)} min={new Date().toISOString().split('T')[0]} placeholder="Choisir une date" />
+								<DatePicker
+									bind:value={date}
+									onSelect={(v) => (date = v)}
+									min={new Date().toISOString().split('T')[0]}
+									placeholder="Choisir une date"
+								/>
 							</div>
 							<input
 								type="time"
@@ -199,8 +204,17 @@
 									<option value={String(n)}>{n} personne{n > 1 ? 's' : ''}</option>
 								{/each}
 							</select>
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="pointer-events-none absolute top-1/2 right-3.5 h-4 w-4 -translate-y-1/2 text-navy/40">
-								<path fill-rule="evenodd" d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 16 16"
+								fill="currentColor"
+								class="pointer-events-none absolute top-1/2 right-3.5 h-4 w-4 -translate-y-1/2 text-navy/40"
+							>
+								<path
+									fill-rule="evenodd"
+									d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
+									clip-rule="evenodd"
+								/>
 							</svg>
 						</div>
 					</div>
@@ -209,17 +223,35 @@
 					<div>
 						<label class="mb-1.5 block text-sm font-medium text-navy">Choisissez votre ville</label>
 						{#if city}
-							<div class="flex items-center gap-2 rounded-full border border-teal bg-white py-2.5 pr-3 pl-4">
+							<div
+								class="flex items-center gap-2 rounded-full border border-teal bg-white py-2.5 pr-3 pl-4"
+							>
 								<span class="flex-1 text-sm text-navy">{city}</span>
-								<button type="button" onclick={() => (city = '')} class="flex h-5 w-5 items-center justify-center rounded-full bg-navy/10 text-navy/60" aria-label="Effacer">
-									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3 w-3">
-										<path d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z" />
+								<button
+									type="button"
+									onclick={() => (city = '')}
+									class="flex h-5 w-5 items-center justify-center rounded-full bg-navy/10 text-navy/60"
+									aria-label="Effacer"
+								>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 16 16"
+										fill="currentColor"
+										class="h-3 w-3"
+									>
+										<path
+											d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z"
+										/>
 									</svg>
 								</button>
 							</div>
 						{:else}
 							<div class="rounded-full border border-navy/20 bg-white px-4 py-2.5">
-								<CityAutocomplete value={city} onSelect={(v) => (city = v)} onClear={() => (city = '')} />
+								<CityAutocomplete
+									value={city}
+									onSelect={(v) => (city = v)}
+									onClear={() => (city = '')}
+								/>
 							</div>
 						{/if}
 					</div>
@@ -237,8 +269,17 @@
 									<option value={t}>{t}</option>
 								{/each}
 							</select>
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="pointer-events-none absolute top-1/2 right-3.5 h-4 w-4 -translate-y-1/2 text-navy/40">
-								<path fill-rule="evenodd" d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 16 16"
+								fill="currentColor"
+								class="pointer-events-none absolute top-1/2 right-3.5 h-4 w-4 -translate-y-1/2 text-navy/40"
+							>
+								<path
+									fill-rule="evenodd"
+									d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
+									clip-rule="evenodd"
+								/>
 							</svg>
 						</div>
 					</div>

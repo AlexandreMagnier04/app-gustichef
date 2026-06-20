@@ -2,7 +2,7 @@ import { eq, or } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
 import { db } from '$lib/server/db';
 import { reservations } from '$lib/server/db/schema/reservations';
-import { menus, chiefs } from '$lib/server/db/schema/chiefs';
+import { menus } from '$lib/server/db/schema/chiefs';
 import { users } from '$lib/server/db/schema/auth';
 import type { ReservationDetail } from '$lib/models/reservation.model';
 
@@ -62,11 +62,25 @@ function mapReservation(row: {
 	customer_image: string | null;
 	[key: string]: unknown;
 }): ReservationDetail {
-	const { chief_firstname, chief_name, chief_image, customer_firstname, customer_name, customer_image, ...rest } = row;
+	const {
+		chief_firstname,
+		chief_name,
+		chief_image,
+		customer_firstname,
+		customer_name,
+		customer_image,
+		...rest
+	} = row;
 	return {
 		...(rest as Omit<ReservationDetail, 'chief' | 'customer'>),
-		chief: chief_firstname != null ? { firstname: chief_firstname, name: chief_name!, image: chief_image } : null,
-		customer: customer_firstname != null ? { firstname: customer_firstname, name: customer_name!, image: customer_image } : null
+		chief:
+			chief_firstname != null
+				? { firstname: chief_firstname, name: chief_name!, image: chief_image }
+				: null,
+		customer:
+			customer_firstname != null
+				? { firstname: customer_firstname, name: customer_name!, image: customer_image }
+				: null
 	};
 }
 

@@ -38,7 +38,6 @@
 	/>
 </svelte:head>
 
-<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <div
 	class="relative h-dvh w-screen overflow-hidden"
 	role="region"

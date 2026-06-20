@@ -123,7 +123,6 @@
 		}
 		step = 5;
 	}
-
 </script>
 
 {#if step <= 4}
@@ -221,8 +220,7 @@
 				Continuer
 			</button>
 
-
-<p class="mt-5 text-center text-xs text-gray-500">
+			<p class="mt-5 text-center text-xs text-gray-500">
 				Déjà inscrit ?
 				<a href="/login" class="font-medium text-navy">Se connecter</a>
 			</p>

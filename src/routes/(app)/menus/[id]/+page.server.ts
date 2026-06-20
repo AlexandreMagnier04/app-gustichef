@@ -17,12 +17,18 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	const [menu, images] = await Promise.all([getMenuById(id), getMenuImages(id)]);
 	if (!menu) throw error(404, 'Menu introuvable');
 
-	const [chiefUser] = await db.select({ firstname: users.firstname, name: users.name })
-		.from(users).where(eq(users.id, menu.id_chief));
+	const [chiefUser] = await db
+		.select({ firstname: users.firstname, name: users.name })
+		.from(users)
+		.where(eq(users.id, menu.id_chief));
 
-	const chiefExtras = user.role === 'customer'
-		? await db.select().from(menus).where(and(eq(menus.id_chief, menu.id_chief), eq(menus.type_menu, 'extra')))
-		: [];
+	const chiefExtras =
+		user.role === 'customer'
+			? await db
+					.select()
+					.from(menus)
+					.where(and(eq(menus.id_chief, menu.id_chief), eq(menus.type_menu, 'extra')))
+			: [];
 
 	return { menu, images, user, chiefUser, chiefExtras };
 };

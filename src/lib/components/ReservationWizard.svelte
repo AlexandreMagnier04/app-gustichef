@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { loadStripe } from '@stripe/stripe-js';
-	import { onMount } from 'svelte';
 	import { PUBLIC_STRIPE_KEY } from '$env/static/public';
 	import type { Menu } from '$lib/models/chief.model';
 
@@ -21,7 +20,6 @@
 
 	let {
 		conversationId,
-		menuId,
 		menuTitle,
 		menuDescription,
 		menuImage,
@@ -208,7 +206,7 @@
 
 		<!-- Progress dots -->
 		<div class="mt-3 flex gap-1.5">
-			{#each [1, 2, 3, 4] as s}
+			{#each [1, 2, 3, 4] as s (s)}
 				<div
 					class="h-1.5 flex-1 rounded-full transition-colors {step === s
 						? 'bg-rust'
@@ -246,7 +244,7 @@
 					<button
 						type="button"
 						onclick={() => (guests = Math.max(1, guests - 1))}
-						class="flex h-11 w-11 items-center justify-center rounded-xl bg-teal text-white text-lg font-bold"
+						class="flex h-11 w-11 items-center justify-center rounded-xl bg-teal text-lg font-bold text-white"
 					>
 						−
 					</button>
@@ -254,7 +252,7 @@
 					<button
 						type="button"
 						onclick={() => guests++}
-						class="flex h-11 w-11 items-center justify-center rounded-xl bg-rust text-white text-lg font-bold"
+						class="flex h-11 w-11 items-center justify-center rounded-xl bg-rust text-lg font-bold text-white"
 					>
 						+
 					</button>
@@ -263,7 +261,6 @@
 					Sous-total menu : <span class="font-medium text-navy">{menuTotal} €</span>
 				</p>
 			</div>
-
 		{:else if step === 2}
 			<!-- Extras -->
 			{#if chiefExtras.length === 0}
@@ -295,7 +292,7 @@
 									type="button"
 									onclick={() =>
 										(extrasQty[extra.id_menu] = Math.max(0, (extrasQty[extra.id_menu] ?? 0) - 1))}
-									class="flex h-8 w-8 items-center justify-center rounded-lg bg-navy/8 text-navy font-semibold"
+									class="flex h-8 w-8 items-center justify-center rounded-lg bg-navy/8 font-semibold text-navy"
 								>
 									−
 								</button>
@@ -304,9 +301,8 @@
 								</span>
 								<button
 									type="button"
-									onclick={() =>
-										(extrasQty[extra.id_menu] = (extrasQty[extra.id_menu] ?? 0) + 1)}
-									class="flex h-8 w-8 items-center justify-center rounded-lg bg-rust/15 text-rust font-semibold"
+									onclick={() => (extrasQty[extra.id_menu] = (extrasQty[extra.id_menu] ?? 0) + 1)}
+									class="flex h-8 w-8 items-center justify-center rounded-lg bg-rust/15 font-semibold text-rust"
 								>
 									+
 								</button>
@@ -315,7 +311,6 @@
 					{/each}
 				</div>
 			{/if}
-
 		{:else if step === 3}
 			<!-- Notes -->
 			<div class="mb-5">
@@ -337,7 +332,11 @@
 							<p>{formatDate(eventDate)}</p>
 						{/if}
 						<p>{guests} convives</p>
-						<p>{menuTitle}{selectedExtras.length ? ' + ' + selectedExtras.map((e) => e.title).join(', ') : ''}</p>
+						<p>
+							{menuTitle}{selectedExtras.length
+								? ' + ' + selectedExtras.map((e) => e.title).join(', ')
+								: ''}
+						</p>
 						{#if localization}
 							<p>{localization}</p>
 						{/if}
@@ -350,7 +349,7 @@
 						<span>Menu ({guests} × {pricePerPerson} €)</span>
 						<span>{menuTotal} €</span>
 					</div>
-					{#each selectedExtras as e}
+					{#each selectedExtras as e (e.id_menu)}
 						<div class="flex justify-between text-[13px] text-navy/60">
 							<span>{e.title} ({e.qty} × {e.price_per_person} €)</span>
 							<span>{e.qty * e.price_per_person} €</span>
@@ -371,7 +370,6 @@
 					* Ce tarif est une estimation. Le prix final sera validé par le chef.
 				</p>
 			</div>
-
 		{:else if step === 4}
 			<!-- Info paiement -->
 			<div class="mb-4 flex gap-2.5 rounded-xl bg-teal/10 p-3">
@@ -388,7 +386,8 @@
 					/>
 				</svg>
 				<p class="text-[12px] leading-snug text-teal/90">
-					Comment fonctionne le paiement ? Aucun débit aujourd'hui — votre CB sécurise uniquement la réservation.
+					Comment fonctionne le paiement ? Aucun débit aujourd'hui — votre CB sécurise uniquement la
+					réservation.
 				</p>
 			</div>
 
@@ -429,7 +428,8 @@
 						/>
 					</svg>
 					<p class="text-[12px] leading-snug text-rust/80">
-						Politique d'annulation — Annulation gratuite avant J-7 · Acompte non remboursable après J-7
+						Politique d'annulation — Annulation gratuite avant J-7 · Acompte non remboursable après
+						J-7
 					</p>
 				</div>
 			</div>

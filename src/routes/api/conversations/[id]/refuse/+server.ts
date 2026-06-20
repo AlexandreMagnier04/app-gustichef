@@ -12,9 +12,10 @@ export const POST = async ({ params, locals }) => {
 	if (isNaN(id)) throw error(400, 'ID invalide');
 
 	// Chef ou client peuvent refuser selon leur rôle
-	const condition = user.role === 'chief'
-		? and(eq(conversations.id_conversation, id), eq(conversations.id_chief, user.id))
-		: and(eq(conversations.id_conversation, id), eq(conversations.id_customer, user.id));
+	const condition =
+		user.role === 'chief'
+			? and(eq(conversations.id_conversation, id), eq(conversations.id_chief, user.id))
+			: and(eq(conversations.id_conversation, id), eq(conversations.id_customer, user.id));
 
 	const [conv] = await db.select().from(conversations).where(condition);
 	if (!conv) throw error(404, 'Conversation introuvable');

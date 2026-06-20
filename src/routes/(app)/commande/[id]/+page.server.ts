@@ -22,14 +22,18 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	if (!conv) throw error(404, 'Conversation introuvable');
 
 	if (conv.statut === 'confirme') throw redirect(302, `/messages/${id}`);
-	if (conv.statut !== 'devis_envoye' && conv.statut !== 'paiement_requis') throw redirect(302, `/messages/${id}`);
+	if (conv.statut !== 'devis_envoye' && conv.statut !== 'paiement_requis')
+		throw redirect(302, `/messages/${id}`);
 
-	const proposal = [...(conv.messages ?? [])].reverse().find(
-		(m: MessageItem) => m.type === 'menu_proposal' || m.type === 'payment_invitation'
-	);
+	const proposal = [...(conv.messages ?? [])]
+		.reverse()
+		.find((m: MessageItem) => m.type === 'menu_proposal' || m.type === 'payment_invitation');
 
 	const [chiefExtras, menuImages, setupIntent] = await Promise.all([
-		db.select().from(menus).where(and(eq(menus.id_chief, conv.id_chief), eq(menus.type_menu, 'extra'))),
+		db
+			.select()
+			.from(menus)
+			.where(and(eq(menus.id_chief, conv.id_chief), eq(menus.type_menu, 'extra'))),
 		proposal?.id_menu
 			? db.select().from(images_menu).where(eq(images_menu.id_menu, proposal.id_menu)).limit(1)
 			: Promise.resolve([]),

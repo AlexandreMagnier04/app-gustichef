@@ -14,14 +14,16 @@ export const POST = async ({ params, request, locals }) => {
 	const convId = Number(params.id);
 	if (isNaN(convId)) throw error(400, 'ID invalide');
 
-	const { pricePerPerson, menuId } = await request.json() as {
+	const { pricePerPerson, menuId } = (await request.json()) as {
 		pricePerPerson: number;
 		menuId: number | null;
 	};
 
 	if (!pricePerPerson || pricePerPerson <= 0) throw error(400, 'Prix invalide');
 
-	const [conv] = await db.select().from(conversations)
+	const [conv] = await db
+		.select()
+		.from(conversations)
 		.where(and(eq(conversations.id_conversation, convId), eq(conversations.id_chief, user.id)));
 	if (!conv) throw error(404, 'Conversation introuvable');
 	if (conv.statut !== 'a_repondre') throw error(400, 'Cette conversation ne peut pas être validée');
@@ -39,8 +41,10 @@ export const POST = async ({ params, request, locals }) => {
 	await updateConversationStatut(convId, 'paiement_requis');
 
 	// Notifier le client
-	const [chef] = await db.select({ firstname: users.firstname, name: users.name })
-		.from(users).where(eq(users.id, user.id));
+	const [chef] = await db
+		.select({ firstname: users.firstname, name: users.name })
+		.from(users)
+		.where(eq(users.id, user.id));
 	const chefName = chef ? `${chef.firstname} ${chef.name}` : 'Le chef';
 
 	await createNotification(

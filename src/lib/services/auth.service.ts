@@ -12,7 +12,7 @@ const AUTH_ERRORS: Record<string, string> = {
 	'Invalid email': 'Adresse email invalide',
 	'Email not verified': 'Email non vérifié',
 	'Too many requests': 'Trop de tentatives, réessayez plus tard',
-	'Invalid origin': "Origine de la requête invalide",
+	'Invalid origin': 'Origine de la requête invalide',
 	'Account not found': 'Compte introuvable',
 	'Invalid password': 'Mot de passe incorrect'
 };

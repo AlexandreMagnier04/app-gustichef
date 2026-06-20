@@ -38,7 +38,9 @@ export const POST = async ({ request, locals }) => {
 	const [conv] = await db
 		.select()
 		.from(conversations)
-		.where(and(eq(conversations.id_conversation, conversationId), eq(conversations.id_customer, user.id)));
+		.where(
+			and(eq(conversations.id_conversation, conversationId), eq(conversations.id_customer, user.id))
+		);
 	if (!conv) throw error(404, 'Conversation introuvable');
 
 	// Récupérer le dernier menu proposé

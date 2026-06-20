@@ -15,14 +15,13 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	const conv = await getConversationDetail(id, user.id);
 	if (!conv) throw error(404, 'Conversation introuvable');
 
-
 	const chiefMenus = user.role === 'chief' ? await getMenusByChief(user.id) : [];
 	const chiefExtras =
 		user.role === 'customer'
 			? await db
-				.select()
-				.from(menus)
-				.where(and(eq(menus.id_chief, conv.id_chief), eq(menus.type_menu, 'extra')))
+					.select()
+					.from(menus)
+					.where(and(eq(menus.id_chief, conv.id_chief), eq(menus.type_menu, 'extra')))
 			: [];
 
 	return { conv, user, chiefMenus, chiefExtras };

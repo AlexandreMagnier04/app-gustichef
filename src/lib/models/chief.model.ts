@@ -1,4 +1,3 @@
-
 export interface Chief {
 	id_chief: string;
 	bio_chief: string | null;

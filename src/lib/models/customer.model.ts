@@ -13,7 +13,6 @@ export interface Request {
 
 export type CreateRequest = Omit<Request, 'id_request'>;
 
-
 export interface Customer {
 	id_customer: string;
 	preferences_customer: string;

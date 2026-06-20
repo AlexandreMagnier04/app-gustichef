@@ -12,7 +12,18 @@ export const POST = async ({ request, locals }) => {
 	if (user.role === 'chief') throw error(403, 'Réservé aux clients');
 
 	const body = await request.json();
-	const { chiefId, menuId, menuTitle, pricePerPerson, guests, eventDate, eventTime, localization, extras, notes } = body as {
+	const {
+		chiefId,
+		menuId,
+		menuTitle,
+		pricePerPerson,
+		guests,
+		eventDate,
+		eventTime,
+		localization,
+		extras,
+		notes
+	} = body as {
 		chiefId: string;
 		menuId: number;
 		menuTitle: string;
@@ -28,22 +39,29 @@ export const POST = async ({ request, locals }) => {
 	if (!chiefId || !eventDate || !localization) throw error(400, 'Données manquantes');
 
 	// S'assurer que le profil client existe
-	await db.insert(customers).values({ id_customer: user.id, preferences_customer: '' }).onConflictDoNothing();
+	await db
+		.insert(customers)
+		.values({ id_customer: user.id, preferences_customer: '' })
+		.onConflictDoNothing();
 
 	// Créer la demande
-	const [req] = await db.insert(requests).values({
-		title_request: menuTitle,
-		description_request: notes || `Demande via profil chef — ${menuTitle}`,
-		expected_date_request: eventDate,
-		guests_request: guests,
-		localization_request: localization,
-		id_chief: chiefId,
-		id_customer: user.id,
-		statut_request: 'open'
-	}).returning();
+	const [req] = await db
+		.insert(requests)
+		.values({
+			title_request: menuTitle,
+			description_request: notes || `Demande via profil chef — ${menuTitle}`,
+			expected_date_request: eventDate,
+			guests_request: guests,
+			localization_request: localization,
+			id_chief: chiefId,
+			id_customer: user.id,
+			statut_request: 'open'
+		})
+		.returning();
 
 	// Créer la conversation
-	const [conv] = await db.insert(conversations)
+	const [conv] = await db
+		.insert(conversations)
 		.values({ id_request: req.id_request, id_chief: chiefId, id_customer: user.id })
 		.returning();
 
@@ -53,7 +71,7 @@ export const POST = async ({ request, locals }) => {
 		time: eventTime || '',
 		guests,
 		location: localization,
-		extras: extras.filter(e => e.qty > 0).map(e => ({ title: e.title, qty: e.qty })),
+		extras: extras.filter((e) => e.qty > 0).map((e) => ({ title: e.title, qty: e.qty })),
 		notes: notes || '',
 		menuTitle
 	};
@@ -68,8 +86,10 @@ export const POST = async ({ request, locals }) => {
 	});
 
 	// Notifier le chef
-	const [customer] = await db.select({ firstname: users.firstname, name: users.name })
-		.from(users).where(eq(users.id, user.id));
+	const [customer] = await db
+		.select({ firstname: users.firstname, name: users.name })
+		.from(users)
+		.where(eq(users.id, user.id));
 	const customerName = customer ? `${customer.firstname} ${customer.name}` : 'Un client';
 
 	await createNotification(
@@ -82,4 +102,3 @@ export const POST = async ({ request, locals }) => {
 
 	return json({ conversationId: conv.id_conversation });
 };
-

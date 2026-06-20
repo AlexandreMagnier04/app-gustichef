@@ -44,9 +44,10 @@ export async function createRequest(customerId: string, data: CreateRequestDto):
 }
 
 export async function getRequestsByCustomer(customerId: string): Promise<Request[]> {
-	return db.select().from(requests).where(
-		and(eq(requests.id_customer, customerId), isNull(requests.id_chief))
-	);
+	return db
+		.select()
+		.from(requests)
+		.where(and(eq(requests.id_customer, customerId), isNull(requests.id_chief)));
 }
 
 export async function getRequestsWithChiefDetails(customerId: string): Promise<RequestWithChief[]> {
@@ -86,7 +87,12 @@ export async function getRequestsWithChiefDetails(customerId: string): Promise<R
 			...rest,
 			chief:
 				rest.id_chief != null
-					? { firstname: chief_firstname!, name: chief_name!, image: chief_image, specialty: chief_specialty }
+					? {
+							firstname: chief_firstname!,
+							name: chief_name!,
+							image: chief_image,
+							specialty: chief_specialty
+						}
 					: null
 		}));
 }
