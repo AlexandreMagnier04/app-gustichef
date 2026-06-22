@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { goto } from '$app/navigation';
 	import { registerUser, loginWithGoogle } from '$lib/services/auth.service';
 	import type { UserRole } from '$lib/models/user.model';
 	import ecriture from '$lib/assets/img/gustichef-ecriture-verte.png';
@@ -33,8 +34,9 @@
 		});
 
 		loading = false;
-		if (result.errors) errors = result.errors;
-		if (result.serverError) serverError = result.serverError;
+		if (result.errors) { errors = result.errors; return; }
+		if (result.serverError) { serverError = result.serverError; return; }
+		await goto('/home');
 	}
 
 	async function handleGoogle() {

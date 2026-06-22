@@ -1,5 +1,8 @@
 import { test, expect } from '@playwright/test';
 
+// Sélecteur du bouton "se connecter" sur la page login (type="button", pas type="submit")
+const LOGIN_BUTTON = 'button:has-text("se connecter")';
+
 test("page de login s'affiche correctement", async ({ page }) => {
 	await page.goto('/login');
 	await expect(page.locator('input[name="email"], input[type="email"]').first()).toBeVisible();
@@ -17,13 +20,16 @@ test("login avec mauvais mot de passe, message d'erreur visible", async ({ page 
 	await page.goto('/login');
 	await page.fill('input[name="email"], input[type="email"]', 'inexistant@test.com');
 	await page.fill('input[name="password"], input[type="password"]', 'mauvais');
-	await page.click('[type="submit"]');
+	await page.click(LOGIN_BUTTON);
 	// Reste sur la page login (pas de redirect)
 	await expect(page).toHaveURL(/\/login/);
 });
 
 test('inscription, redirect vers onboarding ou home', async ({ page }) => {
 	await page.goto('/register');
+	// Attendre que Svelte soit hydraté avant de soumettre (sinon native GET submit → /register?)
+	await page.waitForLoadState('networkidle');
+
 	const email = `pw-test-${Date.now()}@test.com`;
 	const inputs = page.locator('input[type="text"]');
 	await inputs.nth(0).fill('Jean');
@@ -34,5 +40,5 @@ test('inscription, redirect vers onboarding ou home', async ({ page }) => {
 	await passwords.nth(0).fill('password123!');
 	await passwords.nth(1).fill('password123!');
 	await page.click('[type="submit"]');
-	await expect(page).not.toHaveURL(/\/register/, { timeout: 10000 });
+	await expect(page).toHaveURL(/\/home/, { timeout: 10000 });
 });

@@ -4,3 +4,4 @@ export * from './customers';
 export * from './social';
 export * from './messaging';
 export * from './notifications';
+export * from './reservations';

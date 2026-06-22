@@ -5,6 +5,7 @@ import {
 	chiefs,
 	menus,
 	chiefs_specialties,
+	specialties,
 	notices,
 	images_chef,
 	images_menu
@@ -48,6 +49,7 @@ export async function cleanDb() {
 	await testDb.delete(menus);
 	await testDb.delete(images_chef);
 	await testDb.delete(chiefs_specialties);
+	await testDb.delete(specialties);
 	await testDb.delete(chiefs);
 	await testDb.delete(customers);
 	await testDb.delete(sessions);
