@@ -23,7 +23,7 @@
 	);
 
 	let guests = $state(conv.request_guests ?? 2);
-	let eventTime = $state('');
+	const eventTime = $derived(conv.request_time ?? '');
 	let notes = $state('');
 	let extrasQty = $state<Record<number, number>>({});
 
@@ -208,14 +208,12 @@
 						>
 					</div>
 				{/if}
-				<div class="flex items-center justify-between py-3">
-					<span class="text-[13px] text-navy/60">Heure</span>
-					<input
-						type="time"
-						bind:value={eventTime}
-						class="rounded-lg border border-navy/15 bg-white px-2 py-1 text-[13px] font-medium text-navy outline-none focus:border-navy"
-					/>
-				</div>
+				{#if eventTime}
+					<div class="flex items-center justify-between py-3">
+						<span class="text-[13px] text-navy/60">Heure</span>
+						<span class="text-[13px] font-medium text-navy">{eventTime}</span>
+					</div>
+				{/if}
 				{#if conv.request_localization}
 					<div class="flex items-center justify-between py-3">
 						<span class="text-[13px] text-navy/60">Lieu</span>
@@ -434,7 +432,7 @@
 			disabled={submitting}
 			class="w-full rounded-xl bg-navy py-4 text-sm font-semibold text-white transition-opacity active:opacity-80 disabled:opacity-50"
 		>
-			{submitting ? 'Validation en cours...' : 'Envoyer ma demande'}
+			{submitting ? 'Validation en cours...' : 'Confirmer ma réservation'}
 		</button>
 	</div>
 </div>

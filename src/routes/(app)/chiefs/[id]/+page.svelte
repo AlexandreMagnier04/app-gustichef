@@ -1,5 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import BookingWizard from '$lib/components/BookingWizard.svelte';
+	import { goto } from '$app/navigation';
 
 	let { data }: { data: PageData } = $props();
 
@@ -27,6 +29,12 @@
 	type Tab = 'galerie' | 'menus' | 'avis';
 	let activeTab = $state<Tab>('galerie');
 	let menuTypeFilter = $state<'plat' | 'extra'>('plat');
+	let bookingMenu = $state<(typeof menus)[0] | null>(null);
+
+	function onBookingSuccess(conversationId: number) {
+		bookingMenu = null;
+		goto('/messages/' + conversationId);
+	}
 
 	const filteredMenus = $derived(menuTypeFilter === 'plat' ? platMenus : extraMenus);
 
@@ -182,12 +190,14 @@
 					<p class="text-sm">Aucune photo pour l'instant</p>
 				</div>
 			{:else}
-				<div class="grid grid-cols-2 gap-1.5">
+				<div class="columns-2 gap-1.5">
 					{#each galleryImages as img, i (img.id_image)}
 						<div
-							class="overflow-hidden rounded-xl {i === 0
-								? 'col-span-2 aspect-video'
-								: 'aspect-square'}"
+							class="mb-1.5 w-full break-inside-avoid overflow-hidden rounded-xl {i % 3 === 0
+								? 'aspect-3/4'
+								: i % 3 === 1
+									? 'aspect-square'
+									: 'aspect-2/3'}"
 						>
 							<img src={img.url} alt="" class="h-full w-full object-cover" />
 						</div>
@@ -205,10 +215,10 @@
 						onclick={() => (menuTypeFilter = t)}
 						class="flex-1 rounded-xl py-2 text-sm font-medium transition-colors {menuTypeFilter ===
 						t
-							? 'bg-white text-navy shadow-sm'
+							? 'bg-teal text-white shadow-sm'
 							: 'text-navy/45'}"
 					>
-						{t === 'plat' ? 'Menus' : 'Extras'}
+						{t === 'plat' ? 'Menus' : "L'extra"}
 					</button>
 				{/each}
 			</div>
@@ -220,36 +230,40 @@
 			{:else}
 				<div class="flex flex-col gap-4">
 					{#each filteredMenus as menu, i (menu.id_menu)}
-						<a
-							href="/menus/{menu.id_menu}"
-							class="block overflow-hidden rounded-2xl bg-white shadow-[0_2px_12px_rgba(5,30,35,0.08)]"
-						>
-							<!-- Visuel menu -->
-							<div class="relative h-36 overflow-hidden bg-linear-to-br {menuGradient(i)}">
-								{#if galleryImages[i]}
-									<img
-										src={galleryImages[i].url}
-										alt=""
-										class="h-full w-full object-cover opacity-60 mix-blend-overlay"
-									/>
+						<div class="overflow-hidden rounded-2xl bg-white shadow-[0_2px_12px_rgba(5,30,35,0.08)]">
+							<!-- Image propre -->
+							<div class="h-36 overflow-hidden">
+								{#if menu.image_url}
+									<img src={menu.image_url} alt="" class="h-full w-full object-cover" />
+								{:else}
+									<div class="h-full w-full bg-linear-to-br {menuGradient(i)}"></div>
 								{/if}
-								<div class="absolute inset-0 flex flex-col justify-end p-4">
-									<h3 class="text-base font-bold text-white drop-shadow">{menu.title_menu}</h3>
-									<p class="text-sm font-semibold text-white/80">
-										Dès {Math.floor(parseFloat(menu.price_menu))} € / convive
-									</p>
-								</div>
 							</div>
-							<!-- Description -->
-							<div class="p-4">
-								<p class="line-clamp-2 text-sm leading-relaxed text-navy/60">
+							<!-- Infos -->
+							<div class="p-3.5">
+								<h3 class="text-sm font-bold text-navy">{menu.title_menu}</h3>
+								<p class="mt-0.5 text-xs font-semibold text-rust">
+									Dès {Math.floor(parseFloat(menu.price_menu))} € / convive
+								</p>
+								<p class="mt-2 line-clamp-2 text-sm leading-relaxed text-navy/60">
 									{menu.description_menu}
 								</p>
-								<div class="mt-3 flex items-center justify-between">
-									<span class="text-xs font-semibold text-rust">Voir le détail →</span>
+								<div class="mt-3 flex gap-2">
+									<a
+										href="/menus/{menu.id_menu}"
+										class="flex flex-1 items-center justify-center rounded-xl bg-rust py-2.5 text-xs font-semibold text-white"
+									>
+										Découvrir le menu
+									</a>
+									<button
+										onclick={() => (bookingMenu = menu)}
+										class="flex flex-1 items-center justify-center rounded-xl bg-teal py-2.5 text-xs font-semibold text-white"
+									>
+										Réserver ce plat
+									</button>
 								</div>
 							</div>
-						</a>
+						</div>
 					{/each}
 				</div>
 			{/if}
@@ -330,3 +344,19 @@
 		{/if}
 	</div>
 </div>
+
+{#if bookingMenu}
+	<BookingWizard
+		menuId={bookingMenu.id_menu}
+		menuTitle={bookingMenu.title_menu}
+		menuImage={bookingMenu.image_url}
+		pricePerPerson={parseFloat(bookingMenu.price_menu)}
+		guestsMin={bookingMenu.guests_min ?? 1}
+		guestsMax={bookingMenu.guests_max ?? 50}
+		chiefId={profile.id_chief}
+		chiefFirstname={profile.user.firstname}
+		chiefExtras={extraMenus}
+		onclose={() => (bookingMenu = null)}
+		onsuccess={onBookingSuccess}
+	/>
+{/if}

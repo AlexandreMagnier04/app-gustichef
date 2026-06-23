@@ -39,13 +39,15 @@
 		? {
 				a_repondre: { label: 'À répondre', color: 'bg-rust/15 text-rust' },
 				devis_envoye: { label: 'Devis envoyé', color: 'bg-navy/10 text-navy/70' },
-				confirme: { label: 'Confirmé', color: 'bg-teal/15 text-teal' },
+				paiement_requis: { label: 'En attente', color: 'bg-olive/20 text-olive' },
+				confirme: { label: 'Confirmé', color: 'bg-green-500/15 text-green-600' },
 				refuse: { label: 'Refusé', color: 'bg-navy/10 text-navy/40' }
 			}
 		: {
 				a_repondre: { label: 'En attente', color: 'bg-olive/20 text-olive' },
 				devis_envoye: { label: 'Devis reçu', color: 'bg-rust/15 text-rust' },
-				confirme: { label: 'Confirmé', color: 'bg-teal/15 text-teal' },
+				paiement_requis: { label: 'En attente', color: 'bg-olive/20 text-olive' },
+				confirme: { label: 'Confirmé', color: 'bg-green-500/15 text-green-600' },
 				refuse: { label: 'Refusé', color: 'bg-navy/10 text-navy/40' }
 			};
 

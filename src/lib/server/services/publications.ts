@@ -93,7 +93,7 @@ export async function getChiefPublicationImages(
 		})
 		.from(images_publication)
 		.where(inArray(images_publication.id_publication, pubIds))
-		.orderBy(images_publication.date_upload);
+		.orderBy(desc(images_publication.date_upload));
 }
 
 // Feed paginé enrichi (auteur + images + tags + spécialités du chef) — utilisé par la home

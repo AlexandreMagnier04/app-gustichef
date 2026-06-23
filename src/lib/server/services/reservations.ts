@@ -40,23 +40,28 @@ const reservationSelect = {
 	event_date: reservations.event_date,
 	event_time: reservations.event_time,
 	localization: reservations.localization,
+	notes: reservations.notes,
+	extras_json: reservations.extras_json,
 	statut: reservations.statut,
 	created_at: reservations.created_at,
 	chief_firstname: chiefUser.firstname,
 	chief_name: chiefUser.name,
 	chief_image: chiefUser.image,
+	chief_localization: chiefUser.localization,
 	customer_firstname: customerUser.firstname,
 	customer_name: customerUser.name,
 	customer_image: customerUser.image,
 	menu_title: menus.title_menu,
 	menu_description: menus.description_menu,
-	menu_price: menus.price_menu
+	menu_price: menus.price_menu,
+	menu_ingredients: menus.ingredients
 };
 
 function mapReservation(row: {
 	chief_firstname: string | null;
 	chief_name: string | null;
 	chief_image: string | null;
+	chief_localization: string | null;
 	customer_firstname: string | null;
 	customer_name: string | null;
 	customer_image: string | null;
@@ -66,6 +71,7 @@ function mapReservation(row: {
 		chief_firstname,
 		chief_name,
 		chief_image,
+		chief_localization,
 		customer_firstname,
 		customer_name,
 		customer_image,
@@ -75,7 +81,7 @@ function mapReservation(row: {
 		...(rest as Omit<ReservationDetail, 'chief' | 'customer'>),
 		chief:
 			chief_firstname != null
-				? { firstname: chief_firstname, name: chief_name!, image: chief_image }
+				? { firstname: chief_firstname, name: chief_name!, image: chief_image, localization: chief_localization ?? '' }
 				: null,
 		customer:
 			customer_firstname != null

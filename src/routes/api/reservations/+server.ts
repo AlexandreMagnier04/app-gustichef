@@ -1,5 +1,5 @@
 import { json, error } from '@sveltejs/kit';
-import { eq, and, desc } from 'drizzle-orm';
+import { eq, and, desc, or, inArray } from 'drizzle-orm';
 import Stripe from 'stripe';
 import { STRIPE_SECRET_KEY } from '$env/static/private';
 import { requireUser } from '$lib/server/services/auth';
@@ -43,11 +43,16 @@ export const POST = async ({ request, locals }) => {
 		);
 	if (!conv) throw error(404, 'Conversation introuvable');
 
-	// Récupérer le dernier menu proposé
+	// Récupérer le menu depuis menu_proposal ou booking_request
 	const [proposal] = await db
 		.select()
 		.from(messages)
-		.where(and(eq(messages.id_conversation, conversationId), eq(messages.type, 'menu_proposal')))
+		.where(
+			and(
+				eq(messages.id_conversation, conversationId),
+				inArray(messages.type, ['menu_proposal', 'booking_request'])
+			)
+		)
 		.orderBy(desc(messages.created_at))
 		.limit(1);
 

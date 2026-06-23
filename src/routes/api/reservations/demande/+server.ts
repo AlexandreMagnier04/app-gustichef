@@ -51,6 +51,7 @@ export const POST = async ({ request, locals }) => {
 			title_request: menuTitle,
 			description_request: notes || `Demande via profil chef — ${menuTitle}`,
 			expected_date_request: eventDate,
+			expected_time_request: eventTime || null,
 			guests_request: guests,
 			localization_request: localization,
 			id_chief: chiefId,

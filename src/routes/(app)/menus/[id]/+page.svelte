@@ -35,10 +35,10 @@
 	<div class="relative h-52 w-full overflow-hidden">
 		{#if coverImage}
 			<img src={coverImage} alt="" class="h-full w-full object-cover" />
-			<div class="absolute inset-0 bg-black/10"></div>
 		{:else}
 			<div class="h-full w-full bg-linear-to-br from-navy via-[#1e4060] to-[#b85a35]"></div>
 		{/if}
+		<div class="absolute inset-0 bg-linear-to-t from-cream/90 via-cream/20 to-transparent"></div>
 	</div>
 
 	<div class="px-5">

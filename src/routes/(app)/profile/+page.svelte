@@ -3,8 +3,7 @@
 	import type { Menu } from '$lib/models/chief.model';
 	import NewMenuModal from '$lib/components/NewMenuModal.svelte';
 	import EditMenuModal from '$lib/components/EditMenuModal.svelte';
-	import { signOut } from '$lib/auth-client';
-	import { goto } from '$app/navigation';
+	import NewPublicationModal from '$lib/components/NewPublicationModal.svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -37,6 +36,7 @@
 	const filteredMenus = $derived(menus.filter((m) => m.type_menu === menuTypeFilter));
 
 	// Modaux
+	let showNewPublication = $state(false);
 	let showNewMenu = $state(false);
 	let showEditMenu = $state(false);
 	let editingMenu = $state<Menu | null>(null);
@@ -156,12 +156,22 @@
 				{profile?.user.name ?? ''}
 			</h1>
 			<p class="mt-0.5 text-sm text-navy/50">
-				Chef à domicile{#if uniqueSpecialties[0]} · {uniqueSpecialties[0].name_speciality}{/if}
+				Chef à domicile{#if uniqueSpecialties[0]}
+					· {uniqueSpecialties[0].name_speciality}{/if}
 			</p>
 			{#if displayLoc}
 				<div class="mt-1 flex items-center gap-1 text-xs text-navy/50">
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3 w-3 shrink-0 text-rust">
-						<path fill-rule="evenodd" d="m7.539 14.841.003.003.002.002a.755.755 0 0 0 .912 0l.002-.002.003-.003.012-.009a5.57 5.57 0 0 0 .19-.153 15.588 15.588 0 0 0 2.046-2.082c1.101-1.362 2.291-3.342 2.291-5.597A5 5 0 0 0 3 8c0 2.255 1.19 4.235 2.292 5.597a15.591 15.591 0 0 0 2.046 2.082 8.916 8.916 0 0 0 .189.153l.012.01ZM8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" clip-rule="evenodd" />
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 16 16"
+						fill="currentColor"
+						class="h-3 w-3 shrink-0 text-rust"
+					>
+						<path
+							fill-rule="evenodd"
+							d="m7.539 14.841.003.003.002.002a.755.755 0 0 0 .912 0l.002-.002.003-.003.012-.009a5.57 5.57 0 0 0 .19-.153 15.588 15.588 0 0 0 2.046-2.082c1.101-1.362 2.291-3.342 2.291-5.597A5 5 0 0 0 3 8c0 2.255 1.19 4.235 2.292 5.597a15.591 15.591 0 0 0 2.046 2.082 8.916 8.916 0 0 0 .189.153l.012.01ZM8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"
+							clip-rule="evenodd"
+						/>
 					</svg>
 					<span>{displayLoc}</span>
 				</div>
@@ -200,10 +210,7 @@
 
 		<!-- Actions rapides -->
 		<div class="flex flex-col items-end gap-1">
-			<a
-				href="/profile/edit"
-				class="flex items-center gap-2 py-1.5 text-sm font-medium text-teal"
-			>
+			<a href="/profile/edit" class="flex items-center gap-2 py-1.5 text-sm font-medium text-teal">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					viewBox="0 0 16 16"
@@ -283,7 +290,8 @@
 			>
 				{tab}
 				{#if activeTab === tab}
-					<span class="absolute bottom-0 left-1/2 h-0.5 w-10 -translate-x-1/2 rounded-full bg-rust"></span>
+					<span class="absolute bottom-0 left-1/2 h-0.5 w-10 -translate-x-1/2 rounded-full bg-rust"
+					></span>
 				{/if}
 			</button>
 		{/each}
@@ -294,8 +302,8 @@
 		<!-- Galerie -->
 		{#if activeTab === 'galerie'}
 			<button
-				onclick={() => (showNewMenu = true)}
-				class="mb-4 flex items-center gap-2 text-sm font-medium text-navy/60"
+				onclick={() => (showNewPublication = true)}
+				class="mb-4 flex w-full items-center justify-center gap-2 text-sm font-medium text-rust"
 			>
 				<span class="flex h-7 w-7 items-center justify-center rounded-full bg-rust text-white">
 					<svg
@@ -309,19 +317,20 @@
 						/>
 					</svg>
 				</span>
-				Ajouter une recette
+				Ajouter une publication
 			</button>
 
 			{#if galleryImages.length === 0}
 				<p class="py-12 text-center text-sm text-navy/40">Aucune photo pour l'instant.</p>
 			{:else}
-				<div class="grid grid-cols-2 gap-1.5">
+				<div class="columns-2 gap-1.5">
 					{#each galleryImages as img, i (img.id_image)}
 						<button
-							onclick={() => (activeTab = 'menus')}
-							class="overflow-hidden rounded-xl {i === 0
-								? 'col-span-2 aspect-video'
-								: 'aspect-square'}"
+							class="mb-1.5 w-full break-inside-avoid overflow-hidden rounded-xl {i % 3 === 0
+								? 'aspect-3/4'
+								: i % 3 === 1
+									? 'aspect-square'
+									: 'aspect-2/3'}"
 						>
 							<img src={img.url} alt="" class="h-full w-full object-cover" />
 						</button>
@@ -337,17 +346,17 @@
 						onclick={() => (menuTypeFilter = t)}
 						class="flex-1 rounded-xl py-2 text-sm font-medium transition-colors {menuTypeFilter ===
 						t
-							? 'bg-white text-navy shadow-sm'
+							? 'bg-teal text-white shadow-sm'
 							: 'text-navy/45'}"
 					>
-						{t === 'plat' ? 'Menus' : 'Extras'}
+						{t === 'plat' ? 'Menus' : "L'extra"}
 					</button>
 				{/each}
 			</div>
 
 			<button
 				onclick={() => (showNewMenu = true)}
-				class="mb-4 flex items-center gap-2 text-sm font-medium text-navy/60"
+				class="mb-4 flex w-full items-center justify-center gap-2 text-sm font-medium text-rust"
 			>
 				<span class="flex h-7 w-7 items-center justify-center rounded-full bg-rust text-white">
 					<svg
@@ -371,52 +380,38 @@
 			{:else}
 				<div class="flex flex-col gap-4">
 					{#each filteredMenus as menu, i (menu.id_menu)}
-						<div
-							class="overflow-hidden rounded-2xl bg-white shadow-[0_2px_12px_rgba(5,30,35,0.08)]"
-						>
-							<!-- Visuel avec gradient -->
-							<div class="relative h-32 overflow-hidden bg-linear-to-br {menuGradient(i)}">
-								{#if galleryImages[i]}
-									<img
-										src={galleryImages[i].url}
-										alt=""
-										class="h-full w-full object-cover opacity-50 mix-blend-overlay"
-									/>
+						<div class="overflow-hidden rounded-2xl bg-white shadow-[0_2px_12px_rgba(5,30,35,0.08)]">
+							<!-- Image propre -->
+							<div class="h-36 overflow-hidden">
+								{#if menu.image_url}
+									<img src={menu.image_url} alt="" class="h-full w-full object-cover" />
+								{:else}
+									<div class="h-full w-full bg-linear-to-br {menuGradient(i)}"></div>
 								{/if}
-								<div class="absolute inset-0 flex flex-col justify-end p-3">
-									<h3 class="text-sm font-bold text-white drop-shadow">{menu.title_menu}</h3>
-									<p class="text-xs font-semibold text-white/80">
-										Dès {Math.floor(parseFloat(menu.price_menu))} € / convive
-									</p>
-								</div>
 							</div>
+							<!-- Infos -->
 							<div class="p-3.5">
-								<p class="line-clamp-2 text-sm leading-relaxed text-navy/60">
+								<h3 class="text-sm font-bold text-navy">{menu.title_menu}</h3>
+								<p class="mt-0.5 text-xs font-semibold text-rust">
+									Dès {Math.floor(parseFloat(menu.price_menu))} € / convive
+								</p>
+								<p class="mt-2 line-clamp-2 text-sm leading-relaxed text-navy/60">
 									{menu.description_menu}
 								</p>
 								<div class="mt-3 flex gap-2">
 									<a
 										href="/menus/{menu.id_menu}"
-										class="flex-1 rounded-xl bg-navy py-2.5 text-center text-xs font-semibold text-cream"
+										class="flex flex-1 items-center justify-center rounded-xl bg-rust py-2.5 text-xs font-semibold text-white"
 									>
-										Voir le menu
+										Découvrir le menu
 									</a>
 									<button
 										onclick={() => openEdit(menu)}
-										class="flex items-center gap-1.5 rounded-xl bg-rust px-3.5 py-2.5 text-xs font-semibold text-white"
+										class="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-teal py-2.5 text-xs font-semibold text-white"
 									>
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											viewBox="0 0 16 16"
-											fill="currentColor"
-											class="h-3.5 w-3.5"
-										>
-											<path
-												d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.263a1.75 1.75 0 0 0 0-2.474Z"
-											/>
-											<path
-												d="M4.75 3.5A2.25 2.25 0 0 0 2.5 5.75v5.5A2.25 2.25 0 0 0 4.75 13.5h5.5A2.25 2.25 0 0 0 12.5 11.25V9a.75.75 0 0 0-1.5 0v2.25a.75.75 0 0 1-.75.75h-5.5a.75.75 0 0 1-.75-.75v-5.5a.75.75 0 0 1 .75-.75H7A.75.75 0 0 0 7 2H4.75Z"
-											/>
+										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3.5 w-3.5">
+											<path d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.263a1.75 1.75 0 0 0 0-2.474Z" />
+											<path d="M4.75 3.5A2.25 2.25 0 0 0 2.5 5.75v5.5A2.25 2.25 0 0 0 4.75 13.5h5.5A2.25 2.25 0 0 0 12.5 11.25V9a.75.75 0 0 0-1.5 0v2.25a.75.75 0 0 1-.75.75h-5.5a.75.75 0 0 1-.75-.75v-5.5a.75.75 0 0 1 .75-.75H7A.75.75 0 0 0 7 2H4.75Z" />
 										</svg>
 										Éditer
 									</button>
@@ -435,136 +430,59 @@
 				<div class="flex flex-col gap-3">
 					{#each allReservations as res (res.id_reservation)}
 						<div class="overflow-hidden rounded-2xl bg-white shadow-[0_2px_8px_rgba(5,30,35,0.06)]">
-							<!-- Header client + badge statut -->
-							<div class="flex items-center justify-between px-4 pt-4 pb-3">
-								<div class="flex items-center gap-2.5">
-									{#if res.customer?.image}
-										<img
-											src={res.customer?.image}
-											alt=""
-											class="h-9 w-9 rounded-full object-cover"
-										/>
-									{:else}
-										<div
-											class="flex h-9 w-9 items-center justify-center rounded-full bg-navy/10 text-[13px] font-bold text-navy/50"
-										>
-											{(res.customer?.firstname?.[0] ?? '?').toUpperCase()}
-										</div>
-									{/if}
-									<div>
-										<p class="text-[13px] font-semibold text-navy">
-											{res.customer?.firstname}
-											{res.customer?.name}
-										</p>
-										<p class="text-[11px] text-navy/50">{res.title}</p>
+							<!-- Header : photo client | titre événement | badge -->
+							<div class="flex items-center gap-3 px-4 pt-4 pb-3">
+								{#if res.customer?.image}
+									<img src={res.customer.image} alt="" class="h-10 w-10 shrink-0 rounded-full object-cover" />
+								{:else}
+									<div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-navy/10 text-sm font-bold text-navy/50">
+										{(res.customer?.firstname?.[0] ?? '?').toUpperCase()}
 									</div>
+								{/if}
+								<div class="min-w-0 flex-1">
+									<a href="/reservations/{res.id_reservation}" class="flex items-center gap-1 text-[13px] font-semibold text-navy">
+										<span class="truncate">{res.title}</span>
+										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3.5 w-3.5 shrink-0 text-navy/40"><path fill-rule="evenodd" d="M6.22 4.22a.75.75 0 0 1 1.06 0l3.25 3.25a.75.75 0 0 1 0 1.06l-3.25 3.25a.75.75 0 0 1-1.06-1.06L8.94 8 6.22 5.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd"/></svg>
+									</a>
+									<p class="text-[11px] text-navy/50">{res.customer?.firstname} {res.customer?.name}</p>
 								</div>
-								<span
-									class="shrink-0 rounded-full px-2.5 py-1 text-[10px] font-semibold {res.statut ===
-									'confirme'
-										? 'bg-teal/10 text-teal'
-										: res.statut === 'annule'
-											? 'bg-navy/8 text-navy/40'
-											: 'bg-rust/10 text-rust'}"
-								>
-									{res.statut === 'confirme'
-										? 'Confirmée'
-										: res.statut === 'annule'
-											? 'Annulée'
-											: res.statut}
+								<span class="shrink-0 rounded-full px-2.5 py-1 text-[10px] font-semibold {res.statut === 'confirme' ? 'bg-green-500/15 text-green-600' : res.statut === 'annule' ? 'bg-navy/8 text-navy/40' : 'bg-rust/10 text-rust'}">
+									{res.statut === 'confirme' ? 'Confirmée' : res.statut === 'annule' ? 'Annulée' : 'En attente'}
 								</span>
 							</div>
 
-							<!-- Séparateur -->
 							<div class="mx-4 h-px bg-navy/6"></div>
 
-							<!-- Infos event -->
+							<!-- Infos : date | heure | lieu | convives -->
 							<div class="grid grid-cols-2 gap-x-4 gap-y-2.5 px-4 py-3">
-								<div class="flex items-center gap-2">
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										viewBox="0 0 16 16"
-										fill="currentColor"
-										class="h-3.5 w-3.5 shrink-0 text-navy/40"
-									>
-										<path
-											fill-rule="evenodd"
-											d="M4 1.75a.75.75 0 0 1 1.5 0V3h5V1.75a.75.75 0 0 1 1.5 0V3h.25A2.75 2.75 0 0 1 15 5.75v7.5A2.75 2.75 0 0 1 12.25 16H3.75A2.75 2.75 0 0 1 1 13.25v-7.5A2.75 2.75 0 0 1 3.75 3H4V1.75ZM3.75 6a.75.75 0 0 0-.75.75v5.5c0 .414.336.75.75.75h8.5a.75.75 0 0 0 .75-.75v-5.5a.75.75 0 0 0-.75-.75H3.75Z"
-											clip-rule="evenodd"
-										/>
-									</svg>
-									<span class="text-[12px] text-navy/70 capitalize"
-										>{formatDate(res.event_date)}{res.event_time
-											? ' · ' + res.event_time
-											: ''}</span
-									>
+								<div class="flex items-center gap-2 text-[12px] text-navy/70">
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3.5 w-3.5 shrink-0 text-navy/35"><path fill-rule="evenodd" d="M4 1.75a.75.75 0 0 1 1.5 0V3h5V1.75a.75.75 0 0 1 1.5 0V3h.25A2.75 2.75 0 0 1 15 5.75v7.5A2.75 2.75 0 0 1 12.25 16H3.75A2.75 2.75 0 0 1 1 13.25v-7.5A2.75 2.75 0 0 1 3.75 3H4V1.75ZM3.75 6a.75.75 0 0 0-.75.75v5.5c0 .414.336.75.75.75h8.5a.75.75 0 0 0 .75-.75v-5.5a.75.75 0 0 0-.75-.75H3.75Z" clip-rule="evenodd"/></svg>
+									<span class="capitalize">{formatDate(res.event_date)}</span>
 								</div>
+								{#if res.event_time}
+									<div class="flex items-center gap-2 text-[12px] text-navy/70">
+										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3.5 w-3.5 shrink-0 text-navy/35"><path fill-rule="evenodd" d="M1 8a7 7 0 1 1 14 0A7 7 0 0 1 1 8Zm7-4.75a.75.75 0 0 0-.75.75v4.5a.75.75 0 0 0 1.5 0V4a.75.75 0 0 0-.75-.75ZM8 10a1 1 0 1 0 0 2 1 1 0 0 0 0-2Z" clip-rule="evenodd"/></svg>
+										<span>{res.event_time}</span>
+									</div>
+								{/if}
 								{#if res.localization}
-									<div class="flex items-center gap-2">
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											viewBox="0 0 16 16"
-											fill="currentColor"
-											class="h-3.5 w-3.5 shrink-0 text-navy/40"
-										>
-											<path
-												fill-rule="evenodd"
-												d="M8 1a5 5 0 1 0 0 10A5 5 0 0 0 8 1ZM6.5 8a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Z"
-												clip-rule="evenodd"
-											/>
-											<path
-												d="M9.5 14.5a1.5 1.5 0 0 1-3 0v-.878A6.98 6.98 0 0 1 1 7.5h1.5A5.5 5.5 0 0 0 8 13a5.5 5.5 0 0 0 5.5-5.5H15a6.98 6.98 0 0 1-5.5 6.122V14.5Z"
-											/>
-										</svg>
-										<span class="text-[12px] text-navy/70">{res.localization}</span>
+									<div class="flex items-center gap-2 text-[12px] text-navy/70">
+										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3.5 w-3.5 shrink-0 text-navy/35"><path fill-rule="evenodd" d="m7.539 14.841.003.003.002.002a.755.755 0 0 0 .912 0l.002-.002.003-.003.012-.009a5.57 5.57 0 0 0 .19-.153 15.588 15.588 0 0 0 2.046-2.082c1.101-1.362 2.291-3.342 2.291-5.597A5 5 0 0 0 3 8c0 2.255 1.19 4.235 2.292 5.597a15.591 15.591 0 0 0 2.046 2.082 8.916 8.916 0 0 0 .189.153l.012.01ZM8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" clip-rule="evenodd"/></svg>
+										<span>{res.localization}</span>
 									</div>
 								{/if}
-								<div class="flex items-center gap-2">
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										viewBox="0 0 16 16"
-										fill="currentColor"
-										class="h-3.5 w-3.5 shrink-0 text-navy/40"
-									>
-										<path
-											d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z"
-										/>
-									</svg>
-									<span class="text-[12px] text-navy/70"
-										>{res.guests} convive{res.guests > 1 ? 's' : ''}</span
-									>
+								<div class="flex items-center gap-2 text-[12px] text-navy/70">
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3.5 w-3.5 shrink-0 text-navy/35"><path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z"/></svg>
+									<span>{res.guests} convive{res.guests > 1 ? 's' : ''}</span>
 								</div>
-								{#if res.price_per_person}
-									<div class="flex items-center gap-2">
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											viewBox="0 0 16 16"
-											fill="currentColor"
-											class="h-3.5 w-3.5 shrink-0 text-navy/40"
-										>
-											<path
-												d="M10.621 1.596a.75.75 0 0 0-1.242-.832l-7.5 11.25a.75.75 0 0 0 .621 1.166h9.5a.75.75 0 0 0 .75-.75V9.75a.75.75 0 0 0-1.5 0v2.5H4.118l6.503-9.654Zm1.629 4.404a.75.75 0 0 0-1.5 0v1.5a.75.75 0 0 0 1.5 0V6Z"
-											/>
-										</svg>
-										<span class="text-[12px] font-medium text-rust"
-											>{res.price_per_person} € / pers.</span
-										>
-									</div>
-								{/if}
 							</div>
 
 							<!-- Actions -->
-							<div class="flex gap-2 border-t border-navy/6 px-4 py-3">
-								<a
-									href="/reservations/{res.id_reservation}"
-									class="flex-1 rounded-xl border border-navy/15 py-2.5 text-center text-[12px] font-semibold text-navy transition-opacity active:opacity-70"
-								>
+							<div class="flex items-center justify-between border-t border-navy/6 px-4 py-3">
+								<a href="/reservations/{res.id_reservation}" class="text-xs font-medium text-navy/50">
 									Voir les détails
 								</a>
-								<a
-									href="/messages/{res.id_conversation}"
-									class="flex-1 rounded-xl bg-rust py-2.5 text-center text-[12px] font-semibold text-white transition-opacity active:opacity-70"
-								>
+								<a href="/messages/{res.id_conversation}" class="rounded-xl bg-rust px-4 py-2 text-xs font-semibold text-white">
 									Contacter
 								</a>
 							</div>
@@ -577,40 +495,10 @@
 		{:else if activeTab === 'avis'}
 			<p class="py-12 text-center text-sm text-navy/40">Aucun avis pour l'instant.</p>
 		{/if}
-
-		<!-- Déconnexion -->
-		<div class="mt-6 px-4">
-			<button
-				type="button"
-				onclick={async () => {
-					await signOut();
-					goto('/login');
-				}}
-				class="flex w-full items-center justify-center gap-2 rounded-2xl border border-navy/10 bg-white py-3.5 text-sm font-semibold text-navy/60 transition-opacity active:opacity-70"
-			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 20 20"
-					fill="currentColor"
-					class="h-4 w-4"
-				>
-					<path
-						fill-rule="evenodd"
-						d="M3 4.25A2.25 2.25 0 0 1 5.25 2h5.5A2.25 2.25 0 0 1 13 4.25v2a.75.75 0 0 1-1.5 0v-2a.75.75 0 0 0-.75-.75h-5.5a.75.75 0 0 0-.75.75v11.5c0 .414.336.75.75.75h5.5a.75.75 0 0 0 .75-.75v-2a.75.75 0 0 1 1.5 0v2A2.25 2.25 0 0 1 10.75 18h-5.5A2.25 2.25 0 0 1 3 15.75V4.25Z"
-						clip-rule="evenodd"
-					/>
-					<path
-						fill-rule="evenodd"
-						d="M19 10a.75.75 0 0 0-.75-.75H8.704l1.048-1.08a.75.75 0 1 0-1.004-1.114l-2.5 2.5a.75.75 0 0 0 0 1.087l2.5 2.5a.75.75 0 1 0 1.004-1.114l-1.048-1.08h9.546A.75.75 0 0 0 19 10Z"
-						clip-rule="evenodd"
-					/>
-				</svg>
-				Se déconnecter
-			</button>
-		</div>
 	</div>
 </div>
 
+<NewPublicationModal bind:open={showNewPublication} />
 <NewMenuModal bind:open={showNewMenu} onCreated={onMenuCreated} />
 <EditMenuModal
 	bind:open={showEditMenu}

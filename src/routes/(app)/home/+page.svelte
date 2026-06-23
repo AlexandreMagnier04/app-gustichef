@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import portrait1 from '$lib/assets/img/portrait-1.jpeg';
 	import slide1 from '$lib/assets/img/slide-1.jpeg';
 	import slide2 from '$lib/assets/img/slide-2.jpeg';
@@ -18,7 +19,9 @@
 
 	let { data } = $props();
 
-	let activeTab = $state<'decouvrir' | 'demandes'>('decouvrir');
+	let activeTab = $state<'decouvrir' | 'demandes'>(
+		page.url.searchParams.get('tab') === 'demandes' ? 'demandes' : 'decouvrir'
+	);
 	let showNewPublication = $state(false);
 	let showNewRequest = $state(false);
 	let editingRequest = $state<import('$lib/models/customer.model').Request | null>(null);
@@ -137,7 +140,8 @@
 		<!-- Tabs -->
 		<div class="flex border-y border-navy/[0.07]">
 			<button
-				class="relative flex-1 py-3 text-sm font-semibold transition-colors {activeTab === 'decouvrir'
+				class="relative flex-1 py-3 text-sm font-semibold transition-colors {activeTab ===
+				'decouvrir'
 					? 'text-navy'
 					: 'text-navy/40'}"
 				onclick={() => (activeTab = 'decouvrir')}
@@ -149,7 +153,8 @@
 				{/if}
 			</button>
 			<button
-				class="relative flex-1 py-3 text-sm font-semibold transition-colors {activeTab === 'demandes'
+				class="relative flex-1 py-3 text-sm font-semibold transition-colors {activeTab ===
+				'demandes'
 					? 'text-navy'
 					: 'text-navy/40'}"
 				onclick={() => (activeTab = 'demandes')}
@@ -172,7 +177,8 @@
 							image={specialtyImage(s.name_speciality)}
 							selected={selectedSpecialty === s.name_speciality}
 							onSelect={() => {
-								selectedSpecialty = selectedSpecialty === s.name_speciality ? '' : s.name_speciality;
+								selectedSpecialty =
+									selectedSpecialty === s.name_speciality ? '' : s.name_speciality;
 							}}
 						/>
 					{/each}
@@ -203,7 +209,11 @@
 					</button>
 					{#if showCityFilter}
 						<div class="absolute top-full left-0 z-30 mt-2">
-							<CityAutocomplete value={selectedCity} onSelect={onCitySelect} onClear={onCityClear} />
+							<CityAutocomplete
+								value={selectedCity}
+								onSelect={onCitySelect}
+								onClear={onCityClear}
+							/>
 						</div>
 					{/if}
 				</div>
@@ -297,7 +307,7 @@
 								/>
 							</svg>
 						</span>
-						<span class="text-sm font-semibold text-navy">Ajouter une publication</span>
+						<span class="text-sm font-semibold text-rust">Ajouter une publication</span>
 					</button>
 				{/if}
 			</div>
@@ -514,7 +524,7 @@
 				</div>
 			</div>
 
-		<!-- ===== DEMANDES — VUE CLIENT ===== -->
+			<!-- ===== DEMANDES — VUE CLIENT ===== -->
 		{:else}
 			<div class="-mx-5 flex-1 overflow-y-auto">
 				<div class="flex flex-col pb-10">
