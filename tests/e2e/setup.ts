@@ -1,53 +1,76 @@
-import { spawn, type ChildProcess } from 'child_process';
+import { spawn, spawnSync, type ChildProcess } from 'child_process';
 
 let server: ChildProcess;
+const PORT = 4173;
 
-// Démarre `pnpm preview` et attend que le port 4173 soit prêt
-// Requiert que `pnpm build` ait été exécuté avant
+// Tue tout processus qui occupe le port
+function freePort(port: number) {
+	if (process.platform === 'win32') {
+		try {
+			const netstat = spawnSync('netstat', ['-aon'], { encoding: 'utf8' });
+			const lines = netstat.stdout?.split('\n') ?? [];
+			for (const line of lines) {
+				if (line.includes(`:${port} `) || line.includes(`:${port}\t`)) {
+					const parts = line.trim().split(/\s+/);
+					const procId = parts[parts.length - 1];
+					if (/^\d+$/.test(procId) && procId !== '0') {
+						spawnSync('taskkill', ['/F', '/PID', procId], { stdio: 'pipe' });
+					}
+				}
+			}
+		} catch {
+			// Port probablement libre
+		}
+	} else {
+		try {
+			spawnSync('fuser', ['-k', `${port}/tcp`], { stdio: 'pipe' });
+		} catch {
+			// Port probablement libre
+		}
+	}
+}
+
+// Attend que le serveur HTTP réponde (polling fetch)
+async function waitForPort(port: number, timeoutMs: number): Promise<void> {
+	const deadline = Date.now() + timeoutMs;
+	while (true) {
+		try {
+			await fetch(`http://localhost:${port}`, { signal: AbortSignal.timeout(1000) });
+			return;
+		} catch {
+			if (Date.now() >= deadline) {
+				throw new Error(`Serveur E2E inaccessible sur port ${port} après ${timeoutMs}ms`);
+			}
+			await new Promise((r) => setTimeout(r, 300));
+		}
+	}
+}
+
+// Libère le port puis démarre `pnpm preview` (le build doit déjà être fait)
 export async function setup() {
-	server = spawn('pnpm', ['preview'], {
+	freePort(PORT);
+	await new Promise((r) => setTimeout(r, 500));
+
+	server = spawn('pnpm', ['preview', '--', '--port', String(PORT), '--strictPort'], {
 		env: { ...process.env },
-		stdio: 'pipe',
+		stdio: 'inherit',
 		shell: true
 	});
 
-	await new Promise<void>((resolve, reject) => {
-		const timeout = setTimeout(
-			() =>
-				reject(
-					new Error(
-						"Timeout : le serveur E2E n'a pas démarré en 30s. Avez-vous exécuté pnpm build ?"
-					)
-				),
-			30000
-		);
-
-		server.stdout?.on('data', async (chunk: Buffer) => {
-			const output = chunk.toString();
-			if (output.includes('4173') || output.includes('localhost')) {
-				await new Promise((r) => setTimeout(r, 600));
-				clearTimeout(timeout);
-				resolve();
-			}
-		});
-
-		server.stderr?.on('data', async (chunk: Buffer) => {
-			const output = chunk.toString();
-			if (output.includes('4173') || output.includes('localhost')) {
-				await new Promise((r) => setTimeout(r, 600));
-				clearTimeout(timeout);
-				resolve();
-			}
-		});
-
-		server.on('error', (err) => {
-			clearTimeout(timeout);
-			reject(err);
-		});
+	server.on('error', (err) => {
+		throw err;
 	});
+
+	await waitForPort(PORT, 20000);
 }
 
 export async function teardown() {
-	server?.kill('SIGTERM');
+	if (server) {
+		if (process.platform === 'win32' && server.pid) {
+			spawnSync('taskkill', ['/PID', String(server.pid), '/T', '/F'], { stdio: 'pipe' });
+		} else {
+			server.kill('SIGTERM');
+		}
+	}
 	await new Promise((r) => setTimeout(r, 500));
 }

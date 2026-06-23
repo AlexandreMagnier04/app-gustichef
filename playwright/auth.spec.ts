@@ -17,7 +17,7 @@ test("login avec mauvais mot de passe, message d'erreur visible", async ({ page 
 	await page.goto('/login');
 	await page.fill('input[name="email"], input[type="email"]', 'inexistant@test.com');
 	await page.fill('input[name="password"], input[type="password"]', 'mauvais');
-	await page.click('[type="submit"]');
+	await page.click('button:has-text("se connecter")');
 	// Reste sur la page login (pas de redirect)
 	await expect(page).toHaveURL(/\/login/);
 });
@@ -33,6 +33,8 @@ test('inscription, redirect vers onboarding ou home', async ({ page }) => {
 	const passwords = page.locator('input[type="password"]');
 	await passwords.nth(0).fill('password123!');
 	await passwords.nth(1).fill('password123!');
-	await page.click('[type="submit"]');
-	await expect(page).not.toHaveURL(/\/register/, { timeout: 10000 });
+	await page.click('button[type="submit"]');
+	// Avec vérification email obligatoire, pas de redirect — on vérifie l'absence d'erreur serveur
+	await expect(page.locator('button[type="submit"]')).not.toBeDisabled({ timeout: 10000 });
+	await expect(page.locator('p.text-rust').first()).not.toBeVisible();
 });

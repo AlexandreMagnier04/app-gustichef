@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { signIn } from '$lib/auth-client';
+	import { goto } from '$app/navigation';
 	import logoBlancImg from '$lib/assets/img/gustichef-ecriture-blanc.png';
 	import bg from '$lib/assets/img/slide-1.jpeg';
 
@@ -12,14 +13,16 @@
 		e?.preventDefault();
 		loading = true;
 		error = '';
-		const result = await signIn.email({ email, password, callbackURL: '/home' });
+		const result = await signIn.email({ email, password });
+		loading = false;
 		if (result.error) {
 			const msg = result.error.message ?? '';
 			error =
 				msg === 'Email not verified'
 					? 'Veuillez confirmer votre adresse email avant de vous connecter. Vérifiez votre boîte mail.'
 					: 'Email ou mot de passe incorrect';
-			loading = false;
+		} else {
+			goto('/home');
 		}
 	}
 

@@ -1,4 +1,10 @@
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
+import { eq } from 'drizzle-orm';
+import { users } from '../../../src/lib/server/db/schema/auth';
+
 const BASE_URL = process.env.ORIGIN ?? 'http://localhost:4173';
+const _db = drizzle(postgres(process.env.DATABASE_URL!));
 
 // Effectue une requête HTTP vers l'app et retourne response + données JSON
 export async function apiRequest(
@@ -45,6 +51,9 @@ export async function signUpAndLogin(
 			localization: 'Paris'
 		})
 	});
+
+	// Vérification email bypassed en test (requireEmailVerification bloque sinon)
+	await _db.update(users).set({ emailVerified: true }).where(eq(users.email, email));
 
 	const { res: signInRes } = await apiRequest('/api/auth/sign-in/email', {
 		method: 'POST',
