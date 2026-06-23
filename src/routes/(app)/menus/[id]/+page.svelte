@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import EditMenuModal from '$lib/components/EditMenuModal.svelte';
+	import BookingWizard from '$lib/components/BookingWizard.svelte';
 	import { goto } from '$app/navigation';
 
 	let { data }: { data: PageData } = $props();
@@ -8,10 +9,11 @@
 	const menu = $derived(data.menu);
 	const images = $derived(data.images);
 	const coverImage = $derived(images[0]?.url ?? null);
-
 	const isOwner = $derived(data.user?.id === menu.id_chief);
+	const isCustomer = $derived(data.user?.role === 'customer');
 
 	let showEdit = $state(false);
+	let showBooking = $state(false);
 
 	function onUpdated() {
 		showEdit = false;
@@ -21,6 +23,11 @@
 	function onDeleted() {
 		goto('/profile');
 	}
+
+	function onBookingSuccess(conversationId: number) {
+		showBooking = false;
+		goto('/messages/' + conversationId);
+	}
 </script>
 
 <div class="-mx-5 flex flex-col pb-24">
@@ -28,10 +35,10 @@
 	<div class="relative h-52 w-full overflow-hidden">
 		{#if coverImage}
 			<img src={coverImage} alt="" class="h-full w-full object-cover" />
-			<div class="absolute inset-0 bg-black/10"></div>
 		{:else}
 			<div class="h-full w-full bg-linear-to-br from-navy via-[#1e4060] to-[#b85a35]"></div>
 		{/if}
+		<div class="absolute inset-0 bg-linear-to-t from-cream/90 via-cream/20 to-transparent"></div>
 	</div>
 
 	<div class="px-5">
@@ -114,7 +121,7 @@
 			</p>
 		</div>
 
-		<!-- Bouton éditer (chef propriétaire uniquement) -->
+		<!-- Bouton éditer (chef propriétaire) ou Réserver ce plat (client) -->
 		{#if isOwner}
 			<button
 				onclick={() => (showEdit = true)}
@@ -133,7 +140,14 @@
 						d="M4.75 3.5A2.25 2.25 0 0 0 2.5 5.75v5.5A2.25 2.25 0 0 0 4.75 13.5h5.5A2.25 2.25 0 0 0 12.5 11.25V9a.75.75 0 0 0-1.5 0v2.25a.75.75 0 0 1-.75.75h-5.5a.75.75 0 0 1-.75-.75v-5.5a.75.75 0 0 1 .75-.75H7A.75.75 0 0 0 7 2H4.75Z"
 					/>
 				</svg>
-				éditer ce plat
+				Éditer ce plat
+			</button>
+		{:else if isCustomer && menu.type_menu !== 'extra'}
+			<button
+				onclick={() => (showBooking = true)}
+				class="mt-8 flex w-full items-center justify-center gap-2 rounded-2xl bg-navy py-4 text-sm font-semibold text-white shadow-sm"
+			>
+				Réserver ce plat
 			</button>
 		{/if}
 	</div>
@@ -141,4 +155,20 @@
 
 {#if isOwner}
 	<EditMenuModal bind:open={showEdit} {menu} {onUpdated} {onDeleted} />
+{/if}
+
+{#if showBooking}
+	<BookingWizard
+		menuId={menu.id_menu}
+		menuTitle={menu.title_menu}
+		menuImage={coverImage}
+		pricePerPerson={Math.floor(parseFloat(menu.price_menu))}
+		guestsMin={menu.guests_min ?? 1}
+		guestsMax={menu.guests_max ?? 50}
+		chiefId={menu.id_chief}
+		chiefFirstname={data.chiefUser?.firstname ?? 'Le chef'}
+		chiefExtras={data.chiefExtras}
+		onclose={() => (showBooking = false)}
+		onsuccess={onBookingSuccess}
+	/>
 {/if}

@@ -5,7 +5,7 @@
 	import portrait2 from '$lib/assets/img/portrait-2.jpeg';
 	import portrait3 from '$lib/assets/img/portrait-3.jpeg';
 	import portrait4 from '$lib/assets/img/portrait-4.jpeg';
-	import gustichefEcriture from '$lib/assets/img/gustichef-ecriture-verte.png';
+	import gustichefEcriture from '$lib/assets/img/gustichef-ecriture-verte-2.png';
 
 	// Ce composant a besoin de 3 props :
 	// - active : index du slide (pour les dots)
@@ -55,13 +55,13 @@
 			</svg>
 		</button>
 		<div
-			class="absolute inset-x-0 bottom-0 h-36"
-			style="background: linear-gradient(to top, #F5EDDC, #F5EDDC 20%, transparent)"
+			class="absolute inset-x-0 bottom-0 h-52"
+			style="background: linear-gradient(to top, #F5EDDC 35%, transparent)"
 		></div>
 	</div>
 
-	<div class="shrink-0 px-6 pt-3 pb-8 text-center">
-		<img src={gustichefEcriture} alt="Gustichef" class="mx-auto mb-2 h-9 object-contain" />
+	<div class="relative z-10 -mt-32 shrink-0 px-6 pt-3 pb-8 text-center">
+		<img src={gustichefEcriture} alt="Gustichef" class="mx-auto mb-2 h-20 object-contain" />
 		<h2 class="mb-1 text-[0.95rem] font-semibold text-navy">
 			Bien plus qu'un repas, une signature culinaire.
 		</h2>

@@ -8,12 +8,12 @@ test("page de login s'affiche correctement", async ({ page }) => {
 	).toBeVisible();
 });
 
-test('page protégée sans session → redirect vers /login', async ({ page }) => {
+test('page protégée sans session, redirect vers /login', async ({ page }) => {
 	await page.goto('/home');
 	await expect(page).toHaveURL(/\/login/);
 });
 
-test("login avec mauvais mot de passe → message d'erreur visible", async ({ page }) => {
+test("login avec mauvais mot de passe, message d'erreur visible", async ({ page }) => {
 	await page.goto('/login');
 	await page.fill('input[name="email"], input[type="email"]', 'inexistant@test.com');
 	await page.fill('input[name="password"], input[type="password"]', 'mauvais');
@@ -22,17 +22,17 @@ test("login avec mauvais mot de passe → message d'erreur visible", async ({ pa
 	await expect(page).toHaveURL(/\/login/);
 });
 
-test('inscription → redirect vers onboarding ou home', async ({ page }) => {
+test('inscription, redirect vers onboarding ou home', async ({ page }) => {
 	await page.goto('/register');
 	const email = `pw-test-${Date.now()}@test.com`;
-	await page.fill('input[name="email"], input[type="email"]', email);
-	await page.fill('input[name="password"], input[type="password"]', 'password123!');
-	// Remplir les autres champs si visibles
-	const nameInput = page.locator('input[name="name"]');
-	if (await nameInput.isVisible()) await nameInput.fill('Dupont');
-	const firstnameInput = page.locator('input[name="firstname"]');
-	if (await firstnameInput.isVisible()) await firstnameInput.fill('Jean');
+	const inputs = page.locator('input[type="text"]');
+	await inputs.nth(0).fill('Jean');
+	await inputs.nth(1).fill('Dupont');
+	await page.fill('input[type="email"]', email);
+	await inputs.nth(2).fill('Paris');
+	const passwords = page.locator('input[type="password"]');
+	await passwords.nth(0).fill('password123!');
+	await passwords.nth(1).fill('password123!');
 	await page.click('[type="submit"]');
-	// Après inscription, redirection attendue (pas sur /register)
-	await expect(page).not.toHaveURL(/\/register/);
+	await expect(page).not.toHaveURL(/\/register/, { timeout: 10000 });
 });

@@ -19,6 +19,7 @@ export const chiefs = pgTable('chiefs', {
 		.primaryKey()
 		.references(() => users.id, { onDelete: 'cascade' }),
 	bio_chief: text('bio_chief'),
+	banner_chief: varchar('banner_chief', { length: 255 }),
 	note_chief: decimal('note_chief', { precision: 2, scale: 1 })
 });
 

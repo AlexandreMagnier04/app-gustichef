@@ -1,5 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import BookingWizard from '$lib/components/BookingWizard.svelte';
+	import { goto } from '$app/navigation';
 
 	let { data }: { data: PageData } = $props();
 
@@ -27,6 +29,12 @@
 	type Tab = 'galerie' | 'menus' | 'avis';
 	let activeTab = $state<Tab>('galerie');
 	let menuTypeFilter = $state<'plat' | 'extra'>('plat');
+	let bookingMenu = $state<(typeof menus)[0] | null>(null);
+
+	function onBookingSuccess(conversationId: number) {
+		bookingMenu = null;
+		goto('/messages/' + conversationId);
+	}
 
 	const filteredMenus = $derived(menuTypeFilter === 'plat' ? platMenus : extraMenus);
 
@@ -50,143 +58,110 @@
 
 <div class="-mx-5 -mt-3 pb-28">
 	<!-- ── BANNIÈRE ─────────────────────────────── -->
-	<div class="relative h-52 overflow-hidden">
+	<div class="relative h-40 overflow-hidden">
 		{#if bannerImage}
 			<img src={bannerImage} alt="" class="h-full w-full object-cover" />
-			<div
-				class="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent"
-			></div>
 		{:else}
-			<div class="h-full w-full bg-gradient-to-br from-[#0F4450] via-[#163545] to-[#6b3020]"></div>
+			<div class="h-full w-full bg-linear-to-br from-[#0F4450] via-[#163545] to-[#6b3020]"></div>
 		{/if}
-
-		<!-- Pills spécialités sur la bannière -->
-		{#if uniqueSpecialties.length > 0}
-			<div class="absolute bottom-4 left-4 flex flex-wrap gap-1.5">
-				{#each uniqueSpecialties.slice(0, 3) as spec (spec.id_speciality)}
-					<span
-						class="rounded-full border border-white/30 bg-white/15 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm"
-					>
-						{spec.name_speciality}
-					</span>
-				{/each}
-			</div>
-		{/if}
-
-		<!-- Badge note en haut à droite -->
-		{#if reviewStats.count > 0}
-			<div
-				class="absolute top-3 right-3 flex items-center gap-1.5 rounded-2xl bg-navy/80 px-3 py-1.5 backdrop-blur-sm"
-			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 16 16"
-					fill="currentColor"
-					class="h-3.5 w-3.5 text-yellow-300"
-				>
-					<path
-						fill-rule="evenodd"
-						d="M8 1.75a.75.75 0 0 1 .692.462l1.41 3.393 3.664.293a.75.75 0 0 1 .428 1.317l-2.791 2.39.853 3.575a.75.75 0 0 1-1.12.814L8 11.459l-3.136 2.535a.75.75 0 0 1-1.12-.814l.853-3.574-2.79-2.39a.75.75 0 0 1 .427-1.318l3.665-.293 1.41-3.393A.75.75 0 0 1 8 1.75Z"
-						clip-rule="evenodd"
-					/>
-				</svg>
-				<span class="text-sm font-bold text-white">{reviewStats.avg?.toFixed(1)}</span>
-				<span class="text-xs text-white/60">{reviewStats.count} avis</span>
-			</div>
-		{/if}
+		<div class="absolute inset-0 bg-linear-to-t from-cream/80 via-cream/20 to-transparent"></div>
 	</div>
 
-	<!-- ── IDENTITÉ ──────────────────────────────── -->
-	<div class="px-5">
-		<div class="-mt-12 flex items-end gap-4">
-			<!-- Avatar -->
-			{#if profile.user.image}
-				<img
-					src={profile.user.image}
-					alt=""
-					class="h-24 w-24 shrink-0 rounded-full object-cover shadow-lg ring-4 ring-cream"
-				/>
-			{:else}
-				<div
-					class="flex h-24 w-24 shrink-0 items-center justify-center rounded-full bg-navy shadow-lg ring-4 ring-cream"
+	<!-- ── SPÉCIALITÉS (sous la bannière) ────────── -->
+	{#if uniqueSpecialties.length > 0}
+		<div class="flex flex-wrap justify-end gap-2 px-5 py-3">
+			{#each uniqueSpecialties.slice(0, 3) as spec, i (spec.id_speciality)}
+				<span
+					class="rounded-full px-3 py-1 text-xs font-medium {i === 0
+						? 'bg-rust text-white'
+						: 'bg-navy/15 text-navy'}"
 				>
-					<span class="text-2xl font-bold text-cream">
-						{profile.user.firstname[0]}{profile.user.name[0]}
-					</span>
-				</div>
-			{/if}
+					{spec.name_speciality}
+				</span>
+			{/each}
 		</div>
+	{/if}
 
-		<!-- Nom + sous-titre -->
-		<div class="mt-3">
-			<h1 class="text-2xl leading-tight font-bold text-navy">
+	<!-- ── IDENTITÉ : avatar | nom | note ─────────── -->
+	<div class="flex items-center gap-4 px-5 pb-3">
+		<!-- Avatar -->
+		{#if profile.user.image}
+			<img
+				src={profile.user.image}
+				alt=""
+				class="h-20 w-20 shrink-0 rounded-full object-cover shadow-md ring-2 ring-cream"
+			/>
+		{:else}
+			<div
+				class="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-navy shadow-md ring-2 ring-cream"
+			>
+				<span class="text-xl font-bold text-cream">
+					{profile.user.firstname[0]}{profile.user.name[0]}
+				</span>
+			</div>
+		{/if}
+
+		<!-- Nom + sous-titre + ville -->
+		<div class="min-w-0 flex-1">
+			<h1 class="text-xl leading-tight font-bold text-navy">
 				{profile.user.firstname}
 				{profile.user.name}
 			</h1>
 			<p class="mt-0.5 text-sm text-navy/50">
-				Chef à domicile
-				{#if uniqueSpecialties[0]}
-					· {uniqueSpecialties[0].name_speciality}{/if}
+				Chef à domicile{#if uniqueSpecialties[0]} · {uniqueSpecialties[0].name_speciality}{/if}
 			</p>
+			{#if displayLoc}
+				<div class="mt-1 flex items-center gap-1 text-xs text-navy/50">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3 w-3 shrink-0 text-rust">
+						<path fill-rule="evenodd" d="m7.539 14.841.003.003.002.002a.755.755 0 0 0 .912 0l.002-.002.003-.003.012-.009a5.57 5.57 0 0 0 .19-.153 15.588 15.588 0 0 0 2.046-2.082c1.101-1.362 2.291-3.342 2.291-5.597A5 5 0 0 0 3 8c0 2.255 1.19 4.235 2.292 5.597a15.591 15.591 0 0 0 2.046 2.082 8.916 8.916 0 0 0 .189.153l.012.01ZM8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" clip-rule="evenodd" />
+					</svg>
+					<span>{displayLoc}</span>
+				</div>
+			{/if}
 		</div>
 
-		<!-- Localisation -->
-		{#if displayLoc}
-			<div class="mt-2 flex items-center gap-1.5 text-sm text-navy/50">
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 16 16"
-					fill="currentColor"
-					class="h-3.5 w-3.5 shrink-0 text-rust"
-				>
-					<path
-						fill-rule="evenodd"
-						d="m7.539 14.841.003.003.002.002a.755.755 0 0 0 .912 0l.002-.002.003-.003.012-.009a5.57 5.57 0 0 0 .19-.153 15.588 15.588 0 0 0 2.046-2.082c1.101-1.362 2.291-3.342 2.291-5.597A5 5 0 0 0 3 8c0 2.255 1.19 4.235 2.292 5.597a15.591 15.591 0 0 0 2.046 2.082 8.916 8.916 0 0 0 .189.153l.012.01ZM8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"
-						clip-rule="evenodd"
-					/>
-				</svg>
-				<span>{displayLoc}</span>
+		<!-- Badge note -->
+		{#if reviewStats.count > 0}
+			<div class="shrink-0 rounded-xl bg-navy px-3 py-2 text-center">
+				<div class="flex items-center justify-center gap-1">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 16 16"
+						fill="currentColor"
+						class="h-3.5 w-3.5 text-yellow-300"
+					>
+						<path
+							fill-rule="evenodd"
+							d="M8 1.75a.75.75 0 0 1 .692.462l1.41 3.393 3.664.293a.75.75 0 0 1 .428 1.317l-2.791 2.39.853 3.575a.75.75 0 0 1-1.12.814L8 11.459l-3.136 2.535a.75.75 0 0 1-1.12-.814l.853-3.574-2.79-2.39a.75.75 0 0 1 .427-1.318l3.665-.293 1.41-3.393A.75.75 0 0 1 8 1.75Z"
+							clip-rule="evenodd"
+						/>
+					</svg>
+					<span class="text-base font-bold text-white">{reviewStats.avg?.toFixed(1)}</span>
+				</div>
+				<p class="mt-0.5 text-[10px] text-white/70">{reviewStats.count} avis</p>
 			</div>
 		{/if}
+	</div>
 
-		<!-- Bio -->
+	<!-- ── BIO ──────────────────────────────────── -->
+	<div class="px-5">
 		{#if profile.bio_chief}
-			<p class="mt-3 text-sm leading-relaxed text-navy/65">{profile.bio_chief}</p>
+			<p class="text-sm leading-relaxed text-navy/65">{profile.bio_chief}</p>
 		{/if}
-
-		<!-- Bouton contacter -->
-		<a
-			href="/home"
-			class="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-teal py-3.5 text-sm font-semibold text-white shadow-sm transition-opacity active:opacity-80"
-		>
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				viewBox="0 0 20 20"
-				fill="currentColor"
-				class="h-4 w-4"
-			>
-				<path
-					fill-rule="evenodd"
-					d="M10 2c-2.236 0-4.43.18-6.57.524C1.993 2.755 1 4.014 1 5.426v5.148c0 1.413.993 2.67 2.43 2.902 1.168.188 2.352.327 3.55.414.28.02.521.18.642.413l1.713 3.293a.75.75 0 0 0 1.33 0l1.713-3.293a.633.633 0 0 1 .642-.413 41.102 41.102 0 0 0 3.55-.414c1.437-.231 2.43-1.49 2.43-2.902V5.426c0-1.413-.993-2.67-2.43-2.902A41.289 41.289 0 0 0 10 2Z"
-					clip-rule="evenodd"
-				/>
-			</svg>
-			Faire une demande à ce chef
-		</a>
 	</div>
 
 	<!-- ── TABS ───────────────────────────────────── -->
-	<div class="mt-6 flex border-b border-navy/[0.08] px-5">
+	<div class="mt-6 flex border-b border-navy/8">
 		{#each ['galerie', 'menus', 'avis'] as const as tab (tab)}
 			<button
 				onclick={() => (activeTab = tab)}
-				class="relative mr-7 pb-3 text-sm font-medium transition-colors {activeTab === tab
+				class="relative flex-1 py-3 text-sm font-medium transition-colors {activeTab === tab
 					? 'text-navy'
 					: 'text-navy/35'}"
 			>
 				{tab}
 				{#if activeTab === tab}
-					<span class="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-rust"></span>
+					<span class="absolute bottom-0 left-1/2 h-0.5 w-10 -translate-x-1/2 rounded-full bg-rust"></span>
 				{/if}
 			</button>
 		{/each}
@@ -215,12 +190,14 @@
 					<p class="text-sm">Aucune photo pour l'instant</p>
 				</div>
 			{:else}
-				<div class="grid grid-cols-2 gap-1.5">
+				<div class="columns-2 gap-1.5">
 					{#each galleryImages as img, i (img.id_image)}
 						<div
-							class="overflow-hidden rounded-xl {i === 0
-								? 'col-span-2 aspect-video'
-								: 'aspect-square'}"
+							class="mb-1.5 w-full break-inside-avoid overflow-hidden rounded-xl {i % 3 === 0
+								? 'aspect-3/4'
+								: i % 3 === 1
+									? 'aspect-square'
+									: 'aspect-2/3'}"
 						>
 							<img src={img.url} alt="" class="h-full w-full object-cover" />
 						</div>
@@ -238,10 +215,10 @@
 						onclick={() => (menuTypeFilter = t)}
 						class="flex-1 rounded-xl py-2 text-sm font-medium transition-colors {menuTypeFilter ===
 						t
-							? 'bg-white text-navy shadow-sm'
+							? 'bg-teal text-white shadow-sm'
 							: 'text-navy/45'}"
 					>
-						{t === 'plat' ? 'Menus' : 'Extras'}
+						{t === 'plat' ? 'Menus' : "L'extra"}
 					</button>
 				{/each}
 			</div>
@@ -253,36 +230,40 @@
 			{:else}
 				<div class="flex flex-col gap-4">
 					{#each filteredMenus as menu, i (menu.id_menu)}
-						<a
-							href="/menus/{menu.id_menu}"
-							class="block overflow-hidden rounded-2xl bg-white shadow-[0_2px_12px_rgba(5,30,35,0.08)]"
-						>
-							<!-- Visuel menu -->
-							<div class="relative h-36 overflow-hidden bg-gradient-to-br {menuGradient(i)}">
-								{#if galleryImages[i]}
-									<img
-										src={galleryImages[i].url}
-										alt=""
-										class="h-full w-full object-cover opacity-60 mix-blend-overlay"
-									/>
+						<div class="overflow-hidden rounded-2xl bg-white shadow-[0_2px_12px_rgba(5,30,35,0.08)]">
+							<!-- Image propre -->
+							<div class="h-36 overflow-hidden">
+								{#if menu.image_url}
+									<img src={menu.image_url} alt="" class="h-full w-full object-cover" />
+								{:else}
+									<div class="h-full w-full bg-linear-to-br {menuGradient(i)}"></div>
 								{/if}
-								<div class="absolute inset-0 flex flex-col justify-end p-4">
-									<h3 class="text-base font-bold text-white drop-shadow">{menu.title_menu}</h3>
-									<p class="text-sm font-semibold text-white/80">
-										Dès {Math.floor(parseFloat(menu.price_menu))} € / convive
-									</p>
-								</div>
 							</div>
-							<!-- Description -->
-							<div class="p-4">
-								<p class="line-clamp-2 text-sm leading-relaxed text-navy/60">
+							<!-- Infos -->
+							<div class="p-3.5">
+								<h3 class="text-sm font-bold text-navy">{menu.title_menu}</h3>
+								<p class="mt-0.5 text-xs font-semibold text-rust">
+									Dès {Math.floor(parseFloat(menu.price_menu))} € / convive
+								</p>
+								<p class="mt-2 line-clamp-2 text-sm leading-relaxed text-navy/60">
 									{menu.description_menu}
 								</p>
-								<div class="mt-3 flex items-center justify-between">
-									<span class="text-xs font-semibold text-rust">Voir le détail →</span>
+								<div class="mt-3 flex gap-2">
+									<a
+										href="/menus/{menu.id_menu}"
+										class="flex flex-1 items-center justify-center rounded-xl bg-rust py-2.5 text-xs font-semibold text-white"
+									>
+										Découvrir le menu
+									</a>
+									<button
+										onclick={() => (bookingMenu = menu)}
+										class="flex flex-1 items-center justify-center rounded-xl bg-teal py-2.5 text-xs font-semibold text-white"
+									>
+										Réserver ce plat
+									</button>
 								</div>
 							</div>
-						</a>
+						</div>
 					{/each}
 				</div>
 			{/if}
@@ -314,9 +295,9 @@
 						<div class="rounded-2xl bg-white p-4 shadow-[0_2px_8px_rgba(5,30,35,0.06)]">
 							<div class="flex items-center justify-between gap-3">
 								<div class="flex items-center gap-3">
-									{#if notice.customer_image}
+									{#if notice.customer.image}
 										<img
-											src={notice.customer_image}
+											src={notice.customer.image}
 											alt=""
 											class="h-10 w-10 rounded-full object-cover"
 										/>
@@ -324,13 +305,13 @@
 										<div
 											class="flex h-10 w-10 items-center justify-center rounded-full bg-navy/8 text-xs font-bold text-navy"
 										>
-											{notice.customer_firstname[0]}{notice.customer_name[0]}
+											{notice.customer.firstname[0]}{notice.customer.name[0]}
 										</div>
 									{/if}
 									<div>
 										<p class="text-sm font-semibold text-navy">
-											{notice.customer_firstname}
-											{notice.customer_name}
+											{notice.customer.firstname}
+											{notice.customer.name}
 										</p>
 										<p class="text-xs text-navy/40">{formatDate(notice.date_notice)}</p>
 									</div>
@@ -363,3 +344,19 @@
 		{/if}
 	</div>
 </div>
+
+{#if bookingMenu}
+	<BookingWizard
+		menuId={bookingMenu.id_menu}
+		menuTitle={bookingMenu.title_menu}
+		menuImage={bookingMenu.image_url}
+		pricePerPerson={parseFloat(bookingMenu.price_menu)}
+		guestsMin={bookingMenu.guests_min ?? 1}
+		guestsMax={bookingMenu.guests_max ?? 50}
+		chiefId={profile.id_chief}
+		chiefFirstname={profile.user.firstname}
+		chiefExtras={extraMenus}
+		onclose={() => (bookingMenu = null)}
+		onsuccess={onBookingSuccess}
+	/>
+{/if}

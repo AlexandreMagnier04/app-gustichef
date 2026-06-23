@@ -1,5 +1,8 @@
 import { error, redirect } from '@sveltejs/kit';
+import { eq } from 'drizzle-orm';
 import { auth } from '$lib/server/auth';
+import { db } from '$lib/server/db';
+import { users } from '$lib/server/db/schema/auth';
 import type { User, UserRole } from '$lib/models/user.model';
 
 // Lit la session depuis les headers (utile pour les endpoints API qui n'ont pas accès à locals).
@@ -21,4 +24,14 @@ export function requireRole(locals: App.Locals, role: UserRole): User {
 	const user = requireUser(locals);
 	if (user.role !== role) throw error(403, 'Accès refusé');
 	return user;
+}
+
+export async function getUserInfo(
+	id: string
+): Promise<{ firstname: string; name: string; email: string; image: string | null } | null> {
+	const [row] = await db
+		.select({ firstname: users.firstname, name: users.name, email: users.email, image: users.image })
+		.from(users)
+		.where(eq(users.id, id));
+	return row ?? null;
 }

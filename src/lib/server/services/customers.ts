@@ -1,43 +1,18 @@
-import { eq, isNull, or } from 'drizzle-orm';
+import { and, eq, isNull, or } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { customers, requests } from '$lib/server/db/schema/customers';
-import { services } from '$lib/server/db/schema/services';
 import { users } from '$lib/server/db/schema/auth';
 import { chiefs_specialties, specialties } from '$lib/server/db/schema/chiefs';
 import type { Customer, CustomerUpdate } from '$lib/models/customer.model';
 import type { Request } from '$lib/models/customer.model';
-import type { Service } from '$lib/models/service.model';
 import type { CreateRequestDto } from '$lib/dtos/customer.dto';
 
-export interface RequestWithChief {
-	id_request: number;
-	title_request: string;
-	description_request: string;
-	expected_date_request: string;
-	guests_request: number;
-	type_event_request: string | null;
-	localization_request: string;
-	statut_request: string;
-	id_chief: string | null;
-	chief_firstname: string | null;
-	chief_name: string | null;
-	chief_image: string | null;
-	chief_specialty: string | null;
+export interface RequestWithChief extends Request {
+	chief: { firstname: string; name: string; image: string | null; specialty: string | null } | null;
 }
 
-export interface RequestWithCustomer {
-	id_request: number;
-	title_request: string;
-	description_request: string;
-	expected_date_request: string;
-	guests_request: number;
-	type_event_request: string | null;
-	localization_request: string;
-	statut_request: string;
-	id_customer: string;
-	customer_firstname: string;
-	customer_name: string;
-	customer_image: string | null;
+export interface RequestWithCustomer extends Omit<Request, 'id_chief'> {
+	customer: { firstname: string; name: string; image: string | null };
 }
 
 export async function getCustomerById(id: string): Promise<Customer | null> {
@@ -69,11 +44,10 @@ export async function createRequest(customerId: string, data: CreateRequestDto):
 }
 
 export async function getRequestsByCustomer(customerId: string): Promise<Request[]> {
-	return db.select().from(requests).where(eq(requests.id_customer, customerId));
-}
-
-export async function getServicesForChief(chiefId: string): Promise<Service[]> {
-	return db.select().from(services).where(eq(services.id_chief, chiefId));
+	return db
+		.select()
+		.from(requests)
+		.where(and(eq(requests.id_customer, customerId), isNull(requests.id_chief)));
 }
 
 export async function getRequestsWithChiefDetails(customerId: string): Promise<RequestWithChief[]> {
@@ -87,6 +61,7 @@ export async function getRequestsWithChiefDetails(customerId: string): Promise<R
 			type_event_request: requests.type_event_request,
 			localization_request: requests.localization_request,
 			statut_request: requests.statut_request,
+			id_customer: requests.id_customer,
 			id_chief: requests.id_chief,
 			chief_firstname: users.firstname,
 			chief_name: users.name,
@@ -102,15 +77,28 @@ export async function getRequestsWithChiefDetails(customerId: string): Promise<R
 
 	// Deduplicate by id_request (M:N joins may produce duplicate rows)
 	const seen = new Set<number>();
-	return rows.filter((r) => {
-		if (seen.has(r.id_request)) return false;
-		seen.add(r.id_request);
-		return true;
-	});
+	return rows
+		.filter((r) => {
+			if (seen.has(r.id_request)) return false;
+			seen.add(r.id_request);
+			return true;
+		})
+		.map(({ chief_firstname, chief_name, chief_image, chief_specialty, ...rest }) => ({
+			...rest,
+			chief:
+				rest.id_chief != null
+					? {
+							firstname: chief_firstname!,
+							name: chief_name!,
+							image: chief_image,
+							specialty: chief_specialty
+						}
+					: null
+		}));
 }
 
 export async function getRequestsByChief(): Promise<RequestWithCustomer[]> {
-	return db
+	const rows = await db
 		.select({
 			id_request: requests.id_request,
 			title_request: requests.title_request,
@@ -128,6 +116,47 @@ export async function getRequestsByChief(): Promise<RequestWithCustomer[]> {
 		.from(requests)
 		.innerJoin(customers, eq(requests.id_customer, customers.id_customer))
 		.innerJoin(users, eq(customers.id_customer, users.id))
-		.where(or(eq(requests.statut_request, 'open'), isNull(requests.id_chief)))
+		.where(and(isNull(requests.id_chief), eq(requests.statut_request, 'open')))
 		.orderBy(requests.expected_date_request);
+
+	return rows.map(({ customer_firstname, customer_name, customer_image, ...rest }) => ({
+		...rest,
+		customer: { firstname: customer_firstname, name: customer_name, image: customer_image }
+	}));
+}
+
+export async function getOpenRequestById(
+	id: number
+): Promise<(typeof requests.$inferSelect) | null> {
+	const [row] = await db
+		.select()
+		.from(requests)
+		.where(and(eq(requests.id_request, id), eq(requests.statut_request, 'open')));
+	return row ?? null;
+}
+
+export async function respondToRequest(id: number, chiefId: string): Promise<void> {
+	await db
+		.update(requests)
+		.set({ id_chief: chiefId, statut_request: 'responded' })
+		.where(eq(requests.id_request, id));
+}
+
+export async function patchRequestById(
+	id: number,
+	userId: string,
+	data: Partial<typeof requests.$inferInsert>
+): Promise<(typeof requests.$inferSelect) | null> {
+	const [updated] = await db
+		.update(requests)
+		.set(data)
+		.where(and(eq(requests.id_request, id), eq(requests.id_customer, userId)))
+		.returning();
+	return updated ?? null;
+}
+
+export async function deleteRequestById(id: number, userId: string): Promise<void> {
+	await db
+		.delete(requests)
+		.where(and(eq(requests.id_request, id), eq(requests.id_customer, userId)));
 }

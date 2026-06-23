@@ -18,6 +18,7 @@
 			loading = false;
 		} else {
 			sent = true;
+			setTimeout(() => (sent = false), 4000);
 		}
 	}
 </script>

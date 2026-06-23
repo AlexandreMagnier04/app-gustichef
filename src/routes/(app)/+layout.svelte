@@ -2,8 +2,10 @@
 	import { page } from '$app/state';
 	import { invalidateAll } from '$app/navigation';
 	import { onMount } from 'svelte';
-	import logoImg from '$lib/assets/img/gustichef-ecriture-orange.png';
-	import gustichefEcriture from '$lib/assets/img/gustichef-ecriture-verte.png';
+	import logoRondOrange from '$lib/assets/img/logo-gusti-rond-orange.png';
+	import ecritureOrange from '$lib/assets/img/gustichef-ecriture-orange.png';
+	import logoRondVert from '$lib/assets/img/logo-gusti-rond-vert.png';
+	import ecritureVerte2 from '$lib/assets/img/gustichef-ecriture-verte-2.png';
 	import NotificationsPanel from '$lib/components/NotificationsPanel.svelte';
 
 	let { children, data } = $props();
@@ -40,16 +42,26 @@
 <div class="flex h-dvh flex-col overflow-hidden bg-cream py-3">
 	<!-- Header -->
 	<header class="shrink-0 px-5">
-		<div class="flex items-center justify-between">
-			<div class="flex items-center gap-2.5">
-				<img src={logoImg} alt="" class="h-9 w-9 object-contain" />
-				<img src={gustichefEcriture} alt="Gustichef" class="h-7 object-contain" />
+		<div class="relative flex items-center justify-center">
+			<div class="absolute left-0">
+				{#if data.user.role === 'chief'}
+					<img src={logoRondOrange} alt="" class="h-9 w-9 object-contain" />
+				{:else}
+					<img src={logoRondVert} alt="" class="h-9 w-9 object-contain" />
+				{/if}
 			</div>
-			<div class="flex items-center gap-4">
+			<div>
+				{#if data.user.role === 'chief'}
+					<img src={ecritureOrange} alt="Gustichef" class="h-10 object-contain" />
+				{:else}
+					<img src={ecritureVerte2} alt="Gustichef" class="h-10 object-contain" />
+				{/if}
+			</div>
+			<div class="absolute right-0 flex items-center gap-4">
 				<button
 					type="button"
 					onclick={() => (showNotifications = true)}
-					class="relative text-navy/60 transition-colors hover:text-navy"
+					class="relative text-teal transition-colors hover:text-teal/80"
 					aria-label="Notifications"
 				>
 					<svg
@@ -76,22 +88,11 @@
 				</button>
 				<a
 					href={data.user.role === 'chief' ? '/profile' : '/customer-profile'}
-					class="text-navy/60 transition-colors hover:text-navy"
+					class="text-teal transition-colors hover:text-teal/80"
 					aria-label="Profil"
 				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke-width="1.5"
-						stroke="currentColor"
-						class="h-6 w-6"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
-						/>
+					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6 w-6">
+						<path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
 					</svg>
 				</a>
 			</div>
@@ -112,7 +113,7 @@
 		<div class="flex items-center justify-around px-4 py-3">
 			<a
 				href="/home"
-				class="flex flex-col items-center gap-0.5 transition-colors {page.url.pathname === '/home'
+				class="flex flex-col items-center gap-0.5 transition-colors {page.url.pathname === '/home' && !(data.user.role === 'chief' && page.url.searchParams.get('tab') === 'demandes')
 					? 'text-navy'
 					: 'text-navy/30'}"
 			>
@@ -135,21 +136,13 @@
 			{#if data.user.role === 'chief'}
 				<a
 					href="/clients"
-					class="flex flex-col items-center gap-0.5 transition-colors {page.url.pathname.startsWith(
-						'/clients'
-					)
+					class="flex flex-col items-center gap-0.5 transition-colors {page.url.pathname.startsWith('/clients') || (page.url.pathname === '/home' && page.url.searchParams.get('tab') === 'demandes')
 						? 'text-navy'
 						: 'text-navy/30'}"
 				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 24 24"
-						fill="currentColor"
-						class="h-6 w-6"
-					>
-						<path
-							d="M4.5 6.375a4.125 4.125 0 1 1 8.25 0 4.125 4.125 0 0 1-8.25 0ZM14.25 8.625a3.375 3.375 0 1 1 6.75 0 3.375 3.375 0 0 1-6.75 0ZM1.5 19.125a7.125 7.125 0 0 1 14.25 0v.003l-.001.119a.75.75 0 0 1-.363.63 13.067 13.067 0 0 1-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 0 1-.364-.63l-.001-.122ZM17.25 19.128l-.001.144a2.25 2.25 0 0 1-.233.96 10.088 10.088 0 0 0 5.06-1.01.75.75 0 0 0 .42-.643 4.875 4.875 0 0 0-6.957-4.611 8.586 8.586 0 0 1 1.71 5.157v.003Z"
-						/>
+					<!-- user-circle outline — Heroicons -->
+					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6 w-6">
+						<path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
 					</svg>
 					<span class="text-[10px] font-medium">trouve ton client</span>
 				</a>
@@ -162,15 +155,10 @@
 						? 'text-navy'
 						: 'text-navy/30'}"
 				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 24 24"
-						fill="currentColor"
-						class="h-6 w-6"
-					>
-						<path
-							d="M12 3a5 5 0 0 0-4.546 2.916A4.002 4.002 0 0 0 8 14v1h8v-1a4 4 0 0 0 .546-7.084A5 5 0 0 0 12 3ZM7 17v2a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-2H7Z"
-						/>
+					<!-- chef hat outline — Lucide -->
+					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6 w-6">
+						<path stroke-linecap="round" stroke-linejoin="round" d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z" />
+						<line x1="6" x2="18" y1="17" y2="17" stroke="currentColor" stroke-width="1.5" />
 					</svg>
 					<span class="text-[10px] font-medium">trouve ton chef</span>
 				</a>
@@ -184,18 +172,7 @@
 					? 'text-navy'
 					: 'text-navy/30'}"
 			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 24 24"
-					fill="currentColor"
-					class="h-6 w-6"
-				>
-					<path
-						fill-rule="evenodd"
-						d="M4.848 2.771A49.144 49.144 0 0 1 12 2.25c2.43 0 4.817.178 7.152.52 1.978.292 3.348 2.024 3.348 3.97v6.02c0 1.946-1.37 3.678-3.348 3.97a48.901 48.901 0 0 1-3.476.383.39.39 0 0 0-.297.17l-2.755 4.133a.75.75 0 0 1-1.248 0l-2.755-4.133a.39.39 0 0 0-.297-.17 48.9 48.9 0 0 1-3.476-.384c-1.978-.29-3.348-2.024-3.348-3.97V6.741c0-1.946 1.37-3.68 3.348-3.97Z"
-						clip-rule="evenodd"
-					/>
-				</svg>
+				<i class="fa-regular fa-comments text-2xl leading-none"></i>
 				<span class="text-[10px] font-medium">messagerie</span>
 			</a>
 		</div>

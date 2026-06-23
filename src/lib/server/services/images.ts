@@ -83,3 +83,12 @@ export async function getMenuImages(menuId: number): Promise<ImageMenu[]> {
 		.where(eq(images_menu.id_menu, menuId))
 		.orderBy(images_menu.position);
 }
+
+export async function getMenuImageUrl(menuId: number): Promise<string | null> {
+	const [row] = await db
+		.select({ url: images_menu.url })
+		.from(images_menu)
+		.where(eq(images_menu.id_menu, menuId))
+		.limit(1);
+	return row?.url ?? null;
+}

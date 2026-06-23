@@ -1,10 +1,8 @@
 import { json, error } from '@sveltejs/kit';
-import { eq, and } from 'drizzle-orm';
 import { requireUser } from '$lib/server/services/auth';
 import { addMessage } from '$lib/server/services/messaging';
-import { db } from '$lib/server/db';
-import { conversations } from '$lib/server/db/schema/messaging';
-import { menus } from '$lib/server/db/schema/chiefs';
+import { getConversationOwned } from '$lib/server/services/messaging';
+import { getMenuById } from '$lib/server/services/chiefs';
 
 export const POST = async ({ params, request, locals }) => {
 	const user = requireUser(locals);
@@ -16,18 +14,12 @@ export const POST = async ({ params, request, locals }) => {
 	const { id_menu } = await request.json();
 	if (!id_menu) throw error(400, 'Menu requis');
 
-	// Verify the menu belongs to this chef
-	const [menu] = await db
-		.select()
-		.from(menus)
-		.where(and(eq(menus.id_menu, id_menu), eq(menus.id_chief, user.id)));
-	if (!menu) throw error(404, 'Menu introuvable');
+	const [menu, conv] = await Promise.all([
+		getMenuById(id_menu),
+		getConversationOwned(id, user.id, 'chief')
+	]);
 
-	// Verify the chef owns this conversation
-	const [conv] = await db
-		.select()
-		.from(conversations)
-		.where(and(eq(conversations.id_conversation, id), eq(conversations.id_chief, user.id)));
+	if (!menu || menu.id_chief !== user.id) throw error(404, 'Menu introuvable');
 	if (!conv) throw error(404, 'Conversation introuvable');
 
 	await addMessage(id, user.id, `${menu.title_menu}`, 'menu_proposal', id_menu);

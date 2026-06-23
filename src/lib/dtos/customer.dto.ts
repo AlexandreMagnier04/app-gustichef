@@ -10,9 +10,7 @@ export const createNoticeDto = z.object({
 // DTO pour créer une demande de prestation
 export const createRequestDto = z.object({
 	title_request: z.string().min(3, { message: 'Titre requis (min 3 caractères)' }).max(100),
-	description_request: z
-		.string()
-		.min(20, { message: 'Décrivez votre demande en au moins 20 caractères' }),
+	description_request: z.string().max(2000).optional().default(''),
 	expected_date_request: z.iso.date({ error: 'Date invalide' }),
 	guests_request: z.coerce
 		.number()

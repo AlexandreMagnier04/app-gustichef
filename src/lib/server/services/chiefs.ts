@@ -1,4 +1,4 @@
-import { eq, min, avg, count, ilike, inArray } from 'drizzle-orm';
+import { eq, min, avg, count, ilike, inArray, and } from 'drizzle-orm';
 import { error } from '@sveltejs/kit';
 import { db } from '$lib/server/db';
 import {
@@ -6,6 +6,7 @@ import {
 	specialties,
 	chiefs_specialties,
 	menus,
+	images_menu,
 	notices
 } from '$lib/server/db/schema/chiefs';
 import { users } from '$lib/server/db/schema/auth';
@@ -57,6 +58,69 @@ export async function getChiefsForHome(params: ChiefsHomeParams = {}): Promise<C
 
 export async function getSpecialties(): Promise<Specialty[]> {
 	return db.select().from(specialties);
+}
+
+export type ChiefMenuImage = {
+	id_menu: number;
+	url: string | null;
+	title: string;
+	price: string;
+};
+
+export type ChiefDetails = {
+	specialties: string[];
+	menuImages: ChiefMenuImage[];
+};
+
+export async function getChiefsDetails(ids: string[]): Promise<Map<string, ChiefDetails>> {
+	if (ids.length === 0) return new Map();
+
+	const [specialtyRows, imageRows] = await Promise.all([
+		db
+			.select({
+				id_chief: chiefs_specialties.id_chief,
+				name_speciality: specialties.name_speciality
+			})
+			.from(chiefs_specialties)
+			.innerJoin(specialties, eq(chiefs_specialties.id_speciality, specialties.id_speciality))
+			.where(inArray(chiefs_specialties.id_chief, ids)),
+
+		db
+			.select({
+				id_chief: menus.id_chief,
+				id_menu: menus.id_menu,
+				url: images_menu.url,
+				title: menus.title_menu,
+				price: menus.price_menu
+			})
+			.from(menus)
+			.leftJoin(images_menu, eq(images_menu.id_menu, menus.id_menu))
+			.where(inArray(menus.id_chief, ids))
+			.orderBy(images_menu.position)
+	]);
+
+	const map = new Map<string, ChiefDetails>();
+	for (const id of ids) {
+		map.set(id, { specialties: [], menuImages: [] });
+	}
+
+	for (const row of specialtyRows) {
+		const entry = map.get(row.id_chief);
+		if (entry && !entry.specialties.includes(row.name_speciality)) {
+			entry.specialties.push(row.name_speciality);
+		}
+	}
+
+	const seenMenus = new Set<number>();
+	for (const row of imageRows) {
+		const entry = map.get(row.id_chief);
+		if (entry && !seenMenus.has(row.id_menu) && entry.menuImages.length < 6) {
+			seenMenus.add(row.id_menu);
+			entry.menuImages.push({ id_menu: row.id_menu, url: row.url, title: row.title, price: row.price });
+		}
+	}
+
+	return map;
 }
 
 export type SetupChiefProfileInput = {
@@ -141,8 +205,35 @@ export async function updateChief(id: string, data: UpdateChiefDto): Promise<Chi
 	return updated;
 }
 
-export async function getMenusByChief(chiefId: string): Promise<Menu[]> {
-	return db.select().from(menus).where(eq(menus.id_chief, chiefId));
+export async function getMenusByChief(
+	chiefId: string
+): Promise<(Menu & { image_url: string | null })[]> {
+	const rows = await db
+		.select({
+			id_menu: menus.id_menu,
+			title_menu: menus.title_menu,
+			description_menu: menus.description_menu,
+			price_menu: menus.price_menu,
+			type_menu: menus.type_menu,
+			guests_min: menus.guests_min,
+			guests_max: menus.guests_max,
+			ingredients: menus.ingredients,
+			id_chief: menus.id_chief,
+			image_url: images_menu.url
+		})
+		.from(menus)
+		.leftJoin(images_menu, eq(images_menu.id_menu, menus.id_menu))
+		.where(eq(menus.id_chief, chiefId));
+
+	// Dédoublonnage : garder uniquement la première image par menu
+	const seen = new Set<number>();
+	return rows
+		.filter((r) => {
+			if (seen.has(r.id_menu)) return false;
+			seen.add(r.id_menu);
+			return true;
+		})
+		.map((r) => ({ ...r, image_url: r.image_url ?? null }));
 }
 
 export async function getMenuById(id: number): Promise<Menu | null> {
@@ -192,6 +283,23 @@ export async function updateMenu(id: number, chiefId: string, data: UpdateMenuDt
 	return updated;
 }
 
+export async function getExtrasByChief(chiefId: string): Promise<Menu[]> {
+	return db
+		.select()
+		.from(menus)
+		.where(and(eq(menus.id_chief, chiefId), eq(menus.type_menu, 'extra')));
+}
+
+export async function getChiefUserInfo(
+	chiefId: string
+): Promise<{ firstname: string; name: string } | null> {
+	const [row] = await db
+		.select({ firstname: users.firstname, name: users.name })
+		.from(users)
+		.where(eq(users.id, chiefId));
+	return row ?? null;
+}
+
 export async function deleteMenu(id: number, chiefId: string): Promise<void> {
 	const [existing] = await db
 		.select({ id_chief: menus.id_chief })
@@ -220,13 +328,11 @@ export async function getChiefReviewStats(
 }
 
 export interface NoticeWithCustomer extends Notice {
-	customer_firstname: string;
-	customer_name: string;
-	customer_image: string | null;
+	customer: { firstname: string; name: string; image: string | null };
 }
 
 export async function getNoticesForChief(chiefId: string): Promise<NoticeWithCustomer[]> {
-	return db
+	const rows = await db
 		.select({
 			id_notice: notices.id_notice,
 			rating_notice: notices.rating_notice,
@@ -234,14 +340,19 @@ export async function getNoticesForChief(chiefId: string): Promise<NoticeWithCus
 			date_notice: notices.date_notice,
 			id_customer: notices.id_customer,
 			id_chief: notices.id_chief,
-			customer_firstname: users.firstname,
-			customer_name: users.name,
-			customer_image: users.image
+			firstname: users.firstname,
+			name: users.name,
+			image: users.image
 		})
 		.from(notices)
 		.innerJoin(users, eq(notices.id_customer, users.id))
 		.where(eq(notices.id_chief, chiefId))
 		.orderBy(notices.date_notice);
+
+	return rows.map(({ firstname, name, image, ...rest }) => ({
+		...rest,
+		customer: { firstname, name, image }
+	}));
 }
 
 export async function createNotice(

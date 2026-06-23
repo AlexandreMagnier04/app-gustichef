@@ -7,12 +7,11 @@ export interface Request {
 	type_event_request: string | null;
 	localization_request: string;
 	statut_request: string;
-	id_service: number | null;
 	id_customer: string;
 	id_chief: string | null;
 }
 
-export type CreateRequest = Omit<Request, 'id_request' | 'id_service'>;
+export type CreateRequest = Omit<Request, 'id_request'>;
 
 export interface Customer {
 	id_customer: string;

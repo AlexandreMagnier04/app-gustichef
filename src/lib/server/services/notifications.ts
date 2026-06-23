@@ -2,17 +2,7 @@ import { and, eq, desc } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { notifications } from '$lib/server/db/schema/notifications';
 import { publish, userChannel } from '$lib/server/db/pubsub';
-
-export interface Notification {
-	id_notification: number;
-	id_user: string;
-	type: string;
-	title: string;
-	body: string;
-	read: boolean;
-	id_request: string | null;
-	created_at: Date;
-}
+import type { Notification } from '$lib/models/notification.model';
 
 export async function createNotification(
 	userId: string,

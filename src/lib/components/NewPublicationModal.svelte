@@ -22,6 +22,8 @@
 	let guestsMax = $state<string>('');
 	let selectedCuisines = $state<string[]>([]);
 	let cuisineSelectValue = $state('');
+	let customCuisine = $state('');
+	let showCustomInput = $state(false);
 	let file = $state<File | null>(null);
 	let preview = $state<string | null>(null);
 	let submitting = $state(false);
@@ -35,6 +37,8 @@
 		guestsMax = '';
 		selectedCuisines = [];
 		cuisineSelectValue = '';
+		customCuisine = '';
+		showCustomInput = false;
 		if (preview) URL.revokeObjectURL(preview);
 		file = null;
 		preview = null;
@@ -57,11 +61,26 @@
 	}
 
 	function addCuisine() {
+		if (cuisineSelectValue === '__autre__') {
+			showCustomInput = true;
+			cuisineSelectValue = '';
+			return;
+		}
 		if (!cuisineSelectValue) return;
 		if (!selectedCuisines.includes(cuisineSelectValue)) {
 			selectedCuisines = [...selectedCuisines, cuisineSelectValue];
 		}
 		cuisineSelectValue = '';
+	}
+
+	function addCustomCuisine() {
+		const val = customCuisine.trim();
+		if (!val) return;
+		if (!selectedCuisines.includes(val)) {
+			selectedCuisines = [...selectedCuisines, val];
+		}
+		customCuisine = '';
+		showCustomInput = false;
 	}
 
 	function removeCuisine(c: string) {
@@ -105,7 +124,7 @@
 
 	<!-- Modal -->
 	<div
-		class="fixed inset-x-0 bottom-0 z-50 max-h-[92dvh] overflow-y-auto rounded-t-3xl bg-cream pb-8"
+		class="fixed inset-x-0 bottom-0 z-50 max-h-[92dvh] overflow-y-auto rounded-t-3xl bg-white pb-8"
 		role="dialog"
 		aria-modal="true"
 	>
@@ -209,16 +228,44 @@
 			<!-- Type de cuisine -->
 			<label class="mt-4 mb-1.5 block text-sm font-medium text-navy">Type de cuisine</label>
 			<div class="flex flex-wrap items-center gap-2">
-				<select
-					bind:value={cuisineSelectValue}
-					onchange={addCuisine}
-					class="rounded-full border border-navy/15 bg-white py-2 pr-8 pl-4 text-sm text-navy outline-none focus:border-navy"
-				>
-					<option value="">Cuisine</option>
-					{#each CUISINE_OPTIONS.filter((c) => !selectedCuisines.includes(c)) as c (c)}
-						<option value={c}>{c}</option>
-					{/each}
-				</select>
+				{#if !showCustomInput}
+					<select
+						bind:value={cuisineSelectValue}
+						onchange={addCuisine}
+						class="rounded-full border border-navy/15 bg-white py-2 pr-8 pl-4 text-sm text-navy outline-none focus:border-navy"
+					>
+						<option value="">Cuisine</option>
+						{#each CUISINE_OPTIONS.filter((c) => !selectedCuisines.includes(c)) as c (c)}
+							<option value={c}>{c}</option>
+						{/each}
+						<option value="__autre__">Autre...</option>
+					</select>
+				{:else}
+					<div class="flex items-center gap-1.5">
+						<input
+							type="text"
+							bind:value={customCuisine}
+							placeholder="Ex : Péruvienne"
+							maxlength="40"
+							onkeydown={(e) => e.key === 'Enter' && (e.preventDefault(), addCustomCuisine())}
+							class="rounded-full border border-navy/15 bg-white py-2 px-4 text-sm text-navy outline-none focus:border-navy"
+						/>
+						<button
+							type="button"
+							onclick={addCustomCuisine}
+							class="rounded-full bg-rust px-3 py-2 text-xs font-medium text-white"
+						>
+							Ajouter
+						</button>
+						<button
+							type="button"
+							onclick={() => { showCustomInput = false; customCuisine = ''; }}
+							class="text-xs text-navy/40"
+						>
+							Annuler
+						</button>
+					</div>
+				{/if}
 				{#each selectedCuisines as c (c)}
 					<span
 						class="inline-flex items-center gap-1 rounded-full bg-navy/70 px-3 py-1.5 text-xs text-cream"

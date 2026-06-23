@@ -26,7 +26,7 @@
 		debounceTimer = setTimeout(async () => {
 			suggestions = await searchCommunes(input);
 			showSuggestions = suggestions.length > 0;
-		}, 250);
+		}, 150);
 	}
 
 	function select(nom: string) {
@@ -61,13 +61,17 @@
 		type="text"
 		bind:value={input}
 		oninput={onInput}
-		onblur={() => setTimeout(() => (showSuggestions = false), 150)}
+		onblur={() => {
+			setTimeout(() => (showSuggestions = false), 150);
+			if (input) onSelect(input);
+		}}
 		placeholder="ville"
 		class="w-full rounded-lg border border-gray-200 bg-white py-1.5 pr-7 pl-7 text-sm text-navy outline-none placeholder:text-navy/40 focus:border-navy"
 	/>
 
 	{#if input}
 		<button
+			type="button"
 			onclick={clear}
 			class="absolute top-1/2 right-2 -translate-y-1/2 text-navy/30 hover:text-navy/60"
 			aria-label="Effacer"

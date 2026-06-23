@@ -1,6 +1,7 @@
 import { error } from '@sveltejs/kit';
 import { requireUser } from '$lib/server/services/auth';
 import { getReservationById } from '$lib/server/services/reservations';
+import { getMenuImageUrl } from '$lib/server/services/images';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params, locals }) => {
@@ -11,5 +12,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	const reservation = await getReservationById(id, user.id);
 	if (!reservation) throw error(404, 'Réservation introuvable');
 
-	return { reservation, user };
+	const menuImage = reservation.id_menu ? await getMenuImageUrl(reservation.id_menu) : null;
+
+	return { reservation, user, menuImage };
 };

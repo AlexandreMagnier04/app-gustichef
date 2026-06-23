@@ -5,6 +5,23 @@ import { setupChiefProfileDto } from '$lib/dtos/chief.dto';
 import type { SetupChiefProfileDto } from '$lib/dtos/chief.dto';
 import type { User, UserRole } from '$lib/models/user.model';
 
+const AUTH_ERRORS: Record<string, string> = {
+	'User already exists': 'Cette adresse email est déjà utilisée',
+	'Invalid email or password': 'Email ou mot de passe incorrect',
+	'Password too short': 'Mot de passe trop court (8 caractères minimum)',
+	'Invalid email': 'Adresse email invalide',
+	'Email not verified': 'Email non vérifié',
+	'Too many requests': 'Trop de tentatives, réessayez plus tard',
+	'Invalid origin': 'Origine de la requête invalide',
+	'Account not found': 'Compte introuvable',
+	'Invalid password': 'Mot de passe incorrect'
+};
+
+function translateAuthError(message?: string | null): string {
+	if (!message) return 'Une erreur est survenue';
+	return AUTH_ERRORS[message] ?? message;
+}
+
 export type FieldErrors = Record<string, string>;
 
 // --- Customer register ---
@@ -39,7 +56,7 @@ export async function registerUser(
 	});
 
 	if (result.error) {
-		return { serverError: result.error.message ?? 'Erreur lors de la création du compte' };
+		return { serverError: translateAuthError(result.error.message) };
 	}
 
 	return {};
@@ -99,7 +116,7 @@ export async function registerChef(data: ChefSubmitData): Promise<{ error?: stri
 	});
 
 	if (result.error) {
-		return { error: result.error.message ?? 'Erreur lors de la création du compte' };
+		return { error: translateAuthError(result.error.message) };
 	}
 
 	const profileParsed = setupChiefProfileDto.safeParse({

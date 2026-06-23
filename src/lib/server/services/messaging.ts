@@ -1,58 +1,11 @@
-import { eq, and, or, desc, ne } from 'drizzle-orm';
+import { eq, and, or, desc, ne, inArray } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { conversations, messages } from '$lib/server/db/schema/messaging';
 import { requests } from '$lib/server/db/schema/customers';
 import { menus } from '$lib/server/db/schema/chiefs';
 import { users } from '$lib/server/db/schema/auth';
 import { publish, userChannel } from '$lib/server/db/pubsub';
-
-export interface ConversationListItem {
-	id_conversation: number;
-	id_chief: string;
-	id_customer: string;
-	statut: string;
-	last_message_at: Date;
-	other_firstname: string;
-	other_name: string;
-	other_image: string | null;
-	request_title: string | null;
-	request_guests: number | null;
-	request_type: string | null;
-	last_message: string | null;
-	unread_count: number;
-}
-
-export interface MessageItem {
-	id_message: number;
-	id_conversation: number;
-	id_sender: string;
-	content_message: string;
-	type: string;
-	id_menu: number | null;
-	price_per_person: number | null;
-	created_at: Date;
-	read_message: boolean;
-	menu_title: string | null;
-	menu_description: string | null;
-	menu_price: string | null;
-}
-
-export interface ConversationDetail {
-	id_conversation: number;
-	id_chief: string;
-	id_customer: string;
-	statut: string;
-	id_request: number | null;
-	request_title: string | null;
-	request_guests: number | null;
-	request_type: string | null;
-	request_date: string | null;
-	request_localization: string | null;
-	other_firstname: string;
-	other_name: string;
-	other_image: string | null;
-	messages: MessageItem[];
-}
+import type { ConversationListItem, ConversationDetail } from '$lib/models/messaging.model';
 
 // Retourne toutes les conversations de l'utilisateur avec le dernier message et le nombre de non-lus
 export async function getConversationsForUser(
@@ -149,6 +102,7 @@ export async function getConversationDetail(
 		guests: null as number | null,
 		type: null as string | null,
 		date: null as string | null,
+		time: null as string | null,
 		localization: null as string | null
 	};
 	if (conv.id_request) {
@@ -158,6 +112,7 @@ export async function getConversationDetail(
 				guests_request: requests.guests_request,
 				type_event_request: requests.type_event_request,
 				expected_date_request: requests.expected_date_request,
+				expected_time_request: requests.expected_time_request,
 				localization_request: requests.localization_request
 			})
 			.from(requests)
@@ -168,6 +123,7 @@ export async function getConversationDetail(
 				guests: req.guests_request,
 				type: req.type_event_request,
 				date: req.expected_date_request,
+				time: req.expected_time_request,
 				localization: req.localization_request
 			};
 		}
@@ -215,6 +171,7 @@ export async function getConversationDetail(
 		request_guests: requestInfo.guests,
 		request_type: requestInfo.type,
 		request_date: requestInfo.date,
+		request_time: requestInfo.time,
 		request_localization: requestInfo.localization,
 		other_firstname: other?.firstname ?? '',
 		other_name: other?.name ?? '',
@@ -286,4 +243,49 @@ export async function addMessage(
 // Met à jour le statut d'une conversation (ex: devis_envoye → confirme / refuse)
 export async function updateConversationStatut(convId: number, statut: string): Promise<void> {
 	await db.update(conversations).set({ statut }).where(eq(conversations.id_conversation, convId));
+}
+
+// Retourne une conversation si elle appartient bien à l'utilisateur (selon son rôle)
+export async function getConversationOwned(
+	id: number,
+	userId: string,
+	role: 'chief' | 'customer'
+): Promise<(typeof conversations.$inferSelect) | null> {
+	const condition =
+		role === 'chief'
+			? and(eq(conversations.id_conversation, id), eq(conversations.id_chief, userId))
+			: and(eq(conversations.id_conversation, id), eq(conversations.id_customer, userId));
+	const [conv] = await db.select().from(conversations).where(condition);
+	return conv ?? null;
+}
+
+// Retourne le dernier message d'un type parmi une liste dans une conversation
+export async function getLatestProposalInConversation(
+	convId: number,
+	types: string[]
+): Promise<(typeof messages.$inferSelect) | null> {
+	const [msg] = await db
+		.select()
+		.from(messages)
+		.where(and(eq(messages.id_conversation, convId), inArray(messages.type, types)))
+		.orderBy(desc(messages.created_at))
+		.limit(1);
+	return msg ?? null;
+}
+
+// Insère un message d'invitation au paiement
+export async function addPaymentInvitation(
+	convId: number,
+	senderId: string,
+	pricePerPerson: number,
+	menuId: number | null
+): Promise<void> {
+	await db.insert(messages).values({
+		id_conversation: convId,
+		id_sender: senderId,
+		content_message: 'Votre prestation est prête ! Sécurisez votre réservation ci-dessous.',
+		type: 'payment_invitation',
+		id_menu: menuId ?? null,
+		price_per_person: pricePerPerson
+	});
 }
