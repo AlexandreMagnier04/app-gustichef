@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import imgPing from '$lib/assets/img/ping.png';
 
 	let { data } = $props();
 
@@ -301,18 +302,7 @@
 								</p>
 							{/if}
 							<div class="mt-1 flex items-center gap-1 text-[11px] text-navy/40">
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									viewBox="0 0 16 16"
-									fill="currentColor"
-									class="h-3 w-3 shrink-0"
-								>
-									<path
-										fill-rule="evenodd"
-										d="M8 1a5 5 0 0 0-5 5c0 3.234 2.75 6.56 4.4 8.318a.8.8 0 0 0 1.2 0C10.25 12.56 13 9.234 13 6a5 5 0 0 0-5-5Zm0 6.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"
-										clip-rule="evenodd"
-									/>
-								</svg>
+								<img src={imgPing} alt="" class="h-3 w-3 shrink-0 object-contain" />
 								{chief.localization}
 							</div>
 						</div>

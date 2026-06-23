@@ -13,7 +13,13 @@ export const auth = betterAuth({
 	emailAndPassword: {
 		enabled: true,
 		requireEmailVerification: true,
-		sendVerificationEmail: async ({ user, url }: { user: { email: string; name: string; role?: string; firstname?: string }; url: string }) => {
+		sendVerificationEmail: async ({
+			user,
+			url
+		}: {
+			user: { email: string; name: string; role?: string; firstname?: string };
+			url: string;
+		}) => {
 			const isChief = user.role === 'chief';
 			await sendMail({
 				to: user.email,

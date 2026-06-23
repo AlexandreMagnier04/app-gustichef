@@ -5,7 +5,7 @@
 	import gustichefEcriture from '$lib/assets/img/gustichef-ecriture-verte-2.png';
 	import toque from '$lib/assets/img/toque.png';
 
-	let { active, onPrev }: { active: number; onPrev: () => void } = $props();
+	let { active }: { active: number } = $props();
 
 	// État local : rôle sélectionné par l'utilisateur
 	// null = rien sélectionné, le bouton submit est désactivé
@@ -15,15 +15,7 @@
 <section class="flex h-dvh w-screen shrink-0 flex-col overflow-hidden bg-cream">
 	<div class="relative h-[48%] shrink-0 overflow-hidden">
 		<img src={slide1} alt="" class="h-full w-full object-cover" />
-		<button
-			onclick={onPrev}
-			aria-label="Retour"
-			class="absolute top-4 left-4 z-10 flex size-9 items-center justify-center rounded-full bg-white/15 text-white"
-		>
-			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-5">
-				<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-			</svg>
-		</button>
+
 		<div
 			class="absolute inset-x-0 bottom-0 h-52"
 			style="background: linear-gradient(to top, #F5EDDC 35%, transparent)"

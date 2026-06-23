@@ -3,6 +3,7 @@ export interface Request {
 	title_request: string;
 	description_request: string;
 	expected_date_request: string;
+	expected_time_request: string | null;
 	guests_request: number;
 	type_event_request: string | null;
 	localization_request: string;

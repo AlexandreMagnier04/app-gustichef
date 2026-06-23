@@ -2,7 +2,8 @@
 	import { page } from '$app/state';
 	import { registerUser, loginWithGoogle } from '$lib/services/auth.service';
 	import type { UserRole } from '$lib/models/user.model';
-	import ecriture from '$lib/assets/img/gustichef-ecriture-verte.png';
+	import logoRond from '$lib/assets/img/logo-gusti-rond-vert.png';
+	import logoEcriture from '$lib/assets/img/gustichef-ecriture-verte.png';
 
 	let role = $derived((page.url.searchParams.get('role') ?? 'customer') as UserRole);
 
@@ -43,9 +44,12 @@
 </script>
 
 <div class="flex min-h-dvh flex-col items-center bg-cream px-6 pt-10 pb-12">
-	<div class="mb-8 flex flex-col items-center gap-3">
-		<p class="text-sm text-navy/60">Bienvenue sur</p>
-		<img src={ecriture} alt="Gustichef" class="h-12 object-contain" />
+	<div class="mb-8 flex flex-col items-center gap-2">
+		<p class="text-sm font-medium text-teal">Bienvenue</p>
+		<div class="flex items-center gap-3">
+			<img src={logoRond} alt="" class="h-16 object-contain" />
+			<img src={logoEcriture} alt="Gustichef" class="h-16 object-contain" />
+		</div>
 	</div>
 
 	{#if serverError}

@@ -1,6 +1,12 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation';
 	import type { RequestWithCustomer } from '$lib/server/services/customers';
+	import imgCroix from '$lib/assets/img/croix.png';
+	import imgAvion from '$lib/assets/img/avion.png';
+	import imgAgenda from '$lib/assets/img/agenda.png';
+	import imgTwoUser from '$lib/assets/img/two-user.png';
+	import imgTag from '$lib/assets/img/tag.png';
+	import imgPing from '$lib/assets/img/ping.png';
 
 	let {
 		open = $bindable(false),
@@ -38,8 +44,8 @@
 	async function submit(e: Event) {
 		e.preventDefault();
 		if (!request) return;
-		if (!message || message.trim().length < 10) {
-			errorMsg = 'Le message doit faire au moins 10 caractères.';
+		if (!message || message.trim().length < 1) {
+			errorMsg = 'Le message ne peut pas être vide.';
 			return;
 		}
 		submitting = true;
@@ -71,7 +77,7 @@
 	<button class="fixed inset-0 z-40 bg-black/40" onclick={close} aria-label="Fermer"></button>
 
 	<div
-		class="fixed inset-x-0 bottom-0 z-50 max-h-[92dvh] overflow-y-auto rounded-t-3xl bg-[#FDF7F4] pb-8"
+		class="fixed inset-x-0 bottom-0 z-50 max-h-[92dvh] overflow-y-auto rounded-t-3xl bg-white pb-8"
 		role="dialog"
 		aria-modal="true"
 	>
@@ -80,20 +86,11 @@
 		</div>
 
 		<button
-			class="absolute top-3 right-4 flex h-8 w-8 items-center justify-center rounded-full bg-white text-navy/70 shadow"
+			class="absolute top-3 right-4 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow"
 			onclick={close}
 			aria-label="Fermer"
 		>
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				viewBox="0 0 16 16"
-				fill="currentColor"
-				class="h-4 w-4"
-			>
-				<path
-					d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z"
-				/>
-			</svg>
+			<img src={imgCroix} alt="" class="h-4 w-4 object-contain" />
 		</button>
 
 		<div class="px-6 pt-2">
@@ -167,25 +164,29 @@
 					</div>
 					<div class="mt-2.5 flex flex-wrap gap-1.5">
 						<span
-							class="inline-flex items-center gap-1 rounded-full bg-navy/5 px-2.5 py-1 text-[11px] text-navy/60"
+							class="inline-flex items-center gap-1 rounded-full bg-olive px-2.5 py-1 text-[11px] text-white"
 						>
+							<img src={imgAgenda} alt="" class="h-3 w-3 object-contain brightness-0 invert" />
 							{formatDate(request.expected_date_request)}
 						</span>
 						<span
-							class="inline-flex items-center gap-1 rounded-full bg-navy/5 px-2.5 py-1 text-[11px] text-navy/60"
+							class="inline-flex items-center gap-1 rounded-full bg-olive px-2.5 py-1 text-[11px] text-white"
 						>
+							<img src={imgTwoUser} alt="" class="h-3 w-3 object-contain brightness-0 invert" />
 							{request.guests_request} pers.
 						</span>
 						{#if request.type_event_request}
 							<span
-								class="inline-flex items-center gap-1 rounded-full bg-navy/5 px-2.5 py-1 text-[11px] text-navy/60"
+								class="inline-flex items-center gap-1 rounded-full bg-olive px-2.5 py-1 text-[11px] text-white"
 							>
+								<img src={imgTag} alt="" class="h-3 w-3 object-contain brightness-0 invert" />
 								{request.type_event_request}
 							</span>
 						{/if}
 						<span
-							class="inline-flex items-center gap-1 rounded-full bg-navy/5 px-2.5 py-1 text-[11px] text-navy/60"
+							class="inline-flex items-center gap-1 rounded-full bg-olive px-2.5 py-1 text-[11px] text-white"
 						>
+							<img src={imgPing} alt="" class="h-3 w-3 object-contain brightness-0 invert" />
 							{request.localization_request}
 						</span>
 					</div>
@@ -193,7 +194,9 @@
 
 				<form onsubmit={submit} class="flex flex-col gap-5">
 					<div>
-						<label for="rreq-message" class="mb-1.5 block text-sm font-medium text-navy">Votre message</label>
+						<label for="rreq-message" class="mb-1.5 block text-sm font-medium text-navy"
+							>Votre message</label
+						>
 						<textarea
 							id="rreq-message"
 							bind:value={message}
@@ -214,16 +217,7 @@
 						disabled={submitting}
 						class="flex w-full items-center justify-center gap-2 rounded-xl bg-rust py-3.5 text-sm font-semibold text-white shadow-sm transition-opacity active:opacity-80 disabled:opacity-60"
 					>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							viewBox="0 0 20 20"
-							fill="currentColor"
-							class="h-4 w-4"
-						>
-							<path
-								d="M3.105 2.288a.75.75 0 0 0-.826.95l1.414 4.926A1.5 1.5 0 0 0 5.135 9.25h6.115a.75.75 0 0 1 0 1.5H5.135a1.5 1.5 0 0 0-1.442 1.086l-1.414 4.926a.75.75 0 0 0 .826.95 28.897 28.897 0 0 0 15.293-7.155.75.75 0 0 0 0-1.114A28.897 28.897 0 0 0 3.105 2.288Z"
-							/>
-						</svg>
+						<img src={imgAvion} alt="" class="h-4 w-4 object-contain brightness-0 invert" />
 						{submitting ? 'Envoi...' : 'Envoyer ma proposition'}
 					</button>
 				</form>

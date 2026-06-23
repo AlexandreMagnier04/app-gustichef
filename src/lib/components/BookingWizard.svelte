@@ -2,6 +2,7 @@
 	import { untrack } from 'svelte';
 	import DatePicker from '$lib/components/DatePicker.svelte';
 	import { searchCommunes } from '$lib/services/geo.service';
+	import imgCroix from '$lib/assets/img/croix.png';
 
 	let localizationSuggestions = $state<{ nom: string; code: string }[]>([]);
 	let showLocSuggestions = $state(false);
@@ -225,18 +226,9 @@
 					type="button"
 					onclick={onclose}
 					aria-label="Fermer"
-					class="flex h-8 w-8 items-center justify-center rounded-full bg-navy/8 text-navy/50"
+					class="flex h-8 w-8 items-center justify-center rounded-full bg-navy/8"
 				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 20 20"
-						fill="currentColor"
-						class="h-4 w-4"
-					>
-						<path
-							d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z"
-						/>
-					</svg>
+					<img src={imgCroix} alt="" class="h-4 w-4 object-contain" />
 				</button>
 			</div>
 			<!-- Points de progression -->
@@ -263,8 +255,9 @@
 							/>
 						</div>
 						<div>
-							<label for="bwiz-event-time" class="mb-1.5 block text-[12px] font-semibold text-navy/60"
-								>Heure de début</label
+							<label
+								for="bwiz-event-time"
+								class="mb-1.5 block text-[12px] font-semibold text-navy/60">Heure de début</label
 							>
 							<input
 								id="bwiz-event-time"
@@ -274,7 +267,9 @@
 							/>
 						</div>
 						<div class="relative">
-							<label for="bwiz-localization" class="mb-1.5 block text-[12px] font-semibold text-navy/60">Localisation</label
+							<label
+								for="bwiz-localization"
+								class="mb-1.5 block text-[12px] font-semibold text-navy/60">Localisation</label
 							>
 							<input
 								id="bwiz-localization"

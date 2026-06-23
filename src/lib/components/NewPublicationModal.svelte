@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation';
 	import { createPublication } from '$lib/services/publication.service';
+	import imgCroix from '$lib/assets/img/croix.png';
 
 	let { open = $bindable(false) }: { open?: boolean } = $props();
 
@@ -134,20 +135,11 @@
 		</div>
 
 		<button
-			class="absolute top-3 right-4 flex h-8 w-8 items-center justify-center rounded-full bg-white text-navy/70 shadow"
+			class="absolute top-3 right-4 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow"
 			onclick={close}
 			aria-label="Fermer"
 		>
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				viewBox="0 0 16 16"
-				fill="currentColor"
-				class="h-4 w-4"
-			>
-				<path
-					d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z"
-				/>
-			</svg>
+			<img src={imgCroix} alt="" class="h-4 w-4 object-contain" />
 		</button>
 
 		<form onsubmit={submit} class="px-6 pt-2">
@@ -188,7 +180,9 @@
 			</p>
 
 			<!-- Nom -->
-			<label for="npub-title" class="mt-4 mb-1.5 block text-sm font-medium text-navy">Nom du plat</label>
+			<label for="npub-title" class="mt-4 mb-1.5 block text-sm font-medium text-navy"
+				>Nom du plat</label
+			>
 			<input
 				id="npub-title"
 				type="text"
@@ -200,7 +194,9 @@
 			/>
 
 			<!-- Description -->
-			<label for="npub-description" class="mt-4 mb-1.5 block text-sm font-medium text-navy">Description</label>
+			<label for="npub-description" class="mt-4 mb-1.5 block text-sm font-medium text-navy"
+				>Description</label
+			>
 			<textarea
 				id="npub-description"
 				bind:value={description}
@@ -212,7 +208,9 @@
 			></textarea>
 
 			<!-- Prix -->
-			<label for="npub-price" class="mt-4 mb-1.5 block text-sm font-medium text-navy">Prix par personne</label>
+			<label for="npub-price" class="mt-4 mb-1.5 block text-sm font-medium text-navy"
+				>Prix par personne</label
+			>
 			<div class="relative inline-flex w-28">
 				<input
 					id="npub-price"

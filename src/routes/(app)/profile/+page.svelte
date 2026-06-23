@@ -5,6 +5,12 @@
 	import NewMenuModal from '$lib/components/NewMenuModal.svelte';
 	import EditMenuModal from '$lib/components/EditMenuModal.svelte';
 	import NewPublicationModal from '$lib/components/NewPublicationModal.svelte';
+	import imgStylo from '$lib/assets/img/stylo.png';
+	import imgEngrenage from '$lib/assets/img/engrenage.png';
+	import imgPing from '$lib/assets/img/ping.png';
+	import imgAgendaVert from '$lib/assets/img/agenda-vert.png';
+	import imgHorlogeVert from '$lib/assets/img/horloge-vert.png';
+	import imgTwoUsersVert from '$lib/assets/img/two-users-vert.png';
 
 	let { data }: { data: PageData } = $props();
 
@@ -136,19 +142,7 @@
 				aria-label="Modifier le profil"
 				class="absolute right-0 bottom-0 flex h-7 w-7 items-center justify-center rounded-full bg-rust shadow-md ring-2 ring-cream"
 			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 16 16"
-					fill="currentColor"
-					class="h-3.5 w-3.5 text-white"
-				>
-					<path
-						d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.263a1.75 1.75 0 0 0 0-2.474Z"
-					/>
-					<path
-						d="M4.75 3.5A2.25 2.25 0 0 0 2.5 5.75v5.5A2.25 2.25 0 0 0 4.75 13.5h5.5A2.25 2.25 0 0 0 12.5 11.25V9a.75.75 0 0 0-1.5 0v2.25a.75.75 0 0 1-.75.75h-5.5a.75.75 0 0 1-.75-.75v-5.5a.75.75 0 0 1 .75-.75H7A.75.75 0 0 0 7 2H4.75Z"
-					/>
-				</svg>
+				<img src={imgStylo} alt="" class="h-3.5 w-3.5 object-contain brightness-0 invert" />
 			</a>
 		</div>
 
@@ -164,43 +158,11 @@
 			</p>
 			{#if displayLoc}
 				<div class="mt-1 flex items-center gap-1 text-xs text-navy/50">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 16 16"
-						fill="currentColor"
-						class="h-3 w-3 shrink-0 text-rust"
-					>
-						<path
-							fill-rule="evenodd"
-							d="m7.539 14.841.003.003.002.002a.755.755 0 0 0 .912 0l.002-.002.003-.003.012-.009a5.57 5.57 0 0 0 .19-.153 15.588 15.588 0 0 0 2.046-2.082c1.101-1.362 2.291-3.342 2.291-5.597A5 5 0 0 0 3 8c0 2.255 1.19 4.235 2.292 5.597a15.591 15.591 0 0 0 2.046 2.082 8.916 8.916 0 0 0 .189.153l.012.01ZM8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"
-							clip-rule="evenodd"
-						/>
-					</svg>
+					<img src={imgPing} alt="" class="h-3 w-3 shrink-0 object-contain" />
 					<span>{displayLoc}</span>
 				</div>
 			{/if}
 		</div>
-
-		<!-- Badge note (si disponible) -->
-		{#if profile?.note_chief}
-			<div class="shrink-0 rounded-xl bg-navy px-3 py-2 text-center">
-				<div class="flex items-center justify-center gap-1">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 16 16"
-						fill="currentColor"
-						class="h-3.5 w-3.5 text-yellow-300"
-					>
-						<path
-							fill-rule="evenodd"
-							d="M8 1.75a.75.75 0 0 1 .692.462l1.41 3.393 3.664.293a.75.75 0 0 1 .428 1.317l-2.791 2.39.853 3.575a.75.75 0 0 1-1.12.814L8 11.459l-3.136 2.535a.75.75 0 0 1-1.12-.814l.853-3.574-2.79-2.39a.75.75 0 0 1 .427-1.318l3.665-.293 1.41-3.393A.75.75 0 0 1 8 1.75Z"
-							clip-rule="evenodd"
-						/>
-					</svg>
-					<span class="text-base font-bold text-white">{profile.note_chief}</span>
-				</div>
-			</div>
-		{/if}
 	</div>
 
 	<!-- ── BIO + ACTIONS ────────────────────────── -->
@@ -214,37 +176,15 @@
 		<!-- Actions rapides -->
 		<div class="flex flex-col items-end gap-1">
 			<a href="/profile/edit" class="flex items-center gap-2 py-1.5 text-sm font-medium text-teal">
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 16 16"
-					fill="currentColor"
-					class="h-4 w-4 text-teal"
-				>
-					<path
-						d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.263a1.75 1.75 0 0 0 0-2.474Z"
-					/>
-					<path
-						d="M4.75 3.5A2.25 2.25 0 0 0 2.5 5.75v5.5A2.25 2.25 0 0 0 4.75 13.5h5.5A2.25 2.25 0 0 0 12.5 11.25V9a.75.75 0 0 0-1.5 0v2.25a.75.75 0 0 1-.75.75h-5.5a.75.75 0 0 1-.75-.75v-5.5a.75.75 0 0 1 .75-.75H7A.75.75 0 0 0 7 2H4.75Z"
-					/>
-				</svg>
+				<img src={imgStylo} alt="" class="h-4 w-4 object-contain" />
 				Éditer profil
 			</a>
 			<a
 				href="/profile/settings"
+				data-sveltekit-reload
 				class="flex items-center gap-2 py-1.5 text-sm font-medium text-teal"
 			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 20 20"
-					fill="currentColor"
-					class="h-4 w-4 text-teal"
-				>
-					<path
-						fill-rule="evenodd"
-						d="M7.84 1.804A1 1 0 0 1 8.82 1h2.36a1 1 0 0 1 .98.804l.331 1.652a6.993 6.993 0 0 1 1.929 1.115l1.598-.54a1 1 0 0 1 1.186.447l1.18 2.044a1 1 0 0 1-.205 1.251l-1.267 1.113a7.047 7.047 0 0 1 0 2.228l1.267 1.113a1 1 0 0 1 .205 1.251l-1.18 2.044a1 1 0 0 1-1.186.447l-1.598-.54a6.993 6.993 0 0 1-1.929 1.115l-.33 1.652a1 1 0 0 1-.98.804H8.82a1 1 0 0 1-.98-.804l-.331-1.652a6.993 6.993 0 0 1-1.929-1.115l-1.598.54a1 1 0 0 1-1.186-.447l-1.18-2.044a1 1 0 0 1 .205-1.251l1.267-1.114a7.05 7.05 0 0 1 0-2.227L1.821 7.773a1 1 0 0 1-.206-1.25l1.18-2.045a1 1 0 0 1 1.187-.447l1.598.54A6.992 6.992 0 0 1 7.51 3.456l.33-1.652ZM10 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
-						clip-rule="evenodd"
-					/>
-				</svg>
+				<img src={imgEngrenage} alt="" class="h-4 w-4 object-contain" />
 				Paramètres
 			</a>
 		</div>
@@ -384,7 +324,7 @@
 				<div class="flex flex-col gap-4">
 					{#each filteredMenus as menu, i (menu.id_menu)}
 						<div
-							class="overflow-hidden rounded-2xl bg-white shadow-[0_2px_12px_rgba(5,30,35,0.08)]"
+							class="overflow-hidden rounded-2xl bg-cream shadow-[0_2px_12px_rgba(5,30,35,0.08)]"
 						>
 							<!-- Image propre -->
 							<div class="h-36 overflow-hidden">
@@ -406,27 +346,19 @@
 								<div class="mt-3 flex gap-2">
 									<a
 										href="/menus/{menu.id_menu}"
-										class="flex flex-1 items-center justify-center rounded-xl bg-rust py-2.5 text-xs font-semibold text-white"
+										class="flex flex-1 items-center justify-center rounded-xl bg-teal py-2.5 text-xs font-semibold text-white"
 									>
 										Découvrir le menu
 									</a>
 									<button
 										onclick={() => openEdit(menu)}
-										class="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-teal py-2.5 text-xs font-semibold text-white"
+										class="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-rust py-2.5 text-xs font-semibold text-white"
 									>
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											viewBox="0 0 16 16"
-											fill="currentColor"
-											class="h-3.5 w-3.5"
-										>
-											<path
-												d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.263a1.75 1.75 0 0 0 0-2.474Z"
-											/>
-											<path
-												d="M4.75 3.5A2.25 2.25 0 0 0 2.5 5.75v5.5A2.25 2.25 0 0 0 4.75 13.5h5.5A2.25 2.25 0 0 0 12.5 11.25V9a.75.75 0 0 0-1.5 0v2.25a.75.75 0 0 1-.75.75h-5.5a.75.75 0 0 1-.75-.75v-5.5a.75.75 0 0 1 .75-.75H7A.75.75 0 0 0 7 2H4.75Z"
-											/>
-										</svg>
+										<img
+											src={imgStylo}
+											alt=""
+											class="h-3.5 w-3.5 object-contain brightness-0 invert"
+										/>
 										Éditer
 									</button>
 								</div>
@@ -464,7 +396,7 @@
 										href="/reservations/{res.id_reservation}"
 										class="flex items-center gap-1 text-[13px] font-semibold text-navy"
 									>
-										<span class="truncate">{res.title}</span>
+										<span class="truncate">{res.menu_title ?? res.title}</span>
 										<svg
 											xmlns="http://www.w3.org/2000/svg"
 											viewBox="0 0 16 16"
@@ -503,61 +435,19 @@
 							<!-- Infos : date | heure | lieu | convives -->
 							<div class="grid grid-cols-2 gap-x-4 gap-y-2.5 px-4 py-3">
 								<div class="flex items-center gap-2 text-[12px] text-navy/70">
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										viewBox="0 0 16 16"
-										fill="currentColor"
-										class="h-3.5 w-3.5 shrink-0 text-navy/35"
-										><path
-											fill-rule="evenodd"
-											d="M4 1.75a.75.75 0 0 1 1.5 0V3h5V1.75a.75.75 0 0 1 1.5 0V3h.25A2.75 2.75 0 0 1 15 5.75v7.5A2.75 2.75 0 0 1 12.25 16H3.75A2.75 2.75 0 0 1 1 13.25v-7.5A2.75 2.75 0 0 1 3.75 3H4V1.75ZM3.75 6a.75.75 0 0 0-.75.75v5.5c0 .414.336.75.75.75h8.5a.75.75 0 0 0 .75-.75v-5.5a.75.75 0 0 0-.75-.75H3.75Z"
-											clip-rule="evenodd"
-										/></svg
-									>
+									<img src={imgAgendaVert} alt="" class="h-3.5 w-3.5 shrink-0 object-contain" />
 									<span class="capitalize">{formatDate(res.event_date)}</span>
 								</div>
-								{#if res.event_time}
-									<div class="flex items-center gap-2 text-[12px] text-navy/70">
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											viewBox="0 0 16 16"
-											fill="currentColor"
-											class="h-3.5 w-3.5 shrink-0 text-navy/35"
-											><path
-												fill-rule="evenodd"
-												d="M1 8a7 7 0 1 1 14 0A7 7 0 0 1 1 8Zm7-4.75a.75.75 0 0 0-.75.75v4.5a.75.75 0 0 0 1.5 0V4a.75.75 0 0 0-.75-.75ZM8 10a1 1 0 1 0 0 2 1 1 0 0 0 0-2Z"
-												clip-rule="evenodd"
-											/></svg
-										>
-										<span>{res.event_time}</span>
-									</div>
-								{/if}
-								{#if res.localization}
-									<div class="flex items-center gap-2 text-[12px] text-navy/70">
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											viewBox="0 0 16 16"
-											fill="currentColor"
-											class="h-3.5 w-3.5 shrink-0 text-navy/35"
-											><path
-												fill-rule="evenodd"
-												d="m7.539 14.841.003.003.002.002a.755.755 0 0 0 .912 0l.002-.002.003-.003.012-.009a5.57 5.57 0 0 0 .19-.153 15.588 15.588 0 0 0 2.046-2.082c1.101-1.362 2.291-3.342 2.291-5.597A5 5 0 0 0 3 8c0 2.255 1.19 4.235 2.292 5.597a15.591 15.591 0 0 0 2.046 2.082 8.916 8.916 0 0 0 .189.153l.012.01ZM8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"
-												clip-rule="evenodd"
-											/></svg
-										>
-										<span>{res.localization}</span>
-									</div>
-								{/if}
 								<div class="flex items-center gap-2 text-[12px] text-navy/70">
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										viewBox="0 0 16 16"
-										fill="currentColor"
-										class="h-3.5 w-3.5 shrink-0 text-navy/35"
-										><path
-											d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z"
-										/></svg
-									>
+									<img src={imgHorlogeVert} alt="" class="h-3.5 w-3.5 shrink-0 object-contain" />
+									<span>{res.event_time ?? '—'}</span>
+								</div>
+								<div class="flex items-center gap-2 text-[12px] text-navy/70">
+									<img src={imgPing} alt="" class="h-3.5 w-3.5 shrink-0 object-contain" />
+									<span>{res.localization ?? '—'}</span>
+								</div>
+								<div class="flex items-center gap-2 text-[12px] text-navy/70">
+									<img src={imgTwoUsersVert} alt="" class="h-3.5 w-3.5 shrink-0 object-contain" />
 									<span>{res.guests} convive{res.guests > 1 ? 's' : ''}</span>
 								</div>
 							</div>
@@ -581,8 +471,6 @@
 					{/each}
 				</div>
 			{/if}
-
-			<!-- Avis -->
 		{:else if activeTab === 'avis'}
 			<p class="py-12 text-center text-sm text-navy/40">Aucun avis pour l'instant.</p>
 		{/if}

@@ -1,5 +1,11 @@
 <script lang="ts">
 	import type { ReservationDetail } from '$lib/models/reservation.model';
+	import flecheRetourOrange from '$lib/assets/img/fleche-retour-orange.png';
+	import flecheRetourVerte from '$lib/assets/img/fleche-retour-verte.png';
+	import imgAgendaVert from '$lib/assets/img/agenda-vert.png';
+	import imgPing from '$lib/assets/img/ping.png';
+	import imgTwoUsersVert from '$lib/assets/img/two-users-vert.png';
+	import imgHorlogeVert from '$lib/assets/img/horloge-vert.png';
 
 	const TRAVEL_FEE_PER_PERSON = 2.4;
 
@@ -41,23 +47,12 @@
 	<!-- Header -->
 	<div class="flex items-center justify-between border-b border-navy/8 px-4 py-3">
 		<div class="flex items-center gap-3">
-			<a
-				href="/messages/{r.id_conversation}"
-				aria-label="Messages"
-				class="flex h-9 w-9 items-center justify-center rounded-full bg-navy/5"
-			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 20 20"
-					fill="currentColor"
-					class="h-4 w-4 text-navy/60"
-				>
-					<path
-						fill-rule="evenodd"
-						d="M17 10a.75.75 0 0 1-.75.75H5.612l4.158 3.96a.75.75 0 1 1-1.04 1.08l-5.5-5.25a.75.75 0 0 1 0-1.08l5.5-5.25a.75.75 0 0 1 1.04 1.08L5.612 9.25H16.25A.75.75 0 0 1 17 10Z"
-						clip-rule="evenodd"
-					/>
-				</svg>
+			<a href="/messages/{r.id_conversation}" aria-label="Messages">
+				<img
+					src={isChief ? flecheRetourOrange : flecheRetourVerte}
+					alt="Retour"
+					class="h-5 w-5 object-contain"
+				/>
 			</a>
 			<h1 class="text-sm font-bold text-navy">Ta réservation</h1>
 		</div>
@@ -116,18 +111,7 @@
 					<p class="text-[13px] text-navy/50">Chef à domicile</p>
 					{#if r.chief.localization}
 						<div class="mt-0.5 flex items-center gap-1 text-[12px] text-navy/40">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 16 16"
-								fill="currentColor"
-								class="h-3 w-3 shrink-0 text-teal"
-							>
-								<path
-									fill-rule="evenodd"
-									d="M8 1.5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9ZM2 6a6 6 0 1 1 10.174 4.31c-.203.196-.43.37-.66.533l-3.67 2.938a.75.75 0 0 1-.936 0l-3.67-2.938a6.08 6.08 0 0 1-.66-.533A5.976 5.976 0 0 1 2 6Zm4.5.25a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Z"
-									clip-rule="evenodd"
-								/>
-							</svg>
+							<img src={imgPing} alt="" class="h-3 w-3 shrink-0 object-contain" />
 							{r.chief.localization}
 						</div>
 					{/if}
@@ -138,63 +122,21 @@
 		<!-- Infos événement -->
 		<div class="space-y-0 divide-y divide-navy/8">
 			<div class="flex items-center gap-3 py-3">
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 16 16"
-					fill="currentColor"
-					class="h-4 w-4 shrink-0 text-teal"
-				>
-					<path
-						fill-rule="evenodd"
-						d="M4 1.75a.75.75 0 0 1 1.5 0V3h5V1.75a.75.75 0 0 1 1.5 0V3A2.5 2.5 0 0 1 14.5 5.5v6a2.5 2.5 0 0 1-2.5 2.5H4A2.5 2.5 0 0 1 1.5 11.5v-6A2.5 2.5 0 0 1 4 3V1.75ZM3 7v4.5A1 1 0 0 0 4 12.5h8a1 1 0 0 0 1-1V7H3Z"
-						clip-rule="evenodd"
-					/>
-				</svg>
+				<img src={imgAgendaVert} alt="" class="h-4 w-4 shrink-0 object-contain" />
 				<span class="text-[13px] text-navy capitalize">{formatDate(r.event_date)}</span>
 			</div>
 			{#if r.event_time}
 				<div class="flex items-center gap-3 py-3">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 16 16"
-						fill="currentColor"
-						class="h-4 w-4 shrink-0 text-teal"
-					>
-						<path
-							fill-rule="evenodd"
-							d="M1 8a7 7 0 1 1 14 0A7 7 0 0 1 1 8Zm7-4.75a.75.75 0 0 0-.75.75v4.5c0 .264.138.51.366.647l3 1.75a.75.75 0 0 0 .768-1.286L8.75 8.085V4a.75.75 0 0 0-.75-.75Z"
-							clip-rule="evenodd"
-						/>
-					</svg>
+					<img src={imgHorlogeVert} alt="" class="h-4 w-4 shrink-0 object-contain" />
 					<span class="text-[13px] text-navy">{r.event_time}</span>
 				</div>
 			{/if}
 			<div class="flex items-center gap-3 py-3">
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 16 16"
-					fill="currentColor"
-					class="h-4 w-4 shrink-0 text-teal"
-				>
-					<path
-						fill-rule="evenodd"
-						d="M8 1.5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9ZM2 6a6 6 0 1 1 10.174 4.31c-.203.196-.43.37-.66.533l-3.67 2.938a.75.75 0 0 1-.936 0l-3.67-2.938a6.08 6.08 0 0 1-.66-.533A5.976 5.976 0 0 1 2 6Zm4.5.25a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Z"
-						clip-rule="evenodd"
-					/>
-				</svg>
+				<img src={imgPing} alt="" class="h-4 w-4 shrink-0 object-contain" />
 				<span class="text-[13px] text-navy">Domicile client · {r.localization}</span>
 			</div>
 			<div class="flex items-center gap-3 py-3">
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 16 16"
-					fill="currentColor"
-					class="h-4 w-4 shrink-0 text-teal"
-				>
-					<path
-						d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z"
-					/>
-				</svg>
+				<img src={imgTwoUsersVert} alt="" class="h-4 w-4 shrink-0 object-contain" />
 				<span class="text-[13px] text-navy">{r.guests} convives</span>
 			</div>
 		</div>

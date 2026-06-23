@@ -9,9 +9,9 @@ export const updateChiefDto = z.object({
 export const createMenuDto = z.object({
 	title_menu: z
 		.string()
-		.min(2, { message: 'Au moins 2 caractères' })
+		.min(1, { message: 'Titre requis' })
 		.max(100, { message: 'Maximum 100 caractères' }),
-	description_menu: z.string().min(2, { message: 'Au moins 2 caractères' }),
+	description_menu: z.string().optional(),
 	price_menu: z.coerce.number().positive({ message: 'Prix invalide' }).multipleOf(0.01),
 	type_menu: z.enum(['plat', 'extra']).default('plat'),
 	guests_min: z.coerce.number().int().positive().optional(),
@@ -20,7 +20,7 @@ export const createMenuDto = z.object({
 });
 
 export const updateMenuDto = createMenuDto.partial().extend({
-	title_menu: z.string().min(2).max(100).optional()
+	title_menu: z.string().min(1).max(100).optional()
 });
 
 // DTO pour la création du profil chef après signUp (appelé par /api/chief/profile)

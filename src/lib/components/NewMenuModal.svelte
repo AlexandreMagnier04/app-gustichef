@@ -1,4 +1,6 @@
 <script lang="ts">
+	import imgCroix from '$lib/assets/img/croix.png';
+
 	let {
 		open = $bindable(false),
 		onCreated
@@ -70,8 +72,6 @@
 	async function submit() {
 		errors = {};
 		if (!title.trim()) errors.title = 'Nom requis';
-		if (!description.trim() || description.trim().length < 2)
-			errors.description = 'Au moins 2 caractères';
 		if (!price || isNaN(parseFloat(price)) || parseFloat(price) <= 0)
 			errors.price = 'Prix invalide';
 		if (Object.keys(errors).length > 0) return;
@@ -133,18 +133,9 @@
 				<button
 					onclick={close}
 					aria-label="Fermer"
-					class="flex h-7 w-7 items-center justify-center rounded-full bg-navy/8 text-navy/60"
+					class="flex h-7 w-7 items-center justify-center rounded-full bg-navy/8"
 				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 16 16"
-						fill="currentColor"
-						class="h-4 w-4"
-					>
-						<path
-							d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z"
-						/>
-					</svg>
+					<img src={imgCroix} alt="" class="h-4 w-4 object-contain" />
 				</button>
 			</div>
 
@@ -199,7 +190,9 @@
 
 				<!-- Nom -->
 				<div class="mb-4">
-					<label for="nmenu-title" class="mb-1.5 block text-sm font-medium text-navy">Nom du plat</label>
+					<label for="nmenu-title" class="mb-1.5 block text-sm font-medium text-navy"
+						>Nom du plat</label
+					>
 					<input
 						id="nmenu-title"
 						type="text"
@@ -212,7 +205,9 @@
 
 				<!-- Description -->
 				<div class="mb-4">
-					<label for="nmenu-description" class="mb-1.5 block text-sm font-medium text-navy">Description</label>
+					<label for="nmenu-description" class="mb-1.5 block text-sm font-medium text-navy"
+						>Description</label
+					>
 					<textarea
 						id="nmenu-description"
 						placeholder="Décrivez votre plat..."
@@ -244,7 +239,9 @@
 				<!-- Convives -->
 				<div class="mb-4 flex gap-3">
 					<div class="flex-1">
-						<label for="nmenu-guests-min" class="mb-1.5 block text-sm font-medium text-navy">Convives min</label>
+						<label for="nmenu-guests-min" class="mb-1.5 block text-sm font-medium text-navy"
+							>Convives min</label
+						>
 						<input
 							id="nmenu-guests-min"
 							type="number"
@@ -254,7 +251,9 @@
 						/>
 					</div>
 					<div class="flex-1">
-						<label for="nmenu-guests-max" class="mb-1.5 block text-sm font-medium text-navy">Convives max</label>
+						<label for="nmenu-guests-max" class="mb-1.5 block text-sm font-medium text-navy"
+							>Convives max</label
+						>
 						<input
 							id="nmenu-guests-max"
 							type="number"
@@ -267,7 +266,9 @@
 
 				<!-- Ingrédients -->
 				<div class="mb-5">
-					<label for="nmenu-ingredient" class="mb-1.5 block text-sm font-medium text-navy">Ingrédients</label>
+					<label for="nmenu-ingredient" class="mb-1.5 block text-sm font-medium text-navy"
+						>Ingrédients</label
+					>
 					<div class="flex gap-2">
 						<input
 							id="nmenu-ingredient"

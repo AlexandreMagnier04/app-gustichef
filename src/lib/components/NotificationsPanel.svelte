@@ -113,7 +113,12 @@
 		{:else}
 			<ul class="divide-y divide-navy/[0.06]">
 				{#each notifs as n (n.id_notification)}
-					{@const href = n.id_request ? `/messages/${n.id_request}` : null}
+					{@const href =
+						n.type === 'new_request'
+							? '/home?tab=demandes'
+							: n.id_request
+								? `/messages/${n.id_request}`
+								: null}
 					<li class={n.read ? 'bg-transparent' : 'bg-teal/[0.04]'}>
 						<svelte:element
 							this={href ? 'a' : 'div'}

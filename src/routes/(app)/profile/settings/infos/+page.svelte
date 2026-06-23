@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { untrack } from 'svelte';
 	import type { PageData } from './$types';
+	import flecheRetourOrange from '$lib/assets/img/fleche-retour-orange.png';
+	import flecheRetourVerte from '$lib/assets/img/fleche-retour-verte.png';
 
 	let { data }: { data: PageData } = $props();
 
 	const initialUser = untrack(() => data.user);
-	const initialProfile = untrack(() => data.profile);
 
 	const isChief = $derived(data.user.role === 'chief');
 	const accentColor = $derived(isChief ? 'bg-rust' : 'bg-teal');
@@ -112,14 +113,12 @@
 
 <!-- En-tête -->
 <div class="flex items-center justify-between pt-2 pb-4">
-	<a href="/profile/settings" aria-label="Retour" class="text-navy/50 hover:text-navy">
-		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
-			<path
-				fill-rule="evenodd"
-				d="M17 10a.75.75 0 0 1-.75.75H5.612l4.158 3.96a.75.75 0 1 1-1.04 1.08l-5.5-5.25a.75.75 0 0 1 0-1.08l5.5-5.25a.75.75 0 1 1 1.04 1.08L5.612 9.25H16.25A.75.75 0 0 1 17 10Z"
-				clip-rule="evenodd"
-			/>
-		</svg>
+	<a href="/profile/settings" aria-label="Retour">
+		<img
+			src={isChief ? flecheRetourOrange : flecheRetourVerte}
+			alt="Retour"
+			class="h-5 w-5 object-contain"
+		/>
 	</a>
 	<h1 class="text-base font-semibold text-navy">Informations personnelles</h1>
 	<div class="w-5"></div>
@@ -201,9 +200,9 @@
 <!-- Champs -->
 <div class="flex flex-col gap-4">
 	<div>
-		<p class="mb-1 block text-xs font-medium text-navy/70"
-			>{isChief ? 'Nom et prénom du chef' : 'Nom et prénom'}</p
-		>
+		<p class="mb-1 block text-xs font-medium text-navy/70">
+			{isChief ? 'Nom et prénom du chef' : 'Nom et prénom'}
+		</p>
 		<div class="flex gap-2">
 			<input
 				type="text"
@@ -238,9 +237,9 @@
 	{#if isChief}
 		<!-- Spécialités -->
 		<div>
-			<p class="mb-1 block text-xs font-medium text-navy/70"
-				>Spécialités <span class="text-navy/40">(3 max)</span></p
-			>
+			<p class="mb-1 block text-xs font-medium text-navy/70">
+				Spécialités <span class="text-navy/40">(3 max)</span>
+			</p>
 			<div class="relative">
 				<button
 					type="button"
@@ -404,7 +403,9 @@
 	{:else}
 		<!-- Ville (client) -->
 		<div>
-			<label for="infos-localization" class="mb-1 block text-xs font-medium text-navy/70">Ville</label>
+			<label for="infos-localization" class="mb-1 block text-xs font-medium text-navy/70"
+				>Ville</label
+			>
 			<input
 				type="text"
 				id="infos-localization"

@@ -10,7 +10,7 @@ import {
 } from '$lib/server/services/messaging';
 import { createReservation } from '$lib/server/services/reservations';
 import { createNotification } from '$lib/server/services/notifications';
-import { getOpenRequestById } from '$lib/server/services/customers';
+import { getRequestById } from '$lib/server/services/customers';
 
 const getStripe = () => new Stripe(env.STRIPE_SECRET_KEY ?? '');
 
@@ -47,16 +47,18 @@ export const POST = async ({ request, locals }) => {
 		title: 'Prestation',
 		guests: guests ?? 1,
 		date: new Date().toISOString().split('T')[0],
-		localization: ''
+		localization: '',
+		time: undefined as string | undefined
 	};
 	if (conv.id_request) {
-		const req = await getOpenRequestById(conv.id_request);
+		const req = await getRequestById(conv.id_request);
 		if (req)
 			reqData = {
 				title: req.title_request,
 				guests: guests ?? req.guests_request,
 				date: req.expected_date_request,
-				localization: req.localization_request
+				localization: req.localization_request,
+				time: req.expected_time_request ?? undefined
 			};
 	}
 
@@ -69,7 +71,7 @@ export const POST = async ({ request, locals }) => {
 		price_per_person: proposal?.price_per_person ?? 0,
 		guests: reqData.guests,
 		event_date: reqData.date,
-		event_time: eventTime || undefined,
+		event_time: eventTime || reqData.time || undefined,
 		localization: reqData.localization,
 		notes: notes || undefined,
 		extras_json: extras?.length ? extras : undefined,

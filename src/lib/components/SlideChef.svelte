@@ -6,18 +6,12 @@
 	import portrait3 from '$lib/assets/img/portrait-3.jpeg';
 	import portrait4 from '$lib/assets/img/portrait-4.jpeg';
 	import gustichefEcriture from '$lib/assets/img/gustichef-ecriture-verte-2.png';
-
-	// Ce composant a besoin de 3 props :
-	// - active : index du slide (pour les dots)
-	// - onNext / onPrev : callbacks vers le parent
 	let {
 		active,
-		onNext,
-		onPrev
+		onNext
 	}: {
 		active: number;
 		onNext: () => void;
-		onPrev: () => void;
 	} = $props();
 
 	const chefPalette = [portrait1, portrait2, portrait3, portrait4];
@@ -45,15 +39,7 @@
 				style="opacity: {ci === chefPhotoIndex ? 1 : 0}"
 			/>
 		{/each}
-		<button
-			onclick={onPrev}
-			aria-label="Retour"
-			class="absolute top-4 left-4 z-10 flex size-9 items-center justify-center rounded-full bg-white/15 text-white"
-		>
-			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-5">
-				<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-			</svg>
-		</button>
+
 		<div
 			class="absolute inset-x-0 bottom-0 h-52"
 			style="background: linear-gradient(to top, #F5EDDC 35%, transparent)"

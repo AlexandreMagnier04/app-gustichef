@@ -1,6 +1,5 @@
 <script lang="ts">
 	import logo from '$lib/assets/img/gustichef-ecriture-orange.png';
-	import gustichefEcriture from '$lib/assets/img/gustichef-ecriture-verte.png';
 
 	// Génère l'URL QR code via l'API publique qrserver — pointe vers l'URL courante du site
 	let siteUrl = $state('');
@@ -14,10 +13,7 @@
 </script>
 
 <div class="fixed inset-0 z-50 flex flex-col items-center justify-center gap-8 bg-cream px-8">
-	<div class="flex items-center gap-3">
-		<img src={logo} alt="Gustichef" class="h-12" />
-		<img src={gustichefEcriture} alt="Gustichef" class="h-10 object-contain" />
-	</div>
+	<img src={logo} alt="Gustichef" class="h-20 object-contain" />
 
 	<p class="max-w-xs text-center text-sm leading-relaxed text-stone-500">
 		Gustichef est pensé pour mobile.<br />

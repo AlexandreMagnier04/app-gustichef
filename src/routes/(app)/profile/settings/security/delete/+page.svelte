@@ -1,4 +1,8 @@
 <script lang="ts">
+	import type { PageData } from './$types';
+	import flecheRetourOrange from '$lib/assets/img/fleche-retour-orange.png';
+	import flecheRetourVerte from '$lib/assets/img/fleche-retour-verte.png';
+	let { data }: { data: PageData } = $props();
 	const REASONS = [
 		"Je n'utilise plus le service",
 		'Je crée un nouveau compte',
@@ -26,14 +30,12 @@
 
 <!-- En-tête -->
 <div class="flex items-center justify-between pt-2 pb-5">
-	<a href="/profile/settings/security" aria-label="Retour" class="text-navy/50 hover:text-navy">
-		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
-			<path
-				fill-rule="evenodd"
-				d="M17 10a.75.75 0 0 1-.75.75H5.612l4.158 3.96a.75.75 0 1 1-1.04 1.08l-5.5-5.25a.75.75 0 0 1 0-1.08l5.5-5.25a.75.75 0 1 1 1.04 1.08L5.612 9.25H16.25A.75.75 0 0 1 17 10Z"
-				clip-rule="evenodd"
-			/>
-		</svg>
+	<a href="/profile/settings/security" aria-label="Retour">
+		<img
+			src={data.isChief ? flecheRetourOrange : flecheRetourVerte}
+			alt="Retour"
+			class="h-5 w-5 object-contain"
+		/>
 	</a>
 	<h1 class="text-base font-semibold text-rust">Supprimer mon compte</h1>
 	<div class="w-5"></div>
@@ -64,7 +66,9 @@
 
 <!-- Raison -->
 <div class="mb-4">
-	<label for="delete-reason" class="mb-1.5 block text-sm font-medium text-navy">Raison de suppression (optionnel)</label>
+	<label for="delete-reason" class="mb-1.5 block text-sm font-medium text-navy"
+		>Raison de suppression (optionnel)</label
+	>
 	<div class="relative">
 		<select
 			id="delete-reason"

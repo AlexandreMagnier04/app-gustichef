@@ -1,7 +1,12 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { signOut } from '$lib/auth-client';
-	import { goto } from '$app/navigation';
+
+	import imgStylo from '$lib/assets/img/stylo.png';
+	import imgEngrenage from '$lib/assets/img/engrenage.png';
+	import imgPing from '$lib/assets/img/ping.png';
+	import imgAgendaVert from '$lib/assets/img/agenda-vert.png';
+	import imgHorlogeVert from '$lib/assets/img/horloge-vert.png';
+	import imgTwoUsersVert from '$lib/assets/img/two-users-vert.png';
 
 	let { data }: { data: PageData } = $props();
 
@@ -66,16 +71,7 @@
 			class="absolute right-0 bottom-0 flex h-7 w-7 items-center justify-center rounded-full bg-rust shadow ring-2 ring-cream"
 			aria-label="Modifier la photo"
 		>
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				viewBox="0 0 16 16"
-				fill="currentColor"
-				class="h-3.5 w-3.5 text-white"
-			>
-				<path
-					d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.262a1.75 1.75 0 0 0 0-2.474ZM4.75 13.25a.75.75 0 0 0 0 1.5h6.5a.75.75 0 0 0 0-1.5h-6.5Z"
-				/>
-			</svg>
+			<img src={imgStylo} alt="" class="h-3.5 w-3.5 object-contain brightness-0 invert" />
 		</button>
 	</div>
 
@@ -86,18 +82,7 @@
 		{/if}
 		{#if displayLoc}
 			<div class="mt-1.5 flex items-center gap-1 text-sm text-navy/50">
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 16 16"
-					fill="currentColor"
-					class="h-3.5 w-3.5 shrink-0 text-rust"
-				>
-					<path
-						fill-rule="evenodd"
-						d="m7.539 14.841.003.003.002.002a.755.755 0 0 0 .912 0l.002-.002.003-.003.012-.009a5.57 5.57 0 0 0 .19-.153 15.588 15.588 0 0 0 2.046-2.082c1.101-1.362 2.291-3.342 2.291-5.597A5 5 0 0 0 3 8c0 2.255 1.19 4.235 2.292 5.597a15.591 15.591 0 0 0 2.046 2.082 8.916 8.916 0 0 0 .189.153l.012.01ZM8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"
-						clip-rule="evenodd"
-					/>
-				</svg>
+				<img src={imgPing} alt="" class="h-3.5 w-3.5 shrink-0 object-contain" />
 				<span>{displayLoc}</span>
 			</div>
 		{/if}
@@ -115,37 +100,15 @@
 		href="/customer-profile/edit"
 		class="flex items-center gap-2 py-1.5 text-sm font-medium text-teal"
 	>
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			viewBox="0 0 16 16"
-			fill="currentColor"
-			class="h-4 w-4 text-teal"
-		>
-			<path
-				d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.263a1.75 1.75 0 0 0 0-2.474Z"
-			/>
-			<path
-				d="M4.75 3.5A2.25 2.25 0 0 0 2.5 5.75v5.5A2.25 2.25 0 0 0 4.75 13.5h5.5A2.25 2.25 0 0 0 12.5 11.25V9a.75.75 0 0 0-1.5 0v2.25a.75.75 0 0 1-.75.75h-5.5a.75.75 0 0 1-.75-.75v-5.5a.75.75 0 0 1 .75-.75H7A.75.75 0 0 0 7 2H4.75Z"
-			/>
-		</svg>
+		<img src={imgStylo} alt="" class="h-4 w-4 object-contain" />
 		Éditer profil
 	</a>
 	<a
 		href="/customer-profile/settings"
+		data-sveltekit-reload
 		class="flex items-center gap-2 py-1.5 text-sm font-medium text-teal"
 	>
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			viewBox="0 0 20 20"
-			fill="currentColor"
-			class="h-4 w-4 text-teal"
-		>
-			<path
-				fill-rule="evenodd"
-				d="M7.84 1.804A1 1 0 0 1 8.82 1h2.36a1 1 0 0 1 .98.804l.331 1.652a6.993 6.993 0 0 1 1.929 1.115l1.598-.54a1 1 0 0 1 1.186.447l1.18 2.044a1 1 0 0 1-.205 1.251l-1.267 1.113a7.047 7.047 0 0 1 0 2.228l1.267 1.113a1 1 0 0 1 .205 1.251l-1.18 2.044a1 1 0 0 1-1.186.447l-1.598-.54a6.993 6.993 0 0 1-1.929 1.115l-.33 1.652a1 1 0 0 1-.98.804H8.82a1 1 0 0 1-.98-.804l-.331-1.652a6.993 6.993 0 0 1-1.929-1.115l-1.598.54a1 1 0 0 1-1.186-.447l-1.18-2.044a1 1 0 0 1 .205-1.251l1.267-1.114a7.05 7.05 0 0 1 0-2.227L1.821 7.773a1 1 0 0 1-.206-1.25l1.18-2.045a1 1 0 0 1 1.187-.447l1.598.54A6.992 6.992 0 0 1 7.51 3.456l.33-1.652ZM10 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
-				clip-rule="evenodd"
-			/>
-		</svg>
+		<img src={imgEngrenage} alt="" class="h-4 w-4 object-contain" />
 		Paramètres
 	</a>
 </div>
@@ -280,61 +243,19 @@
 						<!-- Infos : date | heure | lieu | convives -->
 						<div class="grid grid-cols-2 gap-x-4 gap-y-2.5 px-4 py-3">
 							<div class="flex items-center gap-2 text-[12px] text-navy/70">
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									viewBox="0 0 16 16"
-									fill="currentColor"
-									class="h-3.5 w-3.5 shrink-0 text-navy/35"
-									><path
-										fill-rule="evenodd"
-										d="M4 1.75a.75.75 0 0 1 1.5 0V3h5V1.75a.75.75 0 0 1 1.5 0V3h.25A2.75 2.75 0 0 1 15 5.75v7.5A2.75 2.75 0 0 1 12.25 16H3.75A2.75 2.75 0 0 1 1 13.25v-7.5A2.75 2.75 0 0 1 3.75 3H4V1.75ZM3.75 6a.75.75 0 0 0-.75.75v5.5c0 .414.336.75.75.75h8.5a.75.75 0 0 0 .75-.75v-5.5a.75.75 0 0 0-.75-.75H3.75Z"
-										clip-rule="evenodd"
-									/></svg
-								>
+								<img src={imgAgendaVert} alt="" class="h-3.5 w-3.5 shrink-0 object-contain" />
 								<span class="capitalize">{formatDate(reservation.event_date)}</span>
 							</div>
-							{#if reservation.event_time}
-								<div class="flex items-center gap-2 text-[12px] text-navy/70">
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										viewBox="0 0 16 16"
-										fill="currentColor"
-										class="h-3.5 w-3.5 shrink-0 text-navy/35"
-										><path
-											fill-rule="evenodd"
-											d="M1 8a7 7 0 1 1 14 0A7 7 0 0 1 1 8Zm7-4.75a.75.75 0 0 0-.75.75v4.5a.75.75 0 0 0 1.5 0V4a.75.75 0 0 0-.75-.75ZM8 10a1 1 0 1 0 0 2 1 1 0 0 0 0-2Z"
-											clip-rule="evenodd"
-										/></svg
-									>
-									<span>{reservation.event_time}</span>
-								</div>
-							{/if}
-							{#if reservation.localization}
-								<div class="flex items-center gap-2 text-[12px] text-navy/70">
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										viewBox="0 0 16 16"
-										fill="currentColor"
-										class="h-3.5 w-3.5 shrink-0 text-navy/35"
-										><path
-											fill-rule="evenodd"
-											d="m7.539 14.841.003.003.002.002a.755.755 0 0 0 .912 0l.002-.002.003-.003.012-.009a5.57 5.57 0 0 0 .19-.153 15.588 15.588 0 0 0 2.046-2.082c1.101-1.362 2.291-3.342 2.291-5.597A5 5 0 0 0 3 8c0 2.255 1.19 4.235 2.292 5.597a15.591 15.591 0 0 0 2.046 2.082 8.916 8.916 0 0 0 .189.153l.012.01ZM8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"
-											clip-rule="evenodd"
-										/></svg
-									>
-									<span>{reservation.localization}</span>
-								</div>
-							{/if}
 							<div class="flex items-center gap-2 text-[12px] text-navy/70">
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									viewBox="0 0 16 16"
-									fill="currentColor"
-									class="h-3.5 w-3.5 shrink-0 text-navy/35"
-									><path
-										d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z"
-									/></svg
-								>
+								<img src={imgHorlogeVert} alt="" class="h-3.5 w-3.5 shrink-0 object-contain" />
+								<span>{reservation.event_time ?? '—'}</span>
+							</div>
+							<div class="flex items-center gap-2 text-[12px] text-navy/70">
+								<img src={imgPing} alt="" class="h-3.5 w-3.5 shrink-0 object-contain" />
+								<span>{reservation.localization ?? '—'}</span>
+							</div>
+							<div class="flex items-center gap-2 text-[12px] text-navy/70">
+								<img src={imgTwoUsersVert} alt="" class="h-3.5 w-3.5 shrink-0 object-contain" />
 								<span>{reservation.guests} convive{reservation.guests > 1 ? 's' : ''}</span>
 							</div>
 						</div>
@@ -401,35 +322,4 @@
 			<p class="text-sm">Bientôt disponible</p>
 		</div>
 	{/if}
-
-	<!-- Déconnexion -->
-	<div class="mt-6 pb-10">
-		<button
-			type="button"
-			onclick={async () => {
-				await signOut();
-				goto('/login');
-			}}
-			class="flex w-full items-center justify-center gap-2 rounded-2xl border border-navy/10 bg-white py-3.5 text-sm font-semibold text-navy/60 transition-opacity active:opacity-70"
-		>
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				viewBox="0 0 20 20"
-				fill="currentColor"
-				class="h-4 w-4"
-			>
-				<path
-					fill-rule="evenodd"
-					d="M3 4.25A2.25 2.25 0 0 1 5.25 2h5.5A2.25 2.25 0 0 1 13 4.25v2a.75.75 0 0 1-1.5 0v-2a.75.75 0 0 0-.75-.75h-5.5a.75.75 0 0 0-.75.75v11.5c0 .414.336.75.75.75h5.5a.75.75 0 0 0 .75-.75v-2a.75.75 0 0 1 1.5 0v2A2.25 2.25 0 0 1 10.75 18h-5.5A2.25 2.25 0 0 1 3 15.75V4.25Z"
-					clip-rule="evenodd"
-				/>
-				<path
-					fill-rule="evenodd"
-					d="M19 10a.75.75 0 0 0-.75-.75H8.704l1.048-1.08a.75.75 0 1 0-1.004-1.114l-2.5 2.5a.75.75 0 0 0 0 1.087l2.5 2.5a.75.75 0 1 0 1.004-1.114l-1.048-1.08h9.546A.75.75 0 0 0 19 10Z"
-					clip-rule="evenodd"
-				/>
-			</svg>
-			Se déconnecter
-		</button>
-	</div>
 </div>

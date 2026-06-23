@@ -1,5 +1,11 @@
 <script lang="ts">
 	import { invalidateAll, goto } from '$app/navigation';
+	import flecheRetourOrange from '$lib/assets/img/fleche-retour-orange.png';
+	import flecheRetourVerte from '$lib/assets/img/fleche-retour-verte.png';
+	import imgAvion from '$lib/assets/img/avion.png';
+	import imgAgendaVert from '$lib/assets/img/agenda-vert.png';
+	import imgTwoUsersVert from '$lib/assets/img/two-users-vert.png';
+	import imgPing from '$lib/assets/img/ping.png';
 	import { onMount } from 'svelte';
 	import type { ConversationDetail, MessageItem } from '$lib/models/messaging.model';
 
@@ -149,23 +155,12 @@
 <div class="-mx-5 -mt-3 flex h-[calc(100dvh-120px)] flex-col">
 	<!-- Header -->
 	<div class="flex shrink-0 items-center gap-3 border-b border-navy/[0.07] bg-cream px-4 py-3">
-		<a
-			href="/messages"
-			aria-label="Retour"
-			class="flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-sm"
-		>
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				viewBox="0 0 20 20"
-				fill="currentColor"
-				class="h-4 w-4 text-navy/70"
-			>
-				<path
-					fill-rule="evenodd"
-					d="M7.793 2.232a.75.75 0 0 1-.025 1.06L3.622 7.25h10.003a5.375 5.375 0 0 1 0 10.75H10.75a.75.75 0 0 1 0-1.5h2.875a3.875 3.875 0 0 0 0-7.75H3.622l4.146 3.957a.75.75 0 0 1-1.036 1.085l-5.5-5.25a.75.75 0 0 1 0-1.085l5.5-5.25a.75.75 0 0 1 1.061.025Z"
-					clip-rule="evenodd"
-				/>
-			</svg>
+		<a href="/messages" aria-label="Retour">
+			<img
+				src={isChief ? flecheRetourOrange : flecheRetourVerte}
+				alt="Retour"
+				class="h-5 w-5 object-contain"
+			/>
 		</a>
 		{#if conv.other_image}
 			<img src={conv.other_image} alt="" class="h-9 w-9 rounded-full object-cover" />
@@ -199,9 +194,6 @@
 						</p>
 					{/if}
 				</div>
-				<a href="/home" class="shrink-0 text-[11px] font-medium text-rust"
-					>Voir le détail &rsaquo;</a
-				>
 			</div>
 		</div>
 	{/if}
@@ -237,18 +229,7 @@
 							<div class="divide-y divide-navy/5">
 								<!-- Date -->
 								<div class="flex items-center gap-3 px-4 py-3">
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										viewBox="0 0 20 20"
-										fill="currentColor"
-										class="h-4 w-4 shrink-0 text-teal"
-									>
-										<path
-											fill-rule="evenodd"
-											d="M5.75 2a.75.75 0 0 1 .75.75V4h7V2.75a.75.75 0 0 1 1.5 0V4h.25A2.75 2.75 0 0 1 18 6.75v8.5A2.75 2.75 0 0 1 15.25 18H4.75A2.75 2.75 0 0 1 2 15.25v-8.5A2.75 2.75 0 0 1 4.75 4H5V2.75A.75.75 0 0 1 5.75 2Zm-1 5.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h10.5c.69 0 1.25-.56 1.25-1.25v-6.5c0-.69-.56-1.25-1.25-1.25H4.75Z"
-											clip-rule="evenodd"
-										/>
-									</svg>
+									<img src={imgAgendaVert} alt="" class="h-4 w-4 shrink-0 object-contain" />
 									<span class="text-[13px] text-navy capitalize"
 										>{new Date(bd.date + 'T00:00:00').toLocaleDateString('fr-FR', {
 											weekday: 'long',
@@ -260,34 +241,14 @@
 								</div>
 								<!-- Convives -->
 								<div class="flex items-center gap-3 px-4 py-3">
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										viewBox="0 0 20 20"
-										fill="currentColor"
-										class="h-4 w-4 shrink-0 text-teal"
-									>
-										<path
-											d="M7 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM14.5 9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM1.615 16.428a1.224 1.224 0 0 1-.569-1.175 6.002 6.002 0 0 1 11.908 0c.058.467-.172.92-.57 1.174A9.953 9.953 0 0 1 7 17a9.953 9.953 0 0 1-5.385-1.572ZM14.5 16h-.106c.07-.297.088-.611.048-.933a7.47 7.47 0 0 0-1.588-3.755 4.502 4.502 0 0 1 5.874 2.575.8.8 0 0 1-.372.575A6.957 6.957 0 0 1 14.5 16Z"
-										/>
-									</svg>
+									<img src={imgTwoUsersVert} alt="" class="h-4 w-4 shrink-0 object-contain" />
 									<span class="text-[13px] text-navy"
 										>{bd.guests} convive{bd.guests > 1 ? 's' : ''}</span
 									>
 								</div>
 								<!-- Lieu -->
 								<div class="flex items-center gap-3 px-4 py-3">
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										viewBox="0 0 20 20"
-										fill="currentColor"
-										class="h-4 w-4 shrink-0 text-teal"
-									>
-										<path
-											fill-rule="evenodd"
-											d="m9.69 18.933.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 0 0 .281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 1 0 3 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 0 0 2.273 1.765 11.842 11.842 0 0 0 .976.544l.062.029.018.008.006.003ZM10 11.25a2.25 2.25 0 1 0 0-4.5 2.25 2.25 0 0 0 0 4.5Z"
-											clip-rule="evenodd"
-										/>
-									</svg>
+									<img src={imgPing} alt="" class="h-4 w-4 shrink-0 object-contain" />
 									<span class="text-[13px] text-navy">{bd.location}</span>
 								</div>
 								<!-- Extras -->
@@ -532,16 +493,7 @@
 						onclick={() => (showMenuPicker = !showMenuPicker)}
 						class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-rust py-2.5 text-[13px] font-semibold text-white transition-opacity active:opacity-80"
 					>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							viewBox="0 0 20 20"
-							fill="currentColor"
-							class="h-4 w-4"
-						>
-							<path
-								d="M3.105 2.288a.75.75 0 0 0-.826.95l1.414 4.926A1.5 1.5 0 0 0 5.135 9.25h6.115a.75.75 0 0 1 0 1.5H5.135a1.5 1.5 0 0 0-1.442 1.086l-1.414 4.926a.75.75 0 0 0 .826.95 28.897 28.897 0 0 0 15.293-7.155.75.75 0 0 0 0-1.114A28.897 28.897 0 0 0 3.105 2.288Z"
-							/>
-						</svg>
+						<img src={imgAvion} alt="" class="h-4 w-4 object-contain brightness-0 invert" />
 						Envoyer un devis
 					</button>
 				</div>
@@ -606,19 +558,10 @@
 			<button
 				type="submit"
 				disabled={sending || !messageText.trim()}
-				class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-rust text-white transition-opacity active:opacity-80 disabled:opacity-40"
+				class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-rust transition-opacity active:opacity-80 disabled:opacity-40"
 				aria-label="Envoyer"
 			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 20 20"
-					fill="currentColor"
-					class="h-4 w-4"
-				>
-					<path
-						d="M3.105 2.288a.75.75 0 0 0-.826.95l1.414 4.926A1.5 1.5 0 0 0 5.135 9.25h6.115a.75.75 0 0 1 0 1.5H5.135a1.5 1.5 0 0 0-1.442 1.086l-1.414 4.926a.75.75 0 0 0 .826.95 28.897 28.897 0 0 0 15.293-7.155.75.75 0 0 0 0-1.114A28.897 28.897 0 0 0 3.105 2.288Z"
-					/>
-				</svg>
+				<img src={imgAvion} alt="" class="h-4 w-4 object-contain brightness-0 invert" />
 			</button>
 		</form>
 	</div>

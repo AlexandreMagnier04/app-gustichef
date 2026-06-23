@@ -2,13 +2,13 @@
 	import type { PageData } from './$types';
 	import BookingWizard from '$lib/components/BookingWizard.svelte';
 	import { goto } from '$app/navigation';
+	import imgPing from '$lib/assets/img/ping.png';
 
 	let { data }: { data: PageData } = $props();
 
 	const profile = $derived(data.profile);
 	const menus = $derived(data.menus);
 	const galleryImages = $derived(data.galleryImages);
-	const reviewStats = $derived(data.reviewStats);
 	const notices = $derived(data.notices);
 
 	const bannerImage = $derived(galleryImages[0]?.url ?? null);
@@ -113,44 +113,11 @@
 			</p>
 			{#if displayLoc}
 				<div class="mt-1 flex items-center gap-1 text-xs text-navy/50">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 16 16"
-						fill="currentColor"
-						class="h-3 w-3 shrink-0 text-rust"
-					>
-						<path
-							fill-rule="evenodd"
-							d="m7.539 14.841.003.003.002.002a.755.755 0 0 0 .912 0l.002-.002.003-.003.012-.009a5.57 5.57 0 0 0 .19-.153 15.588 15.588 0 0 0 2.046-2.082c1.101-1.362 2.291-3.342 2.291-5.597A5 5 0 0 0 3 8c0 2.255 1.19 4.235 2.292 5.597a15.591 15.591 0 0 0 2.046 2.082 8.916 8.916 0 0 0 .189.153l.012.01ZM8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"
-							clip-rule="evenodd"
-						/>
-					</svg>
+					<img src={imgPing} alt="" class="h-3 w-3 shrink-0 object-contain" />
 					<span>{displayLoc}</span>
 				</div>
 			{/if}
 		</div>
-
-		<!-- Badge note -->
-		{#if reviewStats.count > 0}
-			<div class="shrink-0 rounded-xl bg-navy px-3 py-2 text-center">
-				<div class="flex items-center justify-center gap-1">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 16 16"
-						fill="currentColor"
-						class="h-3.5 w-3.5 text-yellow-300"
-					>
-						<path
-							fill-rule="evenodd"
-							d="M8 1.75a.75.75 0 0 1 .692.462l1.41 3.393 3.664.293a.75.75 0 0 1 .428 1.317l-2.791 2.39.853 3.575a.75.75 0 0 1-1.12.814L8 11.459l-3.136 2.535a.75.75 0 0 1-1.12-.814l.853-3.574-2.79-2.39a.75.75 0 0 1 .427-1.318l3.665-.293 1.41-3.393A.75.75 0 0 1 8 1.75Z"
-							clip-rule="evenodd"
-						/>
-					</svg>
-					<span class="text-base font-bold text-white">{reviewStats.avg?.toFixed(1)}</span>
-				</div>
-				<p class="mt-0.5 text-[10px] text-white/70">{reviewStats.count} avis</p>
-			</div>
-		{/if}
 	</div>
 
 	<!-- ── BIO ──────────────────────────────────── -->

@@ -12,8 +12,8 @@ describe('createMenuDto', () => {
 	it('valide un menu minimal', () => {
 		expect(createMenuDto.safeParse(valid).success).toBe(true);
 	});
-	it('rejette titre < 2 caractères', () => {
-		expect(createMenuDto.safeParse({ ...valid, title_menu: 'A' }).success).toBe(false);
+	it('accepte titre 1 caractère', () => {
+		expect(createMenuDto.safeParse({ ...valid, title_menu: 'A' }).success).toBe(true);
 	});
 	it('rejette prix négatif', () => {
 		expect(createMenuDto.safeParse({ ...valid, price_menu: -10 }).success).toBe(false);
@@ -44,8 +44,8 @@ describe('updateMenuDto', () => {
 	it('valide une mise à jour partielle du titre', () => {
 		expect(updateMenuDto.safeParse({ title_menu: 'Nouveau titre' }).success).toBe(true);
 	});
-	it('rejette titre < 2 caractères même en update', () => {
-		expect(updateMenuDto.safeParse({ title_menu: 'A' }).success).toBe(false);
+	it('accepte titre 1 caractère en update', () => {
+		expect(updateMenuDto.safeParse({ title_menu: 'A' }).success).toBe(true);
 	});
 });
 

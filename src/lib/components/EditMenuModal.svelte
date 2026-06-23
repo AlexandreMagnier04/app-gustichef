@@ -1,5 +1,7 @@
 <script lang="ts">
 	import type { Menu } from '$lib/models/chief.model';
+	import imgCroix from '$lib/assets/img/croix.png';
+	import imgStylo from '$lib/assets/img/stylo.png';
 
 	let {
 		open = $bindable(false),
@@ -81,8 +83,6 @@
 		if (!menu) return;
 		errors = {};
 		if (!title.trim()) errors.title = 'Nom requis';
-		if (!description.trim() || description.trim().length < 2)
-			errors.description = 'Au moins 2 caractères';
 		if (!price || isNaN(parseFloat(price)) || parseFloat(price) <= 0)
 			errors.price = 'Prix invalide';
 		if (Object.keys(errors).length > 0) return;
@@ -147,7 +147,7 @@
 			if (e.target === e.currentTarget) close();
 		}}
 	>
-		<div class="w-full max-w-md overflow-hidden rounded-t-3xl bg-cream">
+		<div class="w-full max-w-md overflow-hidden rounded-t-3xl bg-white">
 			<div class="flex justify-center pt-3 pb-1">
 				<div class="h-1 w-10 rounded-full bg-navy/20"></div>
 			</div>
@@ -157,18 +157,9 @@
 				<button
 					onclick={close}
 					aria-label="Fermer"
-					class="flex h-7 w-7 items-center justify-center rounded-full bg-navy/8 text-navy/60"
+					class="flex h-7 w-7 items-center justify-center rounded-full bg-navy/8"
 				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 16 16"
-						fill="currentColor"
-						class="h-4 w-4"
-					>
-						<path
-							d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z"
-						/>
-					</svg>
+					<img src={imgCroix} alt="" class="h-4 w-4 object-contain" />
 				</button>
 			</div>
 
@@ -200,19 +191,7 @@
 						<div
 							class="absolute inset-x-0 bottom-0 flex items-center justify-center gap-1.5 bg-black/30 py-2"
 						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 16 16"
-								fill="currentColor"
-								class="h-3.5 w-3.5 text-white"
-							>
-								<path
-									d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.263a1.75 1.75 0 0 0 0-2.474Z"
-								/>
-								<path
-									d="M4.75 3.5A2.25 2.25 0 0 0 2.5 5.75v5.5A2.25 2.25 0 0 0 4.75 13.5h5.5A2.25 2.25 0 0 0 12.5 11.25V9a.75.75 0 0 0-1.5 0v2.25a.75.75 0 0 1-.75.75h-5.5a.75.75 0 0 1-.75-.75v-5.5a.75.75 0 0 1 .75-.75H7A.75.75 0 0 0 7 2H4.75Z"
-								/>
-							</svg>
+							<img src={imgStylo} alt="" class="h-3.5 w-3.5 object-contain brightness-0 invert" />
 							<span class="text-xs font-medium text-white">Modifier la photo</span>
 						</div>
 					</div>
@@ -220,7 +199,9 @@
 
 				<!-- Nom -->
 				<div class="mb-4">
-					<label for="emenu-title" class="mb-1.5 block text-sm font-medium text-navy">Nom du plat</label>
+					<label for="emenu-title" class="mb-1.5 block text-sm font-medium text-navy"
+						>Nom du plat</label
+					>
 					<input
 						id="emenu-title"
 						type="text"
@@ -232,7 +213,9 @@
 
 				<!-- Description -->
 				<div class="mb-4">
-					<label for="emenu-description" class="mb-1.5 block text-sm font-medium text-navy">Description</label>
+					<label for="emenu-description" class="mb-1.5 block text-sm font-medium text-navy"
+						>Description</label
+					>
 					<textarea
 						id="emenu-description"
 						bind:value={description}
@@ -244,7 +227,9 @@
 
 				<!-- Prix -->
 				<div class="mb-4">
-					<label for="emenu-price" class="mb-1.5 block text-sm font-medium text-navy">Prix / convive</label>
+					<label for="emenu-price" class="mb-1.5 block text-sm font-medium text-navy"
+						>Prix / convive</label
+					>
 					<div class="relative">
 						<input
 							id="emenu-price"
@@ -262,7 +247,9 @@
 				<!-- Convives -->
 				<div class="mb-4 flex gap-3">
 					<div class="flex-1">
-						<label for="emenu-guests-min" class="mb-1.5 block text-sm font-medium text-navy">Convives min</label>
+						<label for="emenu-guests-min" class="mb-1.5 block text-sm font-medium text-navy"
+							>Convives min</label
+						>
 						<input
 							id="emenu-guests-min"
 							type="number"
@@ -272,7 +259,9 @@
 						/>
 					</div>
 					<div class="flex-1">
-						<label for="emenu-guests-max" class="mb-1.5 block text-sm font-medium text-navy">Convives max</label>
+						<label for="emenu-guests-max" class="mb-1.5 block text-sm font-medium text-navy"
+							>Convives max</label
+						>
 						<input
 							id="emenu-guests-max"
 							type="number"
@@ -285,7 +274,9 @@
 
 				<!-- Ingrédients -->
 				<div class="mb-5">
-					<label for="emenu-ingredient" class="mb-1.5 block text-sm font-medium text-navy">Ingrédients</label>
+					<label for="emenu-ingredient" class="mb-1.5 block text-sm font-medium text-navy"
+						>Ingrédients</label
+					>
 					<div class="flex gap-2">
 						<input
 							id="emenu-ingredient"
@@ -389,19 +380,7 @@
 							></path>
 						</svg>
 					{:else}
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							viewBox="0 0 16 16"
-							fill="currentColor"
-							class="h-4 w-4"
-						>
-							<path
-								d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.263a1.75 1.75 0 0 0 0-2.474Z"
-							/>
-							<path
-								d="M4.75 3.5A2.25 2.25 0 0 0 2.5 5.75v5.5A2.25 2.25 0 0 0 4.75 13.5h5.5A2.25 2.25 0 0 0 12.5 11.25V9a.75.75 0 0 0-1.5 0v2.25a.75.75 0 0 1-.75.75h-5.5a.75.75 0 0 1-.75-.75v-5.5a.75.75 0 0 1 .75-.75H7A.75.75 0 0 0 7 2H4.75Z"
-							/>
-						</svg>
+						<img src={imgStylo} alt="" class="h-4 w-4 object-contain brightness-0 invert" />
 					{/if}
 					{submitting ? 'Enregistrement…' : 'Enregistrer les modifications'}
 				</button>

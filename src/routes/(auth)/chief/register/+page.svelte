@@ -2,7 +2,8 @@
 	import { untrack } from 'svelte';
 	import { validateChefStep1, registerChef } from '$lib/services/auth.service';
 	import type { Specialty } from '$lib/models/chief.model';
-	import logoGusti from '$lib/assets/img/gustichef-ecriture-orange.png';
+	import logoRond from '$lib/assets/img/logo-gusti-rond-orange.png';
+	import logoEcriture from '$lib/assets/img/gustichef-ecriture-orange.png';
 	import logoGustiBlanc from '$lib/assets/img/gustichef-ecriture-blanc.png';
 	import bgConfirm from '$lib/assets/img/portrait-1.jpeg';
 
@@ -132,9 +133,18 @@
 		<!-- Header logo -->
 		<div class="mb-6 flex flex-col items-center gap-2">
 			{#if step === 1}
-				<p class="text-sm text-rust/80">Bienvenue sur</p>
+				<p class="text-sm font-medium text-rust">Bienvenue</p>
 			{/if}
-			<img src={logoGusti} alt="Gustichef" class="{step === 1 ? 'h-12' : 'h-8'} object-contain" />
+			<div class="flex items-center gap-3">
+				{#if step === 1}
+					<img src={logoRond} alt="" class="h-16 object-contain" />
+				{/if}
+				<img
+					src={logoEcriture}
+					alt="Gustichef"
+					class="{step === 1 ? 'h-16' : 'h-12'} object-contain"
+				/>
+			</div>
 		</div>
 
 		<!-- Dots de progression -->
@@ -205,7 +215,9 @@
 					{#if fieldErrors.password}<p class="text-xs text-rust">{fieldErrors.password}</p>{/if}
 				</div>
 				<div class="flex flex-col gap-1">
-					<label for="reg-confirm" class="text-xs font-medium text-navy/70">Confirmer le mot de passe</label>
+					<label for="reg-confirm" class="text-xs font-medium text-navy/70"
+						>Confirmer le mot de passe</label
+					>
 					<input
 						id="reg-confirm"
 						type="password"
@@ -264,13 +276,21 @@
 								/>
 							</svg>
 						{/if}
-						<input id="reg-avatar" type="file" accept="image/*" onchange={handlePhotoChange} class="hidden" />
+						<input
+							id="reg-avatar"
+							type="file"
+							accept="image/*"
+							onchange={handlePhotoChange}
+							class="hidden"
+						/>
 					</label>
 					<span class="text-xs text-gray-400">Ajouter une photo</span>
 				</div>
 
 				<div class="flex flex-col gap-1">
-					<label for="reg-title" class="text-xs font-medium text-navy/70">Titre professionnel (optionnel)</label>
+					<label for="reg-title" class="text-xs font-medium text-navy/70"
+						>Titre professionnel (optionnel)</label
+					>
 					<input
 						id="reg-title"
 						type="text"
@@ -281,9 +301,9 @@
 				</div>
 
 				<div class="flex flex-col gap-2">
-					<p class="text-xs font-medium text-navy/70"
-					>Spécialités <span class="text-gray-400">(3 max)</span></p
-				>
+					<p class="text-xs font-medium text-navy/70">
+						Spécialités <span class="text-gray-400">(3 max)</span>
+					</p>
 					<div class="flex flex-wrap gap-2">
 						{#each availableSpecialties as s (s)}
 							<button
@@ -377,7 +397,9 @@
 				</div>
 
 				<div class="flex flex-col gap-1">
-					<label for="reg-siret" class="text-xs font-medium text-navy/70">Numéro SIRET (optionnel)</label>
+					<label for="reg-siret" class="text-xs font-medium text-navy/70"
+						>Numéro SIRET (optionnel)</label
+					>
 					<input
 						id="reg-siret"
 						type="text"
@@ -486,7 +508,9 @@
 				</div>
 
 				<div class="flex flex-col gap-1">
-					<label for="reg-price" class="text-xs font-medium text-navy/70">Prix minimum / convive</label>
+					<label for="reg-price" class="text-xs font-medium text-navy/70"
+						>Prix minimum / convive</label
+					>
 					<div class="flex items-center gap-2">
 						<input
 							id="reg-price"

@@ -2,6 +2,8 @@
 	import { invalidateAll } from '$app/navigation';
 	import CityAutocomplete from './CityAutocomplete.svelte';
 	import DatePicker from './DatePicker.svelte';
+	import imgCroix from '$lib/assets/img/croix.png';
+	import imgAvion from '$lib/assets/img/avion.png';
 
 	import type { Request } from '$lib/models/customer.model';
 
@@ -106,7 +108,8 @@
 				expected_date_request: date,
 				guests_request: Number(guests),
 				type_event_request: eventType || undefined,
-				localization_request: city
+				localization_request: city,
+				expected_time_request: time || undefined
 			})
 		});
 
@@ -139,20 +142,11 @@
 
 		<!-- Close button -->
 		<button
-			class="absolute top-3 right-4 flex h-8 w-8 items-center justify-center rounded-full bg-white text-navy/70 shadow"
+			class="absolute top-3 right-4 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow"
 			onclick={close}
 			aria-label="Fermer"
 		>
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				viewBox="0 0 16 16"
-				fill="currentColor"
-				class="h-4 w-4"
-			>
-				<path
-					d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z"
-				/>
-			</svg>
+			<img src={imgCroix} alt="" class="h-4 w-4 object-contain" />
 		</button>
 
 		<div class="px-6 pt-2">
@@ -193,7 +187,9 @@
 
 					<!-- Convives -->
 					<div>
-						<label for="nreq-guests" class="mb-1.5 block text-sm font-medium text-navy">Nombre de convives</label>
+						<label for="nreq-guests" class="mb-1.5 block text-sm font-medium text-navy"
+							>Nombre de convives</label
+						>
 						<div class="relative">
 							<select
 								id="nreq-guests"
@@ -260,7 +256,9 @@
 
 					<!-- Type d'événement -->
 					<div>
-						<label for="nreq-event-type" class="mb-1.5 block text-sm font-medium text-navy">Type d'événement</label>
+						<label for="nreq-event-type" class="mb-1.5 block text-sm font-medium text-navy"
+							>Type d'événement</label
+						>
 						<div class="relative">
 							<select
 								id="nreq-event-type"
@@ -302,7 +300,9 @@
 				<form onsubmit={submit} class="flex flex-col gap-5">
 					<!-- Titre -->
 					<div>
-						<label for="nreq-title" class="mb-1.5 block text-sm font-medium text-navy">Titre d'événement</label>
+						<label for="nreq-title" class="mb-1.5 block text-sm font-medium text-navy"
+							>Titre d'événement</label
+						>
 						<input
 							id="nreq-title"
 							type="text"
@@ -349,16 +349,7 @@
 							disabled={submitting}
 							class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-teal py-3.5 text-sm font-semibold text-cream shadow-sm transition-opacity active:opacity-80 disabled:opacity-60"
 						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 20 20"
-								fill="currentColor"
-								class="h-4 w-4"
-							>
-								<path
-									d="M3.105 2.288a.75.75 0 0 0-.826.95l1.414 4.926A1.5 1.5 0 0 0 5.135 9.25h6.115a.75.75 0 0 1 0 1.5H5.135a1.5 1.5 0 0 0-1.442 1.086l-1.414 4.926a.75.75 0 0 0 .826.95 28.897 28.897 0 0 0 15.293-7.155.75.75 0 0 0 0-1.114A28.897 28.897 0 0 0 3.105 2.288Z"
-								/>
-							</svg>
+							<img src={imgAvion} alt="" class="h-4 w-4 object-contain brightness-0 invert" />
 							{submitting ? 'Envoi...' : isEdit ? 'Enregistrer' : 'Envoyer ma proposition'}
 						</button>
 					</div>

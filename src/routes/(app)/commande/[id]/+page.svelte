@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import flecheRetourOrange from '$lib/assets/img/fleche-retour-orange.png';
+	import flecheRetourVerte from '$lib/assets/img/fleche-retour-verte.png';
 	import { onMount, untrack } from 'svelte';
 	import { loadStripe } from '@stripe/stripe-js';
 	import { env } from '$env/dynamic/public';
@@ -16,11 +18,17 @@
 	const conv = $derived(data.conv);
 	const chiefExtras = $derived(data.chiefExtras);
 	const menuImage = $derived(data.menuImage ?? null);
+	const isChief = $derived(data.user?.role === 'chief');
 
 	const lastProposal = $derived(
 		[...conv.messages]
 			.reverse()
-			.find((m: MessageItem) => m.type === 'menu_proposal' || m.type === 'payment_invitation')
+			.find(
+				(m: MessageItem) =>
+					m.type === 'menu_proposal' ||
+					m.type === 'payment_invitation' ||
+					(m.type === 'text' && m.price_per_person != null)
+			)
 	);
 
 	const initialGuests = untrack(() => data.conv.request_guests ?? 2);
@@ -136,23 +144,12 @@
 <div class="-mx-5 -mt-3 min-h-[calc(100dvh-120px)] bg-white">
 	<!-- Header -->
 	<div class="flex shrink-0 items-center gap-3 border-b border-navy/8 bg-white px-4 py-3">
-		<a
-			href="/messages/{conv.id_conversation}"
-			aria-label="Retour"
-			class="flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-sm"
-		>
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				viewBox="0 0 20 20"
-				fill="currentColor"
-				class="h-4 w-4 text-navy/70"
-			>
-				<path
-					fill-rule="evenodd"
-					d="M7.793 2.232a.75.75 0 0 1-.025 1.06L3.622 7.25h10.003a5.375 5.375 0 0 1 0 10.75H10.75a.75.75 0 0 1 0-1.5h2.875a3.875 3.875 0 0 0 0-7.75H3.622l4.146 3.957a.75.75 0 0 1-1.036 1.085l-5.5-5.25a.75.75 0 0 1 0-1.085l5.5-5.25a.75.75 0 0 1 1.061.025Z"
-					clip-rule="evenodd"
-				/>
-			</svg>
+		<a href="/messages/{conv.id_conversation}" aria-label="Retour">
+			<img
+				src={isChief ? flecheRetourOrange : flecheRetourVerte}
+				alt="Retour"
+				class="h-5 w-5 object-contain"
+			/>
 		</a>
 		<h1 class="text-sm font-bold text-navy">Sécuriser ma réservation</h1>
 	</div>
@@ -216,12 +213,10 @@
 						<span class="text-[13px] font-medium text-navy">{eventTime}</span>
 					</div>
 				{/if}
-				{#if conv.request_localization}
-					<div class="flex items-center justify-between py-3">
-						<span class="text-[13px] text-navy/60">Lieu</span>
-						<span class="text-[13px] font-medium text-navy">{conv.request_localization}</span>
-					</div>
-				{/if}
+				<div class="flex items-center justify-between py-3">
+					<span class="text-[13px] text-navy/60">Lieu</span>
+					<span class="text-[13px] font-medium text-navy">{conv.request_localization ?? '—'}</span>
+				</div>
 				<div class="flex items-center justify-between py-3">
 					<span class="text-[13px] text-navy/60">Convives</span>
 					<span class="text-[13px] font-medium text-navy">{guests}</span>
@@ -485,9 +480,7 @@
 						</p>
 					{/if}
 					<p class="mt-0.5 text-[12px] text-navy/60">{guests} convive{guests > 1 ? 's' : ''}</p>
-					{#if conv.request_localization}
-						<p class="mt-0.5 text-[12px] text-navy/60">{conv.request_localization}</p>
-					{/if}
+					<p class="mt-0.5 text-[12px] text-navy/60">{conv.request_localization ?? '—'}</p>
 				</div>
 				<div class="mt-4 space-y-2.5">
 					<button

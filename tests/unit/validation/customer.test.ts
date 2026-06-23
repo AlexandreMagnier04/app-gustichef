@@ -13,13 +13,13 @@ describe('createRequestDto', () => {
 	it('valide une demande minimale', () => {
 		expect(createRequestDto.safeParse(valid).success).toBe(true);
 	});
-	it('rejette titre < 3 caractères', () => {
-		expect(createRequestDto.safeParse({ ...valid, title_request: 'AB' }).success).toBe(false);
+	it('accepte titre 2 caractères', () => {
+		expect(createRequestDto.safeParse({ ...valid, title_request: 'AB' }).success).toBe(true);
 	});
-	it('rejette description < 20 caractères', () => {
+	it('accepte description courte', () => {
 		expect(
 			createRequestDto.safeParse({ ...valid, description_request: 'Trop court' }).success
-		).toBe(false);
+		).toBe(true);
 	});
 	it('rejette date invalide', () => {
 		expect(

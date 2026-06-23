@@ -104,6 +104,7 @@ export async function getRequestsByChief(): Promise<RequestWithCustomer[]> {
 			title_request: requests.title_request,
 			description_request: requests.description_request,
 			expected_date_request: requests.expected_date_request,
+			expected_time_request: requests.expected_time_request,
 			guests_request: requests.guests_request,
 			type_event_request: requests.type_event_request,
 			localization_request: requests.localization_request,
@@ -130,6 +131,11 @@ export async function getOpenRequestById(id: number): Promise<typeof requests.$i
 		.select()
 		.from(requests)
 		.where(and(eq(requests.id_request, id), eq(requests.statut_request, 'open')));
+	return row ?? null;
+}
+
+export async function getRequestById(id: number): Promise<typeof requests.$inferSelect | null> {
+	const [row] = await db.select().from(requests).where(eq(requests.id_request, id));
 	return row ?? null;
 }
 

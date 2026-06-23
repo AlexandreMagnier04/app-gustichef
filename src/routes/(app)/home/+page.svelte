@@ -2,6 +2,12 @@
 	import { replaceState } from '$app/navigation';
 	import { page } from '$app/state';
 	import portrait1 from '$lib/assets/img/portrait-1.jpeg';
+	import imgAgenda from '$lib/assets/img/agenda.png';
+	import imgHorloge from '$lib/assets/img/horloge-vert.png';
+	import imgOneBubble from '$lib/assets/img/one-bubble.png';
+	import imgTwoUser from '$lib/assets/img/two-user.png';
+	import imgTag from '$lib/assets/img/tag.png';
+	import imgPing from '$lib/assets/img/ping.png';
 	import slide1 from '$lib/assets/img/slide-1.jpeg';
 	import slide2 from '$lib/assets/img/slide-2.jpeg';
 	import slide3 from '$lib/assets/img/slide-3.jpeg';
@@ -362,7 +368,7 @@
 				<div class="flex flex-col gap-2.5 pt-2.5 pb-10">
 					{#each filteredRequests as r (r.id_request)}
 						<article
-							class="mx-4 overflow-hidden rounded-2xl border border-navy/[0.07] bg-white shadow-sm"
+							class="mx-4 overflow-hidden rounded-2xl border border-navy/[0.07] bg-cream shadow-sm"
 						>
 							<div class="p-4">
 								<!-- Header : titre + client -->
@@ -404,71 +410,49 @@
 								<!-- Chips : date, convives, type, ville -->
 								<div class="mt-2.5 flex flex-wrap gap-1.5">
 									<span
-										class="inline-flex items-center gap-1 rounded-full bg-navy/5 px-2.5 py-1 text-[11px] text-navy/60"
+										class="inline-flex items-center gap-1 rounded-full bg-olive px-2.5 py-1 text-[11px] text-white"
 									>
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											viewBox="0 0 16 16"
-											fill="currentColor"
-											class="h-3 w-3"
-										>
-											<path
-												fill-rule="evenodd"
-												d="M4 1.75a.75.75 0 0 1 1.5 0V3h5V1.75a.75.75 0 0 1 1.5 0V3A2.5 2.5 0 0 1 14.5 5.5v6a2.5 2.5 0 0 1-2.5 2.5H4A2.5 2.5 0 0 1 1.5 11.5v-6A2.5 2.5 0 0 1 4 3V1.75ZM3 7v4.5A1 1 0 0 0 4 12.5h8a1 1 0 0 0 1-1V7H3Z"
-												clip-rule="evenodd"
-											/>
-										</svg>
+										<img
+											src={imgAgenda}
+											alt=""
+											class="h-3 w-3 object-contain brightness-0 invert"
+										/>
 										{formatDate(r.expected_date_request)}
 									</span>
-									<span
-										class="inline-flex items-center gap-1 rounded-full bg-navy/5 px-2.5 py-1 text-[11px] text-navy/60"
-									>
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											viewBox="0 0 16 16"
-											fill="currentColor"
-											class="h-3 w-3"
+									{#if r.expected_time_request}
+										<span
+											class="inline-flex items-center gap-1 rounded-full bg-olive px-2.5 py-1 text-[11px] text-white"
 										>
-											<path
-												d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z"
+											<img
+												src={imgHorloge}
+												alt=""
+												class="h-3 w-3 object-contain brightness-0 invert"
 											/>
-										</svg>
+											{r.expected_time_request}
+										</span>
+									{/if}
+									<span
+										class="inline-flex items-center gap-1 rounded-full bg-olive px-2.5 py-1 text-[11px] text-white"
+									>
+										<img
+											src={imgTwoUser}
+											alt=""
+											class="h-3 w-3 object-contain brightness-0 invert"
+										/>
 										{r.guests_request}
 									</span>
 									{#if r.type_event_request}
 										<span
-											class="inline-flex items-center gap-1 rounded-full bg-navy/5 px-2.5 py-1 text-[11px] text-navy/60"
+											class="inline-flex items-center gap-1 rounded-full bg-olive px-2.5 py-1 text-[11px] text-white"
 										>
-											<svg
-												xmlns="http://www.w3.org/2000/svg"
-												viewBox="0 0 16 16"
-												fill="currentColor"
-												class="h-3 w-3"
-											>
-												<path
-													fill-rule="evenodd"
-													d="M4.5 2A2.5 2.5 0 0 0 2 4.5v2.879a2.5 2.5 0 0 0 .732 1.767l4.5 4.5a2.5 2.5 0 0 0 3.536 0l2.878-2.878a2.5 2.5 0 0 0 0-3.536l-4.5-4.5A2.5 2.5 0 0 0 7.38 2H4.5ZM5 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
-													clip-rule="evenodd"
-												/>
-											</svg>
+											<img src={imgTag} alt="" class="h-3 w-3 object-contain brightness-0 invert" />
 											{r.type_event_request}
 										</span>
 									{/if}
 									<span
-										class="inline-flex items-center gap-1 rounded-full bg-navy/5 px-2.5 py-1 text-[11px] text-navy/60"
+										class="inline-flex items-center gap-1 rounded-full bg-olive px-2.5 py-1 text-[11px] text-white"
 									>
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											viewBox="0 0 16 16"
-											fill="currentColor"
-											class="h-3 w-3"
-										>
-											<path
-												fill-rule="evenodd"
-												d="M8 1a5 5 0 0 0-5 5c0 3.234 2.75 6.56 4.4 8.318a.8.8 0 0 0 1.2 0C10.25 12.56 13 9.234 13 6a5 5 0 0 0-5-5Zm0 6.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"
-												clip-rule="evenodd"
-											/>
-										</svg>
+										<img src={imgPing} alt="" class="h-3 w-3 object-contain brightness-0 invert" />
 										{r.localization_request}
 									</span>
 								</div>
@@ -487,18 +471,11 @@
 									}}
 									class="mt-3.5 flex w-full items-center justify-center gap-2 rounded-xl bg-rust py-3 text-sm font-semibold text-white transition-opacity active:opacity-80"
 								>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										viewBox="0 0 20 20"
-										fill="currentColor"
-										class="h-4 w-4"
-									>
-										<path
-											fill-rule="evenodd"
-											d="M10 2c-2.236 0-4.43.18-6.57.524C1.993 2.755 1 4.014 1 5.426v5.148c0 1.413.993 2.67 2.43 2.902.848.137 1.705.248 2.57.331v3.443a.75.75 0 0 0 1.28.53l3.58-3.579a.78.78 0 0 1 .527-.224 41.202 41.202 0 0 0 5.183-.5c1.437-.232 2.43-1.49 2.43-2.903V5.426c0-1.413-.993-2.67-2.43-2.902A41.289 41.289 0 0 0 10 2Zm0 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2ZM6 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm8-1a1 1 0 1 0-2 0 1 1 0 0 0 2 0Z"
-											clip-rule="evenodd"
-										/>
-									</svg>
+									<img
+										src={imgOneBubble}
+										alt=""
+										class="h-4 w-4 object-contain brightness-0 invert"
+									/>
 									répondre à la demande
 								</button>
 							</div>
@@ -562,6 +539,28 @@
 							</p>
 						</div>
 					{:else}
+						<!-- Bouton haut de section -->
+						<button
+							onclick={() => (showNewRequest = true)}
+							class="mx-4 mb-3 flex items-center justify-between rounded-2xl bg-white px-4 py-3.5 shadow-[0_2px_8px_rgba(5,30,35,0.06)] transition-opacity active:opacity-70"
+						>
+							<span class="text-sm font-semibold text-navy">Ajouter un nouveau post</span>
+							<span
+								class="flex h-8 w-8 items-center justify-center rounded-full bg-navy text-white"
+							>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 0 20 20"
+									fill="currentColor"
+									class="h-4 w-4"
+								>
+									<path
+										d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z"
+									/>
+								</svg>
+							</span>
+						</button>
+
 						<!-- Section : demandes à venir -->
 						{#if upcomingRequests.length > 0}
 							<p class="px-4 pt-3 pb-2 text-sm font-semibold text-navy">Mes demandes</p>
@@ -644,7 +643,7 @@
 <RespondToRequestModal bind:open={showRespondModal} request={respondingRequest} />
 
 {#snippet requestCard(r: import('$lib/models/customer.model').Request, editable: boolean)}
-	<article class="overflow-hidden rounded-2xl border border-navy/[0.07] bg-white shadow-sm">
+	<article class="overflow-hidden rounded-2xl border border-navy/[0.07] bg-cream shadow-sm">
 		<div class="p-4">
 			<!-- Header : titre + (nom + modifier) -->
 			<div class="flex items-start justify-between gap-3">
@@ -671,69 +670,35 @@
 				<span
 					class="inline-flex items-center gap-1 rounded-full bg-olive px-2.5 py-1 text-[11px] text-white"
 				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 16 16"
-						fill="currentColor"
-						class="h-3 w-3 opacity-70"
-					>
-						<path
-							fill-rule="evenodd"
-							d="M4 1.75a.75.75 0 0 1 1.5 0V3h5V1.75a.75.75 0 0 1 1.5 0V3A2.5 2.5 0 0 1 14.5 5.5v6a2.5 2.5 0 0 1-2.5 2.5H4A2.5 2.5 0 0 1 1.5 11.5v-6A2.5 2.5 0 0 1 4 3V1.75ZM3 7v4.5A1 1 0 0 0 4 12.5h8a1 1 0 0 0 1-1V7H3Z"
-							clip-rule="evenodd"
-						/>
-					</svg>
+					<img src={imgAgenda} alt="" class="h-3 w-3 object-contain brightness-0 invert" />
 					{formatDate(r.expected_date_request)}
 				</span>
+				{#if r.expected_time_request}
+					<span
+						class="inline-flex items-center gap-1 rounded-full bg-olive px-2.5 py-1 text-[11px] text-white"
+					>
+						<img src={imgHorloge} alt="" class="h-3 w-3 object-contain brightness-0 invert" />
+						{r.expected_time_request}
+					</span>
+				{/if}
 				<span
 					class="inline-flex items-center gap-1 rounded-full bg-olive px-2.5 py-1 text-[11px] text-white"
 				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 16 16"
-						fill="currentColor"
-						class="h-3 w-3 opacity-70"
-					>
-						<path
-							d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z"
-						/>
-					</svg>
+					<img src={imgTwoUser} alt="" class="h-3 w-3 object-contain brightness-0 invert" />
 					{r.guests_request}
 				</span>
 				{#if r.type_event_request}
 					<span
 						class="inline-flex items-center gap-1 rounded-full bg-olive px-2.5 py-1 text-[11px] text-white"
 					>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							viewBox="0 0 16 16"
-							fill="currentColor"
-							class="h-3 w-3 opacity-70"
-						>
-							<path
-								fill-rule="evenodd"
-								d="M4.5 2A2.5 2.5 0 0 0 2 4.5v2.879a2.5 2.5 0 0 0 .732 1.767l4.5 4.5a2.5 2.5 0 0 0 3.536 0l2.878-2.878a2.5 2.5 0 0 0 0-3.536l-4.5-4.5A2.5 2.5 0 0 0 7.38 2H4.5ZM5 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
-								clip-rule="evenodd"
-							/>
-						</svg>
+						<img src={imgTag} alt="" class="h-3 w-3 object-contain brightness-0 invert" />
 						{r.type_event_request}
 					</span>
 				{/if}
 				<span
 					class="inline-flex items-center gap-1 rounded-full bg-olive px-2.5 py-1 text-[11px] text-white"
 				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 16 16"
-						fill="currentColor"
-						class="h-3 w-3 opacity-70"
-					>
-						<path
-							fill-rule="evenodd"
-							d="M8 1a5 5 0 0 0-5 5c0 3.234 2.75 6.56 4.4 8.318a.8.8 0 0 0 1.2 0C10.25 12.56 13 9.234 13 6a5 5 0 0 0-5-5Zm0 6.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"
-							clip-rule="evenodd"
-						/>
-					</svg>
+					<img src={imgPing} alt="" class="h-3 w-3 object-contain brightness-0 invert" />
 					{r.localization_request}
 				</span>
 			</div>
