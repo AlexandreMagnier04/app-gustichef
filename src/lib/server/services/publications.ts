@@ -31,7 +31,7 @@ export async function createPublication(
 				.insert(publications)
 				.values({
 					title_publication: data.title,
-					content_publication: data.description,
+					content_publication: data.description ?? '',
 					price_publication: data.price !== undefined ? String(data.price) : null,
 					guests_min: data.guestsMin ?? null,
 					guests_max: data.guestsMax ?? null,

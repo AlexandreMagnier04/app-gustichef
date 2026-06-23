@@ -251,7 +251,7 @@ export async function createMenu(data: CreateMenuDto & { id_chief: string }): Pr
 		.insert(menus)
 		.values({
 			title_menu: data.title_menu,
-			description_menu: data.description_menu,
+			description_menu: data.description_menu ?? '',
 			price_menu: String(data.price_menu),
 			type_menu: data.type_menu ?? 'plat',
 			guests_min: data.guests_min ?? null,

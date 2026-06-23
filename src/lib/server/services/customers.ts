@@ -57,6 +57,7 @@ export async function getRequestsWithChiefDetails(customerId: string): Promise<R
 			title_request: requests.title_request,
 			description_request: requests.description_request,
 			expected_date_request: requests.expected_date_request,
+			expected_time_request: requests.expected_time_request,
 			guests_request: requests.guests_request,
 			type_event_request: requests.type_event_request,
 			localization_request: requests.localization_request,
