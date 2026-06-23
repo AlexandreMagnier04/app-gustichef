@@ -111,12 +111,17 @@ export async function cancelReservation(id: number, userId: string): Promise<voi
 }
 
 export async function getReservationsForUser(userId: string): Promise<ReservationDetail[]> {
-	const rows = await db
-		.select(reservationSelect)
-		.from(reservations)
-		.leftJoin(chiefUser, eq(reservations.id_chief, chiefUser.id))
-		.leftJoin(customerUser, eq(reservations.id_customer, customerUser.id))
-		.leftJoin(menus, eq(reservations.id_menu, menus.id_menu))
-		.where(or(eq(reservations.id_chief, userId), eq(reservations.id_customer, userId)));
-	return rows.map(mapReservation);
+	try {
+		const rows = await db
+			.select(reservationSelect)
+			.from(reservations)
+			.leftJoin(chiefUser, eq(reservations.id_chief, chiefUser.id))
+			.leftJoin(customerUser, eq(reservations.id_customer, customerUser.id))
+			.leftJoin(menus, eq(reservations.id_menu, menus.id_menu))
+			.where(or(eq(reservations.id_chief, userId), eq(reservations.id_customer, userId)));
+		return rows.map(mapReservation);
+	} catch (e) {
+		console.error('[getReservationsForUser] REAL ERROR:', e);
+		throw e;
+	}
 }

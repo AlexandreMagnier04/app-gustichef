@@ -74,8 +74,7 @@
 					fill="none"
 					stroke="currentColor"
 					stroke-width="1.5"
-					class="size-5 shrink-0 transition-colors"
-					class:text-navy={true}
+					class="size-5 shrink-0 text-teal transition-colors"
 				>
 					<path
 						stroke-linecap="round"

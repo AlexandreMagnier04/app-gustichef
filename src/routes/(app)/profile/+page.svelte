@@ -86,134 +86,58 @@
 
 <div class="-mx-5 -mt-3 pb-28">
 	<!-- ── BANNIÈRE ─────────────────────────────── -->
-	<div class="relative h-52 overflow-hidden">
+	<div class="relative h-40 overflow-hidden">
 		{#if bannerImage}
 			<img src={bannerImage} alt="" class="h-full w-full object-cover" />
-			<div class="absolute inset-0 bg-linear-to-t from-black/50 via-black/10 to-transparent"></div>
 		{:else}
 			<div class="h-full w-full bg-linear-to-br from-navy via-[#1e4060] to-[#b85a35]"></div>
 		{/if}
-
-		<!-- Pills spécialités sur la bannière -->
-		{#if uniqueSpecialties.length > 0}
-			<div class="absolute bottom-4 left-4 flex flex-wrap gap-1.5">
-				{#each uniqueSpecialties.slice(0, 3) as spec (spec.id_speciality)}
-					<span
-						class="rounded-full border border-white/30 bg-white/15 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm"
-					>
-						{spec.name_speciality}
-					</span>
-				{/each}
-			</div>
-		{/if}
-
-		<!-- Note chef en haut à droite -->
-		{#if profile?.note_chief}
-			<div
-				class="absolute top-3 right-3 flex items-center gap-1.5 rounded-2xl bg-navy/80 px-3 py-1.5 backdrop-blur-sm"
-			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 16 16"
-					fill="currentColor"
-					class="h-3.5 w-3.5 text-yellow-300"
-				>
-					<path
-						fill-rule="evenodd"
-						d="M8 1.75a.75.75 0 0 1 .692.462l1.41 3.393 3.664.293a.75.75 0 0 1 .428 1.317l-2.791 2.39.853 3.575a.75.75 0 0 1-1.12.814L8 11.459l-3.136 2.535a.75.75 0 0 1-1.12-.814l.853-3.574-2.79-2.39a.75.75 0 0 1 .427-1.318l3.665-.293 1.41-3.393A.75.75 0 0 1 8 1.75Z"
-						clip-rule="evenodd"
-					/>
-				</svg>
-				<span class="text-sm font-bold text-white">{profile.note_chief}</span>
-			</div>
-		{/if}
+		<div class="absolute inset-0 bg-linear-to-t from-cream/80 via-cream/20 to-transparent"></div>
 	</div>
 
-	<!-- ── IDENTITÉ ──────────────────────────────── -->
-	<div class="px-5">
-		<div class="-mt-12 flex items-end gap-4">
-			<!-- Avatar avec bouton éditer -->
-			<div class="relative shrink-0">
-				{#if profile?.user.image}
-					<img
-						src={profile.user.image}
-						alt=""
-						class="h-24 w-24 rounded-full object-cover shadow-lg ring-4 ring-cream"
-					/>
-				{:else}
-					<div
-						class="flex h-24 w-24 items-center justify-center rounded-full bg-navy shadow-lg ring-4 ring-cream"
-					>
-						<span class="text-2xl font-bold text-cream">
-							{profile?.user.firstname[0]}{profile?.user.name[0]}
-						</span>
-					</div>
-				{/if}
-				<!-- Bouton éditer avatar -->
-				<a
-					href="/profile/edit"
-					class="absolute right-0 bottom-0 flex h-7 w-7 items-center justify-center rounded-full bg-rust shadow-md ring-2 ring-cream"
+	<!-- ── SPÉCIALITÉS (sous la bannière) ────────── -->
+	{#if uniqueSpecialties.length > 0}
+		<div class="flex flex-wrap justify-end gap-2 px-5 py-3">
+			{#each uniqueSpecialties.slice(0, 3) as spec, i (spec.id_speciality)}
+				<span
+					class="rounded-full px-3 py-1 text-xs font-medium {i === 0
+						? 'bg-rust text-white'
+						: 'bg-navy/15 text-navy'}"
 				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 16 16"
-						fill="currentColor"
-						class="h-3.5 w-3.5 text-white"
-					>
-						<path
-							d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.263a1.75 1.75 0 0 0 0-2.474Z"
-						/>
-						<path
-							d="M4.75 3.5A2.25 2.25 0 0 0 2.5 5.75v5.5A2.25 2.25 0 0 0 4.75 13.5h5.5A2.25 2.25 0 0 0 12.5 11.25V9a.75.75 0 0 0-1.5 0v2.25a.75.75 0 0 1-.75.75h-5.5a.75.75 0 0 1-.75-.75v-5.5a.75.75 0 0 1 .75-.75H7A.75.75 0 0 0 7 2H4.75Z"
-						/>
-					</svg>
-				</a>
-			</div>
+					{spec.name_speciality}
+				</span>
+			{/each}
 		</div>
+	{/if}
 
-		<!-- Nom + sous-titre -->
-		<div class="mt-3">
-			<h1 class="text-2xl leading-tight font-bold text-navy">
-				{profile?.user.firstname ?? ''}
-				{profile?.user.name ?? ''}
-			</h1>
-			<p class="mt-0.5 text-sm text-navy/50">
-				Chef à domicile
-				{#if uniqueSpecialties[0]}
-					· {uniqueSpecialties[0].name_speciality}{/if}
-			</p>
-		</div>
-
-		<!-- Localisation -->
-		{#if displayLoc}
-			<div class="mt-2 flex items-center gap-1.5 text-sm text-navy/50">
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 16 16"
-					fill="currentColor"
-					class="h-3.5 w-3.5 shrink-0 text-rust"
+	<!-- ── IDENTITÉ : avatar | nom | note ─────────── -->
+	<div class="flex items-center gap-4 px-5 pb-3">
+		<!-- Avatar avec bouton éditer -->
+		<div class="relative shrink-0">
+			{#if profile?.user.image}
+				<img
+					src={profile.user.image}
+					alt=""
+					class="h-20 w-20 rounded-full object-cover shadow-md ring-2 ring-cream"
+				/>
+			{:else}
+				<div
+					class="flex h-20 w-20 items-center justify-center rounded-full bg-navy shadow-md ring-2 ring-cream"
 				>
-					<path
-						fill-rule="evenodd"
-						d="m7.539 14.841.003.003.002.002a.755.755 0 0 0 .912 0l.002-.002.003-.003.012-.009a5.57 5.57 0 0 0 .19-.153 15.588 15.588 0 0 0 2.046-2.082c1.101-1.362 2.291-3.342 2.291-5.597A5 5 0 0 0 3 8c0 2.255 1.19 4.235 2.292 5.597a15.591 15.591 0 0 0 2.046 2.082 8.916 8.916 0 0 0 .189.153l.012.01ZM8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"
-						clip-rule="evenodd"
-					/>
-				</svg>
-				<span>{displayLoc}</span>
-			</div>
-		{/if}
-
-		<!-- Actions rapides -->
-		<div class="mt-4 flex gap-2.5">
+					<span class="text-xl font-bold text-cream">
+						{profile?.user.firstname[0]}{profile?.user.name[0]}
+					</span>
+				</div>
+			{/if}
 			<a
 				href="/profile/edit"
-				class="flex flex-1 items-center justify-center gap-1.5 rounded-2xl border border-navy/15 bg-white py-2.5 text-sm font-medium text-navy shadow-sm"
+				class="absolute right-0 bottom-0 flex h-7 w-7 items-center justify-center rounded-full bg-rust shadow-md ring-2 ring-cream"
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					viewBox="0 0 16 16"
 					fill="currentColor"
-					class="h-3.5 w-3.5 text-rust"
+					class="h-3.5 w-3.5 text-white"
 				>
 					<path
 						d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.263a1.75 1.75 0 0 0 0-2.474Z"
@@ -222,17 +146,88 @@
 						d="M4.75 3.5A2.25 2.25 0 0 0 2.5 5.75v5.5A2.25 2.25 0 0 0 4.75 13.5h5.5A2.25 2.25 0 0 0 12.5 11.25V9a.75.75 0 0 0-1.5 0v2.25a.75.75 0 0 1-.75.75h-5.5a.75.75 0 0 1-.75-.75v-5.5a.75.75 0 0 1 .75-.75H7A.75.75 0 0 0 7 2H4.75Z"
 					/>
 				</svg>
-				Éditer le profil
+			</a>
+		</div>
+
+		<!-- Nom + sous-titre + ville -->
+		<div class="min-w-0 flex-1">
+			<h1 class="text-xl leading-tight font-bold text-navy">
+				{profile?.user.firstname ?? ''}
+				{profile?.user.name ?? ''}
+			</h1>
+			<p class="mt-0.5 text-sm text-navy/50">
+				Chef à domicile{#if uniqueSpecialties[0]} · {uniqueSpecialties[0].name_speciality}{/if}
+			</p>
+			{#if displayLoc}
+				<div class="mt-1 flex items-center gap-1 text-xs text-navy/50">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3 w-3 shrink-0 text-rust">
+						<path fill-rule="evenodd" d="m7.539 14.841.003.003.002.002a.755.755 0 0 0 .912 0l.002-.002.003-.003.012-.009a5.57 5.57 0 0 0 .19-.153 15.588 15.588 0 0 0 2.046-2.082c1.101-1.362 2.291-3.342 2.291-5.597A5 5 0 0 0 3 8c0 2.255 1.19 4.235 2.292 5.597a15.591 15.591 0 0 0 2.046 2.082 8.916 8.916 0 0 0 .189.153l.012.01ZM8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" clip-rule="evenodd" />
+					</svg>
+					<span>{displayLoc}</span>
+				</div>
+			{/if}
+		</div>
+
+		<!-- Badge note (si disponible) -->
+		{#if profile?.note_chief}
+			<div class="shrink-0 rounded-xl bg-navy px-3 py-2 text-center">
+				<div class="flex items-center justify-center gap-1">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 16 16"
+						fill="currentColor"
+						class="h-3.5 w-3.5 text-yellow-300"
+					>
+						<path
+							fill-rule="evenodd"
+							d="M8 1.75a.75.75 0 0 1 .692.462l1.41 3.393 3.664.293a.75.75 0 0 1 .428 1.317l-2.791 2.39.853 3.575a.75.75 0 0 1-1.12.814L8 11.459l-3.136 2.535a.75.75 0 0 1-1.12-.814l.853-3.574-2.79-2.39a.75.75 0 0 1 .427-1.318l3.665-.293 1.41-3.393A.75.75 0 0 1 8 1.75Z"
+							clip-rule="evenodd"
+						/>
+					</svg>
+					<span class="text-base font-bold text-white">{profile.note_chief}</span>
+				</div>
+			</div>
+		{/if}
+	</div>
+
+	<!-- ── BIO + ACTIONS ────────────────────────── -->
+	<div class="px-5">
+		{#if profile?.bio_chief}
+			<p class="mt-3 text-sm leading-relaxed text-navy/65">{profile.bio_chief}</p>
+		{/if}
+
+		<div class="mt-1 h-px bg-navy/6"></div>
+
+		<!-- Actions rapides -->
+		<div class="flex flex-col items-end gap-1">
+			<a
+				href="/profile/edit"
+				class="flex items-center gap-2 py-1.5 text-sm font-medium text-teal"
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					viewBox="0 0 16 16"
+					fill="currentColor"
+					class="h-4 w-4 text-teal"
+				>
+					<path
+						d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.263a1.75 1.75 0 0 0 0-2.474Z"
+					/>
+					<path
+						d="M4.75 3.5A2.25 2.25 0 0 0 2.5 5.75v5.5A2.25 2.25 0 0 0 4.75 13.5h5.5A2.25 2.25 0 0 0 12.5 11.25V9a.75.75 0 0 0-1.5 0v2.25a.75.75 0 0 1-.75.75h-5.5a.75.75 0 0 1-.75-.75v-5.5a.75.75 0 0 1 .75-.75H7A.75.75 0 0 0 7 2H4.75Z"
+					/>
+				</svg>
+				Éditer profil
 			</a>
 			<a
 				href="/profile/settings"
-				class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-navy/15 bg-white shadow-sm"
+				class="flex items-center gap-2 py-1.5 text-sm font-medium text-teal"
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					viewBox="0 0 20 20"
 					fill="currentColor"
-					class="h-4.5 w-4.5 text-navy/60"
+					class="h-4 w-4 text-teal"
 				>
 					<path
 						fill-rule="evenodd"
@@ -240,34 +235,28 @@
 						clip-rule="evenodd"
 					/>
 				</svg>
+				Paramètres
 			</a>
 		</div>
-
-		<!-- Bio -->
-		{#if profile?.bio_chief}
-			<p class="mt-4 text-sm leading-relaxed text-navy/65">{profile.bio_chief}</p>
-		{/if}
 
 		<!-- Carte réservations à venir -->
 		{#if upcomingReservations.length > 0}
 			<button
 				onclick={() => (activeTab = 'réservations')}
-				class="mt-4 flex w-full items-center gap-4 rounded-2xl border border-teal/20 bg-teal/6 px-4 py-3.5 text-left"
+				class="mt-2 flex w-full items-center gap-3 rounded-2xl border border-teal/20 bg-teal/6 px-4 py-3.5 text-left"
 			>
-				<div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-teal/15">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 20 20"
-						fill="currentColor"
-						class="h-5 w-5 text-teal"
-					>
-						<path
-							fill-rule="evenodd"
-							d="M5.75 2a.75.75 0 0 1 .75.75V4h7V2.75a.75.75 0 0 1 1.5 0V4h.25A2.75 2.75 0 0 1 18 6.75v8.5A2.75 2.75 0 0 1 15.25 18H4.75A2.75 2.75 0 0 1 2 15.25v-8.5A2.75 2.75 0 0 1 4.75 4H5V2.75A.75.75 0 0 1 5.75 2Zm-1 5.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h10.5c.69 0 1.25-.56 1.25-1.25v-6.5c0-.69-.56-1.25-1.25-1.25H4.75Z"
-							clip-rule="evenodd"
-						/>
-					</svg>
-				</div>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					viewBox="0 0 20 20"
+					fill="currentColor"
+					class="h-5 w-5 shrink-0 text-teal"
+				>
+					<path
+						fill-rule="evenodd"
+						d="M5.75 2a.75.75 0 0 1 .75.75V4h7V2.75a.75.75 0 0 1 1.5 0V4h.25A2.75 2.75 0 0 1 18 6.75v8.5A2.75 2.75 0 0 1 15.25 18H4.75A2.75 2.75 0 0 1 2 15.25v-8.5A2.75 2.75 0 0 1 4.75 4H5V2.75A.75.75 0 0 1 5.75 2Zm-1 5.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h10.5c.69 0 1.25-.56 1.25-1.25v-6.5c0-.69-.56-1.25-1.25-1.25H4.75Z"
+						clip-rule="evenodd"
+					/>
+				</svg>
 				<div class="min-w-0 flex-1">
 					<p class="text-sm font-semibold text-navy">
 						{upcomingReservations.length} réservation{upcomingReservations.length > 1 ? 's' : ''} à venir
@@ -278,34 +267,23 @@
 						</p>
 					{/if}
 				</div>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 16 16"
-					fill="currentColor"
-					class="h-4 w-4 shrink-0 text-teal/60"
-				>
-					<path
-						fill-rule="evenodd"
-						d="M6.22 4.22a.75.75 0 0 1 1.06 0l3.25 3.25a.75.75 0 0 1 0 1.06l-3.25 3.25a.75.75 0 0 1-1.06-1.06L8.94 8 6.22 5.28a.75.75 0 0 1 0-1.06Z"
-						clip-rule="evenodd"
-					/>
-				</svg>
+				<span class="shrink-0 text-sm font-semibold text-rust">voir</span>
 			</button>
 		{/if}
 	</div>
 
 	<!-- ── TABS ───────────────────────────────────── -->
-	<div class="mt-6 flex border-b border-navy/[0.08] px-5">
+	<div class="mt-6 flex border-b border-navy/8">
 		{#each ['galerie', 'menus', 'réservations', 'avis'] as const as tab (tab)}
 			<button
 				onclick={() => (activeTab = tab)}
-				class="relative mr-6 pb-3 text-sm font-medium transition-colors {activeTab === tab
+				class="relative flex-1 py-3 text-sm font-medium transition-colors {activeTab === tab
 					? 'text-navy'
 					: 'text-navy/35'}"
 			>
 				{tab}
 				{#if activeTab === tab}
-					<span class="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-rust"></span>
+					<span class="absolute bottom-0 left-1/2 h-0.5 w-10 -translate-x-1/2 rounded-full bg-rust"></span>
 				{/if}
 			</button>
 		{/each}

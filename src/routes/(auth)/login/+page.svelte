@@ -119,7 +119,7 @@
 
 			<p class="mt-5 text-center text-xs text-gray-500">
 				Pas encore inscrit ?
-				<a href="/register" class="font-medium text-navy">S'inscrire</a>
+				<a href="/onboarding" class="font-medium text-navy">S'inscrire</a>
 			</p>
 		</div>
 	</div>
