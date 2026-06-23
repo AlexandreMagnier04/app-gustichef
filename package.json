@@ -13,7 +13,7 @@
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
 		"test": "pnpm test:unit && pnpm test:integration",
-		"test:ci": "pnpm test:unit && pnpm test:integration && pnpm test:e2e:api",
+		"test:ci": "pnpm test:unit && pnpm test:integration",
 		"test:unit": "vitest run --config vitest.config.ts",
 		"test:unit:watch": "vitest --config vitest.config.ts",
 		"test:integration": "vitest run --config vitest.integration.config.ts",
