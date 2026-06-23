@@ -1,5 +1,4 @@
 import { json, error } from '@sveltejs/kit';
-import { desc } from 'drizzle-orm';
 import Stripe from 'stripe';
 import { env } from '$env/dynamic/private';
 import { requireUser, getUserInfo } from '$lib/server/services/auth';

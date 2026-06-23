@@ -108,12 +108,22 @@
 				{profile.user.name}
 			</h1>
 			<p class="mt-0.5 text-sm text-navy/50">
-				Chef à domicile{#if uniqueSpecialties[0]} · {uniqueSpecialties[0].name_speciality}{/if}
+				Chef à domicile{#if uniqueSpecialties[0]}
+					· {uniqueSpecialties[0].name_speciality}{/if}
 			</p>
 			{#if displayLoc}
 				<div class="mt-1 flex items-center gap-1 text-xs text-navy/50">
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3 w-3 shrink-0 text-rust">
-						<path fill-rule="evenodd" d="m7.539 14.841.003.003.002.002a.755.755 0 0 0 .912 0l.002-.002.003-.003.012-.009a5.57 5.57 0 0 0 .19-.153 15.588 15.588 0 0 0 2.046-2.082c1.101-1.362 2.291-3.342 2.291-5.597A5 5 0 0 0 3 8c0 2.255 1.19 4.235 2.292 5.597a15.591 15.591 0 0 0 2.046 2.082 8.916 8.916 0 0 0 .189.153l.012.01ZM8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" clip-rule="evenodd" />
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 16 16"
+						fill="currentColor"
+						class="h-3 w-3 shrink-0 text-rust"
+					>
+						<path
+							fill-rule="evenodd"
+							d="m7.539 14.841.003.003.002.002a.755.755 0 0 0 .912 0l.002-.002.003-.003.012-.009a5.57 5.57 0 0 0 .19-.153 15.588 15.588 0 0 0 2.046-2.082c1.101-1.362 2.291-3.342 2.291-5.597A5 5 0 0 0 3 8c0 2.255 1.19 4.235 2.292 5.597a15.591 15.591 0 0 0 2.046 2.082 8.916 8.916 0 0 0 .189.153l.012.01ZM8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"
+							clip-rule="evenodd"
+						/>
 					</svg>
 					<span>{displayLoc}</span>
 				</div>
@@ -161,7 +171,8 @@
 			>
 				{tab}
 				{#if activeTab === tab}
-					<span class="absolute bottom-0 left-1/2 h-0.5 w-10 -translate-x-1/2 rounded-full bg-rust"></span>
+					<span class="absolute bottom-0 left-1/2 h-0.5 w-10 -translate-x-1/2 rounded-full bg-rust"
+					></span>
 				{/if}
 			</button>
 		{/each}
@@ -230,7 +241,9 @@
 			{:else}
 				<div class="flex flex-col gap-4">
 					{#each filteredMenus as menu, i (menu.id_menu)}
-						<div class="overflow-hidden rounded-2xl bg-white shadow-[0_2px_12px_rgba(5,30,35,0.08)]">
+						<div
+							class="overflow-hidden rounded-2xl bg-white shadow-[0_2px_12px_rgba(5,30,35,0.08)]"
+						>
 							<!-- Image propre -->
 							<div class="h-36 overflow-hidden">
 								{#if menu.image_url}

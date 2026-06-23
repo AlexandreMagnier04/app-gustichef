@@ -118,7 +118,10 @@
 						<svelte:element
 							this={href ? 'a' : 'div'}
 							{href}
+							role={href ? 'link' : undefined}
+							tabindex={href ? 0 : undefined}
 							onclick={href ? close : undefined}
+							onkeydown={href ? (e: KeyboardEvent) => e.key === 'Enter' && close() : undefined}
 							class="flex items-start gap-3 px-5 py-3.5 {href
 								? 'cursor-pointer active:bg-navy/[0.04]'
 								: ''}"

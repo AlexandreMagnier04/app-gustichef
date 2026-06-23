@@ -155,7 +155,7 @@
 			<div class="my-3 h-px bg-navy/10"></div>
 
 			<!-- Photo -->
-			<label class="mb-1.5 block text-sm font-medium text-navy">Photo de ton plat</label>
+			<p class="mb-1.5 block text-sm font-medium text-navy">Photo de ton plat</p>
 			<label
 				class="flex h-32 cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-navy/20 bg-white"
 			>
@@ -188,8 +188,9 @@
 			</p>
 
 			<!-- Nom -->
-			<label class="mt-4 mb-1.5 block text-sm font-medium text-navy">Nom du plat</label>
+			<label for="npub-title" class="mt-4 mb-1.5 block text-sm font-medium text-navy">Nom du plat</label>
 			<input
+				id="npub-title"
 				type="text"
 				bind:value={title}
 				required
@@ -199,8 +200,9 @@
 			/>
 
 			<!-- Description -->
-			<label class="mt-4 mb-1.5 block text-sm font-medium text-navy">Description</label>
+			<label for="npub-description" class="mt-4 mb-1.5 block text-sm font-medium text-navy">Description</label>
 			<textarea
+				id="npub-description"
 				bind:value={description}
 				required
 				maxlength="2000"
@@ -210,9 +212,10 @@
 			></textarea>
 
 			<!-- Prix -->
-			<label class="mt-4 mb-1.5 block text-sm font-medium text-navy">Prix par personne</label>
+			<label for="npub-price" class="mt-4 mb-1.5 block text-sm font-medium text-navy">Prix par personne</label>
 			<div class="relative inline-flex w-28">
 				<input
+					id="npub-price"
 					type="number"
 					bind:value={price}
 					min="0"
@@ -226,7 +229,7 @@
 			</div>
 
 			<!-- Type de cuisine -->
-			<label class="mt-4 mb-1.5 block text-sm font-medium text-navy">Type de cuisine</label>
+			<p class="mt-4 mb-1.5 block text-sm font-medium text-navy">Type de cuisine</p>
 			<div class="flex flex-wrap items-center gap-2">
 				{#if !showCustomInput}
 					<select
@@ -248,7 +251,7 @@
 							placeholder="Ex : Péruvienne"
 							maxlength="40"
 							onkeydown={(e) => e.key === 'Enter' && (e.preventDefault(), addCustomCuisine())}
-							class="rounded-full border border-navy/15 bg-white py-2 px-4 text-sm text-navy outline-none focus:border-navy"
+							class="rounded-full border border-navy/15 bg-white px-4 py-2 text-sm text-navy outline-none focus:border-navy"
 						/>
 						<button
 							type="button"
@@ -259,7 +262,10 @@
 						</button>
 						<button
 							type="button"
-							onclick={() => { showCustomInput = false; customCuisine = ''; }}
+							onclick={() => {
+								showCustomInput = false;
+								customCuisine = '';
+							}}
 							class="text-xs text-navy/40"
 						>
 							Annuler
@@ -288,11 +294,12 @@
 			</div>
 
 			<!-- Convives -->
-			<label class="mt-4 mb-1.5 block text-sm font-medium text-navy">Nombre de convives</label>
+			<p class="mt-4 mb-1.5 block text-sm font-medium text-navy">Nombre de convives</p>
 			<div class="flex gap-3">
 				<div class="flex-1">
-					<label class="mb-1 block text-xs text-navy/60">Minimum</label>
+					<label for="npub-guests-min" class="mb-1 block text-xs text-navy/60">Minimum</label>
 					<input
+						id="npub-guests-min"
 						type="number"
 						bind:value={guestsMin}
 						min="1"
@@ -301,8 +308,9 @@
 					/>
 				</div>
 				<div class="flex-1">
-					<label class="mb-1 block text-xs text-navy/60">Maximum</label>
+					<label for="npub-guests-max" class="mb-1 block text-xs text-navy/60">Maximum</label>
 					<input
+						id="npub-guests-max"
 						type="number"
 						bind:value={guestsMax}
 						min="1"

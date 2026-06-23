@@ -726,7 +726,7 @@
 						{/if}
 
 						<!-- Prix proposition -->
-						{#if menuDetailMsg.price_per_person && menuDetailMsg.menu_price && menuDetailMsg.price_per_person !== menuDetailMsg.menu_price}
+						{#if menuDetailMsg.price_per_person && menuDetailMsg.menu_price && menuDetailMsg.price_per_person !== Number(menuDetailMsg.menu_price)}
 							<div class="rounded-xl bg-cream px-4 py-3">
 								<p class="text-[12px] text-navy/60">Prix proposé pour cette prestation</p>
 								<p class="text-lg font-bold text-rust">

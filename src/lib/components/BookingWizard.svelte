@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import DatePicker from '$lib/components/DatePicker.svelte';
 	import { searchCommunes } from '$lib/services/geo.service';
 
@@ -68,7 +69,8 @@
 	let localization = $state('');
 
 	// Step 2 — initialiser au minimum du menu
-	let guests = $state(guestsMin > 1 ? guestsMin : 1);
+	const _guestsMin = untrack(() => guestsMin);
+	let guests = $state(_guestsMin > 1 ? _guestsMin : 1);
 	let extrasQty = $state<Record<number, number>>({});
 
 	// Step 3
@@ -222,6 +224,7 @@
 				<button
 					type="button"
 					onclick={onclose}
+					aria-label="Fermer"
 					class="flex h-8 w-8 items-center justify-center rounded-full bg-navy/8 text-navy/50"
 				>
 					<svg
@@ -252,9 +255,7 @@
 					<!-- Étape 1 : Date & Heure -->
 					<div class="space-y-4">
 						<div>
-							<label class="mb-1.5 block text-[12px] font-semibold text-navy/60"
-								>Date de l'événement</label
-							>
+							<p class="mb-1.5 block text-[12px] font-semibold text-navy/60">Date de l'événement</p>
 							<DatePicker
 								bind:value={eventDate}
 								min={new Date().toISOString().split('T')[0]}
@@ -262,19 +263,21 @@
 							/>
 						</div>
 						<div>
-							<label class="mb-1.5 block text-[12px] font-semibold text-navy/60"
+							<label for="bwiz-event-time" class="mb-1.5 block text-[12px] font-semibold text-navy/60"
 								>Heure de début</label
 							>
 							<input
+								id="bwiz-event-time"
 								type="time"
 								bind:value={eventTime}
 								class="w-full rounded-xl border border-navy/15 bg-white px-4 py-3 text-sm text-navy outline-none focus:border-rust"
 							/>
 						</div>
 						<div class="relative">
-							<label class="mb-1.5 block text-[12px] font-semibold text-navy/60">Localisation</label
+							<label for="bwiz-localization" class="mb-1.5 block text-[12px] font-semibold text-navy/60">Localisation</label
 							>
 							<input
+								id="bwiz-localization"
 								type="text"
 								bind:value={localization}
 								oninput={onLocInput}
@@ -454,10 +457,11 @@
 					<!-- Étape 3 : Notes & récap -->
 					<div class="space-y-4">
 						<div>
-							<label class="mb-1.5 block text-[13px] font-semibold text-navy"
+							<label for="bwiz-notes" class="mb-1.5 block text-[13px] font-semibold text-navy"
 								>Notes ou préférences</label
 							>
 							<textarea
+								id="bwiz-notes"
 								bind:value={notes}
 								placeholder="Occasion spéciale, allergies, préférences particulières..."
 								rows="3"

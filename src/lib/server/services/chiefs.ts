@@ -116,7 +116,12 @@ export async function getChiefsDetails(ids: string[]): Promise<Map<string, Chief
 		const entry = map.get(row.id_chief);
 		if (entry && !seenMenus.has(row.id_menu) && entry.menuImages.length < 6) {
 			seenMenus.add(row.id_menu);
-			entry.menuImages.push({ id_menu: row.id_menu, url: row.url, title: row.title, price: row.price });
+			entry.menuImages.push({
+				id_menu: row.id_menu,
+				url: row.url,
+				title: row.title,
+				price: row.price
+			});
 		}
 	}
 

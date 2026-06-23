@@ -83,7 +83,12 @@ function mapReservation(row: {
 		...(rest as Omit<ReservationDetail, 'chief' | 'customer'>),
 		chief:
 			chief_firstname != null
-				? { firstname: chief_firstname, name: chief_name!, image: chief_image, localization: chief_localization ?? '' }
+				? {
+						firstname: chief_firstname,
+						name: chief_name!,
+						image: chief_image,
+						localization: chief_localization ?? ''
+					}
 				: null,
 		customer:
 			customer_firstname != null

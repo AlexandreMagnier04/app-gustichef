@@ -43,6 +43,7 @@
 		<div class="flex items-center gap-3">
 			<a
 				href="/messages/{r.id_conversation}"
+				aria-label="Messages"
 				class="flex h-9 w-9 items-center justify-center rounded-full bg-navy/5"
 			>
 				<svg

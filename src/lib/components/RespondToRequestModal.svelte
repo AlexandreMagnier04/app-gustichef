@@ -10,8 +10,6 @@
 		request?: RequestWithCustomer | null;
 	} = $props();
 
-	const PRICE_OPTIONS = [20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 100, 120, 150, 200];
-
 	let message = $state('');
 	let price = $state('');
 	let submitting = $state(false);
@@ -195,8 +193,9 @@
 
 				<form onsubmit={submit} class="flex flex-col gap-5">
 					<div>
-						<label class="mb-1.5 block text-sm font-medium text-navy">Votre message</label>
+						<label for="rreq-message" class="mb-1.5 block text-sm font-medium text-navy">Votre message</label>
 						<textarea
+							id="rreq-message"
 							bind:value={message}
 							required
 							rows="4"
@@ -205,7 +204,6 @@
 							class="w-full resize-none rounded-xl border border-navy/15 bg-white px-3 py-2.5 text-sm text-navy outline-none placeholder:text-navy/30 focus:border-rust"
 						></textarea>
 					</div>
-
 
 					{#if errorMsg}
 						<p class="text-sm text-rust">{errorMsg}</p>

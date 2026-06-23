@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import { searchCommunes } from '$lib/services/geo.service';
 
 	let {
@@ -11,7 +12,8 @@
 		onClear: () => void;
 	} = $props();
 
-	let input = $state(value);
+	const _value = untrack(() => value);
+	let input = $state(_value);
 	let suggestions = $state<{ nom: string; code: string }[]>([]);
 	let showSuggestions = $state(false);
 	let debounceTimer: ReturnType<typeof setTimeout>;

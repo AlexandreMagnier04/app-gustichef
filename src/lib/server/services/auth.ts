@@ -30,7 +30,12 @@ export async function getUserInfo(
 	id: string
 ): Promise<{ firstname: string; name: string; email: string; image: string | null } | null> {
 	const [row] = await db
-		.select({ firstname: users.firstname, name: users.name, email: users.email, image: users.image })
+		.select({
+			firstname: users.firstname,
+			name: users.name,
+			email: users.email,
+			image: users.image
+		})
 		.from(users)
 		.where(eq(users.id, id));
 	return row ?? null;

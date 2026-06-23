@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { loadStripe } from '@stripe/stripe-js';
+	import { loadStripe, type StripeElements } from '@stripe/stripe-js';
+	import { untrack } from 'svelte';
 	import { env } from '$env/dynamic/public';
 	const PUBLIC_STRIPE_KEY = env.PUBLIC_STRIPE_KEY ?? '';
 	import type { Menu } from '$lib/models/chief.model';
@@ -36,19 +37,19 @@
 	const TRAVEL_FEE_PER_PERSON = 2.4;
 
 	let step = $state(1);
-	let guests = $state(guestsDefault || 2);
+	let guests = $state(untrack(() => guestsDefault) || 2);
 	let notes = $state('');
 	let submitting = $state(false);
 	let errorMsg = $state('');
 
 	// Extras : { id_menu, title, qty, price_per_person }
 	let extrasQty = $state<Record<number, number>>(
-		Object.fromEntries(chiefExtras.map((e) => [e.id_menu, 0]))
+		untrack(() => Object.fromEntries(chiefExtras.map((e) => [e.id_menu, 0])))
 	);
 
 	// Stripe
 	let stripe: Awaited<ReturnType<typeof loadStripe>> = $state(null);
-	let stripeElements: ReturnType<NonNullable<typeof stripe>['elements']> | null = $state(null);
+	let stripeElements: StripeElements | null = $state(null);
 	let cardEl: HTMLDivElement | null = $state(null);
 
 	const menuTotal = $derived(pricePerPerson * guests);
@@ -190,6 +191,7 @@
 			<button
 				type="button"
 				onclick={onclose}
+				aria-label="Fermer"
 				class="flex h-8 w-8 items-center justify-center rounded-full bg-navy/8 text-navy/50"
 			>
 				<svg
@@ -478,6 +480,7 @@
 				<button
 					type="button"
 					onclick={prevStep}
+					aria-label="Étape précédente"
 					class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-navy/15 text-navy/60"
 				>
 					<svg

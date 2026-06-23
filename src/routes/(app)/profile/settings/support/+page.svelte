@@ -16,10 +16,14 @@
 </script>
 
 <!-- En-tête -->
-<div class="flex items-center justify-between pb-4 pt-2">
-	<a href="/profile/settings" class="text-navy/50 hover:text-navy">
+<div class="flex items-center justify-between pt-2 pb-4">
+	<a href="/profile/settings" aria-label="Retour" class="text-navy/50 hover:text-navy">
 		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
-			<path fill-rule="evenodd" d="M17 10a.75.75 0 0 1-.75.75H5.612l4.158 3.96a.75.75 0 1 1-1.04 1.08l-5.5-5.25a.75.75 0 0 1 0-1.08l5.5-5.25a.75.75 0 1 1 1.04 1.08L5.612 9.25H16.25A.75.75 0 0 1 17 10Z" clip-rule="evenodd" />
+			<path
+				fill-rule="evenodd"
+				d="M17 10a.75.75 0 0 1-.75.75H5.612l4.158 3.96a.75.75 0 1 1-1.04 1.08l-5.5-5.25a.75.75 0 0 1 0-1.08l5.5-5.25a.75.75 0 1 1 1.04 1.08L5.612 9.25H16.25A.75.75 0 0 1 17 10Z"
+				clip-rule="evenodd"
+			/>
 		</svg>
 	</a>
 	<h1 class="text-base font-semibold text-navy">Aide & support</h1>
@@ -32,7 +36,7 @@
 	<p class="mb-3 text-xs text-navy/40">Mis à jour le 1er mai 2026 · v2.4</p>
 
 	<div class="divide-y divide-navy/8 rounded-2xl border border-navy/8">
-		{#each FAQS as faq, i}
+		{#each FAQS as faq, i (faq.q)}
 			<button
 				type="button"
 				onclick={() => (openIndex = openIndex === i ? null : i)}
@@ -43,9 +47,15 @@
 					xmlns="http://www.w3.org/2000/svg"
 					viewBox="0 0 20 20"
 					fill="currentColor"
-					class="h-4 w-4 shrink-0 text-navy/25 transition-transform {openIndex === i ? 'rotate-90' : ''}"
+					class="h-4 w-4 shrink-0 text-navy/25 transition-transform {openIndex === i
+						? 'rotate-90'
+						: ''}"
 				>
-					<path fill-rule="evenodd" d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+					<path
+						fill-rule="evenodd"
+						d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z"
+						clip-rule="evenodd"
+					/>
 				</svg>
 			</button>
 		{/each}

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import { validateChefStep1, registerChef } from '$lib/services/auth.service';
 	import type { Specialty } from '$lib/models/chief.model';
 	import logoGusti from '$lib/assets/img/gustichef-ecriture-orange.png';
@@ -8,8 +9,9 @@
 	let { data } = $props<{ data: { specialties: Specialty[] } }>();
 
 	// Dédoublonne : la DB peut contenir des spécialités en double, ce qui casse la clé du {#each}
+	const initialSpecialties = untrack(() => data.specialties);
 	let availableSpecialties = $state<string[]>([
-		...new Set(data.specialties.map((s: Specialty) => s.name_speciality))
+		...new Set<string>(initialSpecialties.map((s: Specialty) => s.name_speciality))
 	]);
 	let customSpecialtyInput = $state('');
 
@@ -159,8 +161,9 @@
 
 			<div class="flex flex-col gap-4">
 				<div class="flex flex-col gap-1">
-					<label class="text-xs font-medium text-navy/70">Prénom</label>
+					<label for="reg-firstname" class="text-xs font-medium text-navy/70">Prénom</label>
 					<input
+						id="reg-firstname"
 						type="text"
 						bind:value={firstname}
 						placeholder="ex : Marie"
@@ -169,8 +172,9 @@
 					{#if fieldErrors.firstname}<p class="text-xs text-rust">{fieldErrors.firstname}</p>{/if}
 				</div>
 				<div class="flex flex-col gap-1">
-					<label class="text-xs font-medium text-navy/70">Nom</label>
+					<label for="reg-lastname" class="text-xs font-medium text-navy/70">Nom</label>
 					<input
+						id="reg-lastname"
 						type="text"
 						bind:value={name}
 						placeholder="ex : Dupont"
@@ -179,8 +183,9 @@
 					{#if fieldErrors.name}<p class="text-xs text-rust">{fieldErrors.name}</p>{/if}
 				</div>
 				<div class="flex flex-col gap-1">
-					<label class="text-xs font-medium text-navy/70">Adresse mail</label>
+					<label for="reg-email" class="text-xs font-medium text-navy/70">Adresse mail</label>
 					<input
+						id="reg-email"
 						type="email"
 						bind:value={email}
 						placeholder="votre adresse mail"
@@ -189,8 +194,9 @@
 					{#if fieldErrors.email}<p class="text-xs text-rust">{fieldErrors.email}</p>{/if}
 				</div>
 				<div class="flex flex-col gap-1">
-					<label class="text-xs font-medium text-navy/70">Mot de passe</label>
+					<label for="reg-password" class="text-xs font-medium text-navy/70">Mot de passe</label>
 					<input
+						id="reg-password"
 						type="password"
 						bind:value={password}
 						placeholder="••••••••"
@@ -199,8 +205,9 @@
 					{#if fieldErrors.password}<p class="text-xs text-rust">{fieldErrors.password}</p>{/if}
 				</div>
 				<div class="flex flex-col gap-1">
-					<label class="text-xs font-medium text-navy/70">Confirmer le mot de passe</label>
+					<label for="reg-confirm" class="text-xs font-medium text-navy/70">Confirmer le mot de passe</label>
 					<input
+						id="reg-confirm"
 						type="password"
 						bind:value={confirmPassword}
 						placeholder="••••••••"
@@ -231,8 +238,9 @@
 
 			<div class="flex flex-col gap-5">
 				<div class="flex flex-col items-center gap-2">
-					<label class="text-xs font-medium text-navy/70">Photo de profil</label>
+					<p class="text-xs font-medium text-navy/70">Photo de profil</p>
 					<label
+						for="reg-avatar"
 						class="flex h-24 w-24 cursor-pointer items-center justify-center rounded-full border-2 border-dashed border-rust/50 bg-white hover:bg-rust/5"
 					>
 						{#if profilePhotoPreview}
@@ -256,14 +264,15 @@
 								/>
 							</svg>
 						{/if}
-						<input type="file" accept="image/*" onchange={handlePhotoChange} class="hidden" />
+						<input id="reg-avatar" type="file" accept="image/*" onchange={handlePhotoChange} class="hidden" />
 					</label>
 					<span class="text-xs text-gray-400">Ajouter une photo</span>
 				</div>
 
 				<div class="flex flex-col gap-1">
-					<label class="text-xs font-medium text-navy/70">Titre professionnel (optionnel)</label>
+					<label for="reg-title" class="text-xs font-medium text-navy/70">Titre professionnel (optionnel)</label>
 					<input
+						id="reg-title"
 						type="text"
 						bind:value={bio}
 						placeholder="ex : Chef pâtissier, Traiteur..."
@@ -272,9 +281,9 @@
 				</div>
 
 				<div class="flex flex-col gap-2">
-					<label class="text-xs font-medium text-navy/70"
-						>Spécialités <span class="text-gray-400">(3 max)</span></label
-					>
+					<p class="text-xs font-medium text-navy/70"
+					>Spécialités <span class="text-gray-400">(3 max)</span></p
+				>
 					<div class="flex flex-wrap gap-2">
 						{#each availableSpecialties as s (s)}
 							<button
@@ -332,7 +341,7 @@
 
 			<div class="flex flex-col gap-5">
 				<div class="flex flex-col gap-2">
-					<label class="text-xs font-medium text-navy/70">Pièce d'identité</label>
+					<p class="text-xs font-medium text-navy/70">Pièce d'identité</p>
 					<div class="flex gap-3">
 						<label
 							class="flex flex-1 cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-gray-200 bg-white py-5 text-xs text-gray-400 hover:border-rust/40"
@@ -368,8 +377,9 @@
 				</div>
 
 				<div class="flex flex-col gap-1">
-					<label class="text-xs font-medium text-navy/70">Numéro SIRET (optionnel)</label>
+					<label for="reg-siret" class="text-xs font-medium text-navy/70">Numéro SIRET (optionnel)</label>
 					<input
+						id="reg-siret"
 						type="text"
 						bind:value={siret}
 						placeholder="ex : 123 456 789 00010"
@@ -378,8 +388,9 @@
 				</div>
 
 				<div class="flex flex-col gap-2">
-					<label class="text-xs font-medium text-navy/70">Certificat HACCP (optionnel)</label>
+					<p class="text-xs font-medium text-navy/70">Certificat HACCP (optionnel)</p>
 					<label
+						for="reg-haccp"
 						class="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-gray-200 bg-white py-5 text-xs text-gray-400 hover:border-rust/40"
 					>
 						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="h-6 w-6">
@@ -391,7 +402,7 @@
 						</svg>
 						<span class="font-medium text-rust">+ Ajouter</span>
 						<span>Recto</span>
-						<input type="file" accept="image/*,.pdf" class="hidden" />
+						<input id="reg-haccp" type="file" accept="image/*,.pdf" class="hidden" />
 					</label>
 				</div>
 			</div>
@@ -419,7 +430,7 @@
 
 			<div class="flex flex-col gap-5">
 				<div class="flex flex-col gap-2">
-					<label class="text-xs font-medium text-navy/70">Villes d'intervention</label>
+					<p class="text-xs font-medium text-navy/70">Villes d'intervention</p>
 					<p class="text-xs text-gray-400">Ajoute toutes les villes où tu peux intervenir</p>
 					<div class="flex flex-wrap gap-2">
 						{#each cities as city (city)}
@@ -457,7 +468,7 @@
 
 				<div class="flex flex-col gap-2">
 					<div class="flex items-center justify-between">
-						<label class="text-xs font-medium text-navy/70">Rayon de déplacement</label>
+						<p class="text-xs font-medium text-navy/70">Rayon de déplacement</p>
 						<span class="text-xs font-semibold text-rust">{radius} km</span>
 					</div>
 					<div class="flex items-center gap-2 text-xs text-gray-400">
@@ -475,9 +486,10 @@
 				</div>
 
 				<div class="flex flex-col gap-1">
-					<label class="text-xs font-medium text-navy/70">Prix minimum / convive</label>
+					<label for="reg-price" class="text-xs font-medium text-navy/70">Prix minimum / convive</label>
 					<div class="flex items-center gap-2">
 						<input
+							id="reg-price"
 							type="number"
 							bind:value={minPrice}
 							placeholder="ex : 45"
@@ -489,7 +501,7 @@
 				</div>
 
 				<div class="flex flex-col gap-2">
-					<label class="text-xs font-medium text-navy/70">Nombre minimum de convives</label>
+					<p class="text-xs font-medium text-navy/70">Nombre minimum de convives</p>
 					<div class="flex items-center gap-4">
 						<button
 							type="button"

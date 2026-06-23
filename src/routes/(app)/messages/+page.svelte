@@ -1,9 +1,12 @@
 <script lang="ts">
 	import type { ConversationListItem } from '$lib/models/messaging.model';
 
+	import { untrack } from 'svelte';
+
 	let { data } = $props();
 
-	const isChief = data.user?.role === 'chief';
+	const pageData = untrack(() => data);
+	const isChief = pageData.user?.role === 'chief';
 
 	// Tabs differ by role
 	const CHIEF_TABS = ['Tous', 'À répondre', 'Devis envoyé', 'Confirmé'] as const;
@@ -28,8 +31,8 @@
 
 	const filtered = $derived(
 		activeTab === 'Tous'
-			? (data.conversations as ConversationListItem[])
-			: (data.conversations as ConversationListItem[]).filter(
+			? (pageData.conversations as ConversationListItem[])
+			: (pageData.conversations as ConversationListItem[]).filter(
 					(c) => c.statut === TAB_STATUT[activeTab]
 				)
 	);

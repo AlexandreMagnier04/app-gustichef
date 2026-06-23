@@ -172,7 +172,7 @@
 				<form onsubmit={toStep2} class="flex flex-col gap-5">
 					<!-- Date + Heure côte à côte -->
 					<div>
-						<label class="mb-1.5 block text-sm font-medium text-navy">Date et heure</label>
+						<p class="mb-1.5 block text-sm font-medium text-navy">Date et heure</p>
 						<div class="flex gap-2">
 							<div class="flex-1">
 								<DatePicker
@@ -183,6 +183,7 @@
 								/>
 							</div>
 							<input
+								id="nreq-time"
 								type="time"
 								bind:value={time}
 								class="w-28 shrink-0 rounded-full border border-navy/20 bg-white px-3 py-2.5 text-sm text-navy outline-none focus:border-teal"
@@ -192,9 +193,10 @@
 
 					<!-- Convives -->
 					<div>
-						<label class="mb-1.5 block text-sm font-medium text-navy">Nombre de convives</label>
+						<label for="nreq-guests" class="mb-1.5 block text-sm font-medium text-navy">Nombre de convives</label>
 						<div class="relative">
 							<select
+								id="nreq-guests"
 								bind:value={guests}
 								required
 								class="w-full appearance-none rounded-full border border-navy/20 bg-white py-2.5 pr-10 pl-4 text-sm text-navy outline-none focus:border-teal"
@@ -221,7 +223,7 @@
 
 					<!-- Ville -->
 					<div>
-						<label class="mb-1.5 block text-sm font-medium text-navy">Choisissez votre ville</label>
+						<p class="mb-1.5 block text-sm font-medium text-navy">Choisissez votre ville</p>
 						{#if city}
 							<div
 								class="flex items-center gap-2 rounded-full border border-teal bg-white py-2.5 pr-3 pl-4"
@@ -258,9 +260,10 @@
 
 					<!-- Type d'événement -->
 					<div>
-						<label class="mb-1.5 block text-sm font-medium text-navy">Type d'événement</label>
+						<label for="nreq-event-type" class="mb-1.5 block text-sm font-medium text-navy">Type d'événement</label>
 						<div class="relative">
 							<select
+								id="nreq-event-type"
 								bind:value={eventType}
 								class="w-full appearance-none rounded-full border border-navy/20 bg-white py-2.5 pr-10 pl-4 text-sm text-navy outline-none focus:border-teal"
 							>
@@ -299,8 +302,9 @@
 				<form onsubmit={submit} class="flex flex-col gap-5">
 					<!-- Titre -->
 					<div>
-						<label class="mb-1.5 block text-sm font-medium text-navy">Titre d'événement</label>
+						<label for="nreq-title" class="mb-1.5 block text-sm font-medium text-navy">Titre d'événement</label>
 						<input
+							id="nreq-title"
 							type="text"
 							bind:value={title}
 							required
@@ -312,10 +316,11 @@
 
 					<!-- Description -->
 					<div>
-						<label class="mb-1.5 block text-sm font-medium text-navy"
+						<label for="nreq-description" class="mb-1.5 block text-sm font-medium text-navy"
 							>Décrivez votre événement</label
 						>
 						<textarea
+							id="nreq-description"
 							bind:value={description}
 							maxlength="2000"
 							rows="5"

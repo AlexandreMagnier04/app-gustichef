@@ -111,7 +111,10 @@
 
 <!-- Actions rapides - alignées à droite -->
 <div class="mb-5 flex flex-col items-end gap-1">
-	<a href="/customer-profile/edit" class="flex items-center gap-2 py-1.5 text-sm font-medium text-teal">
+	<a
+		href="/customer-profile/edit"
+		class="flex items-center gap-2 py-1.5 text-sm font-medium text-teal"
+	>
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
 			viewBox="0 0 16 16"
@@ -127,7 +130,10 @@
 		</svg>
 		Éditer profil
 	</a>
-	<a href="/customer-profile/settings" class="flex items-center gap-2 py-1.5 text-sm font-medium text-teal">
+	<a
+		href="/customer-profile/settings"
+		class="flex items-center gap-2 py-1.5 text-sm font-medium text-teal"
+	>
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
 			viewBox="0 0 20 20"
@@ -217,23 +223,55 @@
 						<!-- Header : photo chef | nom chef | badge -->
 						<div class="flex items-center gap-3 px-4 pt-4 pb-3">
 							{#if reservation.chief?.image}
-								<img src={reservation.chief.image} alt="" class="h-10 w-10 shrink-0 rounded-full object-cover" />
+								<img
+									src={reservation.chief.image}
+									alt=""
+									class="h-10 w-10 shrink-0 rounded-full object-cover"
+								/>
 							{:else}
-								<div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-navy/10 text-sm font-bold text-navy/50">
+								<div
+									class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-navy/10 text-sm font-bold text-navy/50"
+								>
 									{(reservation.chief?.firstname?.[0] ?? '?').toUpperCase()}
 								</div>
 							{/if}
 							<div class="min-w-0 flex-1">
-								<a href="/reservations/{reservation.id_reservation}" class="flex items-center gap-1 text-[13px] font-semibold text-navy">
-									<span class="truncate">{reservation.chief?.firstname} {reservation.chief?.name}</span>
-									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3.5 w-3.5 shrink-0 text-navy/40"><path fill-rule="evenodd" d="M6.22 4.22a.75.75 0 0 1 1.06 0l3.25 3.25a.75.75 0 0 1 0 1.06l-3.25 3.25a.75.75 0 0 1-1.06-1.06L8.94 8 6.22 5.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd"/></svg>
+								<a
+									href="/reservations/{reservation.id_reservation}"
+									class="flex items-center gap-1 text-[13px] font-semibold text-navy"
+								>
+									<span class="truncate"
+										>{reservation.chief?.firstname} {reservation.chief?.name}</span
+									>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 16 16"
+										fill="currentColor"
+										class="h-3.5 w-3.5 shrink-0 text-navy/40"
+										><path
+											fill-rule="evenodd"
+											d="M6.22 4.22a.75.75 0 0 1 1.06 0l3.25 3.25a.75.75 0 0 1 0 1.06l-3.25 3.25a.75.75 0 0 1-1.06-1.06L8.94 8 6.22 5.28a.75.75 0 0 1 0-1.06Z"
+											clip-rule="evenodd"
+										/></svg
+									>
 								</a>
 								{#if reservation.menu_title}
 									<p class="text-[11px] text-navy/50">{reservation.menu_title}</p>
 								{/if}
 							</div>
-							<span class="shrink-0 rounded-full px-2.5 py-1 text-[10px] font-semibold {reservation.statut === 'confirme' ? 'bg-green-500/15 text-green-600' : reservation.statut === 'annule' ? 'bg-navy/8 text-navy/40' : 'bg-rust/10 text-rust'}">
-								{reservation.statut === 'confirme' ? 'Confirmé' : reservation.statut === 'annule' ? 'Annulée' : 'En attente'}
+							<span
+								class="shrink-0 rounded-full px-2.5 py-1 text-[10px] font-semibold {reservation.statut ===
+								'confirme'
+									? 'bg-green-500/15 text-green-600'
+									: reservation.statut === 'annule'
+										? 'bg-navy/8 text-navy/40'
+										: 'bg-rust/10 text-rust'}"
+							>
+								{reservation.statut === 'confirme'
+									? 'Confirmé'
+									: reservation.statut === 'annule'
+										? 'Annulée'
+										: 'En attente'}
 							</span>
 						</div>
 
@@ -242,33 +280,77 @@
 						<!-- Infos : date | heure | lieu | convives -->
 						<div class="grid grid-cols-2 gap-x-4 gap-y-2.5 px-4 py-3">
 							<div class="flex items-center gap-2 text-[12px] text-navy/70">
-								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3.5 w-3.5 shrink-0 text-navy/35"><path fill-rule="evenodd" d="M4 1.75a.75.75 0 0 1 1.5 0V3h5V1.75a.75.75 0 0 1 1.5 0V3h.25A2.75 2.75 0 0 1 15 5.75v7.5A2.75 2.75 0 0 1 12.25 16H3.75A2.75 2.75 0 0 1 1 13.25v-7.5A2.75 2.75 0 0 1 3.75 3H4V1.75ZM3.75 6a.75.75 0 0 0-.75.75v5.5c0 .414.336.75.75.75h8.5a.75.75 0 0 0 .75-.75v-5.5a.75.75 0 0 0-.75-.75H3.75Z" clip-rule="evenodd"/></svg>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 0 16 16"
+									fill="currentColor"
+									class="h-3.5 w-3.5 shrink-0 text-navy/35"
+									><path
+										fill-rule="evenodd"
+										d="M4 1.75a.75.75 0 0 1 1.5 0V3h5V1.75a.75.75 0 0 1 1.5 0V3h.25A2.75 2.75 0 0 1 15 5.75v7.5A2.75 2.75 0 0 1 12.25 16H3.75A2.75 2.75 0 0 1 1 13.25v-7.5A2.75 2.75 0 0 1 3.75 3H4V1.75ZM3.75 6a.75.75 0 0 0-.75.75v5.5c0 .414.336.75.75.75h8.5a.75.75 0 0 0 .75-.75v-5.5a.75.75 0 0 0-.75-.75H3.75Z"
+										clip-rule="evenodd"
+									/></svg
+								>
 								<span class="capitalize">{formatDate(reservation.event_date)}</span>
 							</div>
 							{#if reservation.event_time}
 								<div class="flex items-center gap-2 text-[12px] text-navy/70">
-									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3.5 w-3.5 shrink-0 text-navy/35"><path fill-rule="evenodd" d="M1 8a7 7 0 1 1 14 0A7 7 0 0 1 1 8Zm7-4.75a.75.75 0 0 0-.75.75v4.5a.75.75 0 0 0 1.5 0V4a.75.75 0 0 0-.75-.75ZM8 10a1 1 0 1 0 0 2 1 1 0 0 0 0-2Z" clip-rule="evenodd"/></svg>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 16 16"
+										fill="currentColor"
+										class="h-3.5 w-3.5 shrink-0 text-navy/35"
+										><path
+											fill-rule="evenodd"
+											d="M1 8a7 7 0 1 1 14 0A7 7 0 0 1 1 8Zm7-4.75a.75.75 0 0 0-.75.75v4.5a.75.75 0 0 0 1.5 0V4a.75.75 0 0 0-.75-.75ZM8 10a1 1 0 1 0 0 2 1 1 0 0 0 0-2Z"
+											clip-rule="evenodd"
+										/></svg
+									>
 									<span>{reservation.event_time}</span>
 								</div>
 							{/if}
 							{#if reservation.localization}
 								<div class="flex items-center gap-2 text-[12px] text-navy/70">
-									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3.5 w-3.5 shrink-0 text-navy/35"><path fill-rule="evenodd" d="m7.539 14.841.003.003.002.002a.755.755 0 0 0 .912 0l.002-.002.003-.003.012-.009a5.57 5.57 0 0 0 .19-.153 15.588 15.588 0 0 0 2.046-2.082c1.101-1.362 2.291-3.342 2.291-5.597A5 5 0 0 0 3 8c0 2.255 1.19 4.235 2.292 5.597a15.591 15.591 0 0 0 2.046 2.082 8.916 8.916 0 0 0 .189.153l.012.01ZM8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" clip-rule="evenodd"/></svg>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 16 16"
+										fill="currentColor"
+										class="h-3.5 w-3.5 shrink-0 text-navy/35"
+										><path
+											fill-rule="evenodd"
+											d="m7.539 14.841.003.003.002.002a.755.755 0 0 0 .912 0l.002-.002.003-.003.012-.009a5.57 5.57 0 0 0 .19-.153 15.588 15.588 0 0 0 2.046-2.082c1.101-1.362 2.291-3.342 2.291-5.597A5 5 0 0 0 3 8c0 2.255 1.19 4.235 2.292 5.597a15.591 15.591 0 0 0 2.046 2.082 8.916 8.916 0 0 0 .189.153l.012.01ZM8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"
+											clip-rule="evenodd"
+										/></svg
+									>
 									<span>{reservation.localization}</span>
 								</div>
 							{/if}
 							<div class="flex items-center gap-2 text-[12px] text-navy/70">
-								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3.5 w-3.5 shrink-0 text-navy/35"><path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z"/></svg>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 0 16 16"
+									fill="currentColor"
+									class="h-3.5 w-3.5 shrink-0 text-navy/35"
+									><path
+										d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z"
+									/></svg
+								>
 								<span>{reservation.guests} convive{reservation.guests > 1 ? 's' : ''}</span>
 							</div>
 						</div>
 
 						<!-- Actions -->
 						<div class="flex items-center justify-between border-t border-navy/6 px-4 py-3">
-							<a href="/reservations/{reservation.id_reservation}" class="text-xs font-medium text-navy/50">
+							<a
+								href="/reservations/{reservation.id_reservation}"
+								class="text-xs font-medium text-navy/50"
+							>
 								Voir les détails
 							</a>
-							<a href="/messages/{reservation.id_conversation}" class="rounded-xl bg-teal px-4 py-2 text-xs font-semibold text-white">
+							<a
+								href="/messages/{reservation.id_conversation}"
+								class="rounded-xl bg-teal px-4 py-2 text-xs font-semibold text-white"
+							>
 								Contacter
 							</a>
 						</div>

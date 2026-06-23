@@ -30,7 +30,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		const check = validateImageFile(avatarFile);
 		if (!check.ok) return json({ error: check.error }, { status: 400 });
 		const buffer = Buffer.from(await avatarFile.arrayBuffer());
-		const { url } = await uploadFile(`avatars/${user.id}`, { buffer, mimeType: avatarFile.type, originalName: avatarFile.name });
+		const { url } = await uploadFile(`avatars/${user.id}`, {
+			buffer,
+			mimeType: avatarFile.type,
+			originalName: avatarFile.name
+		});
 		userUpdate.image = url;
 	}
 
@@ -46,7 +50,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			const check = validateImageFile(bannerFile);
 			if (!check.ok) return json({ error: check.error }, { status: 400 });
 			const buffer = Buffer.from(await bannerFile.arrayBuffer());
-			const { url } = await uploadFile(`banners/${user.id}`, { buffer, mimeType: bannerFile.type, originalName: bannerFile.name });
+			const { url } = await uploadFile(`banners/${user.id}`, {
+				buffer,
+				mimeType: bannerFile.type,
+				originalName: bannerFile.name
+			});
 			chiefUpdate.banner_chief = url;
 		}
 
@@ -55,7 +63,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		}
 
 		if (specialties !== null) {
-			const specialtyNames = specialties.split(',').map((s) => s.trim()).filter(Boolean).slice(0, 3);
+			const specialtyNames = specialties
+				.split(',')
+				.map((s) => s.trim())
+				.filter(Boolean)
+				.slice(0, 3);
 			await setupChiefProfile(user.id, { bio: bio ?? undefined, specialtyNames });
 		}
 	}

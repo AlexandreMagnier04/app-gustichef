@@ -1,4 +1,4 @@
-import { betterAuth } from 'better-auth';
+﻿import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { sveltekitCookies } from 'better-auth/svelte-kit';
 import { env } from '$env/dynamic/private';
@@ -13,8 +13,8 @@ export const auth = betterAuth({
 	emailAndPassword: {
 		enabled: true,
 		requireEmailVerification: true,
-		sendVerificationEmail: async ({ user, url }) => {
-			const isChief = (user as { role?: string }).role === 'chief';
+		sendVerificationEmail: async ({ user, url }: { user: { email: string; name: string; role?: string; firstname?: string }; url: string }) => {
+			const isChief = user.role === 'chief';
 			await sendMail({
 				to: user.email,
 				subject: isChief
@@ -31,16 +31,18 @@ export const auth = betterAuth({
         </td></tr>
         <tr><td style="padding:32px">
           <h2 style="margin:0 0 8px;color:#163040;font-size:17px">
-            ${isChief ? `Bienvenue, ${(user as { firstname?: string }).firstname ?? user.name} !` : 'Confirmez votre adresse email'}
+            ${isChief ? `Bienvenue, ${user.firstname ?? user.name} !` : 'Confirmez votre adresse email'}
           </h2>
           <p style="margin:0 0 20px;color:#555;font-size:14px;line-height:1.6">
-            ${isChief
-				? `Votre inscription en tant que chef est bien enregistrée.<br>Cliquez sur le bouton ci-dessous pour confirmer votre adresse email et accéder à l'application.`
-				: `Cliquez sur le bouton ci-dessous pour confirmer votre adresse email et finaliser votre inscription.`}
+            ${
+							isChief
+								? `Votre inscription en tant que chef est bien enregistrée.<br>Cliquez sur le bouton ci-dessous pour confirmer votre adresse email et accéder à l'application.`
+								: `Cliquez sur le bouton ci-dessous pour confirmer votre adresse email et finaliser votre inscription.`
+						}
           </p>
           <a href="${url}"
              style="display:inline-block;background:#B85C38;color:#fff;text-decoration:none;padding:13px 28px;border-radius:50px;font-size:14px;font-weight:600">
-            ${isChief ? 'Accéder à l\'application' : 'Confirmer mon email'}
+            ${isChief ? "Accéder à l'application" : 'Confirmer mon email'}
           </a>
           <p style="margin:24px 0 0;color:#999;font-size:12px">
             Ce lien expire dans <strong>24 heures</strong>.

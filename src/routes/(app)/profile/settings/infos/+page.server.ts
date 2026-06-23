@@ -7,10 +7,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 	const user = requireUser(locals);
 
 	if (user.role === 'chief') {
-		const [profile, specialties] = await Promise.all([
-			getChiefById(user.id),
-			getSpecialties()
-		]);
+		const [profile, specialties] = await Promise.all([getChiefById(user.id), getSpecialties()]);
 		return { user, profile, specialties, customer: null };
 	}
 

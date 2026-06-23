@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { onMount } from 'svelte';
+	import { onMount, untrack } from 'svelte';
 	import { loadStripe } from '@stripe/stripe-js';
 	import { env } from '$env/dynamic/public';
 	const PUBLIC_STRIPE_KEY = env.PUBLIC_STRIPE_KEY ?? '';
@@ -23,7 +23,8 @@
 			.find((m: MessageItem) => m.type === 'menu_proposal' || m.type === 'payment_invitation')
 	);
 
-	let guests = $state(conv.request_guests ?? 2);
+	const initialGuests = untrack(() => data.conv.request_guests ?? 2);
+	let guests = $state(initialGuests);
 	const eventTime = $derived(conv.request_time ?? '');
 	let notes = $state('');
 	let extrasQty = $state<Record<number, number>>({});
@@ -389,7 +390,7 @@
 
 				<!-- Widget Stripe -->
 				<div>
-					<label class="mb-1 block text-[12px] font-medium text-navy/60">Carte bancaire</label>
+					<p class="mb-1 block text-[12px] font-medium text-navy/60">Carte bancaire</p>
 					<div
 						id="stripe-card-element"
 						class="rounded-xl border border-navy/15 bg-white px-3 py-3.5"

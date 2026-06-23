@@ -2,7 +2,6 @@
 	import { enhance } from '$app/forms';
 	import OnboardingDots from './OnboardingDots.svelte';
 	import slide1 from '$lib/assets/img/slide-1.jpeg';
-	import logoGusti2 from '$lib/assets/img/logo-gusti2.png';
 	import gustichefEcriture from '$lib/assets/img/gustichef-ecriture-verte-2.png';
 	import toque from '$lib/assets/img/toque.png';
 

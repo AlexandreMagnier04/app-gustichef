@@ -15,9 +15,10 @@
 		const result = await signIn.email({ email, password, callbackURL: '/home' });
 		if (result.error) {
 			const msg = result.error.message ?? '';
-			error = msg === 'Email not verified'
-				? 'Veuillez confirmer votre adresse email avant de vous connecter. Vérifiez votre boîte mail.'
-				: 'Email ou mot de passe incorrect';
+			error =
+				msg === 'Email not verified'
+					? 'Veuillez confirmer votre adresse email avant de vous connecter. Vérifiez votre boîte mail.'
+					: 'Email ou mot de passe incorrect';
 			loading = false;
 		}
 	}
@@ -56,8 +57,9 @@
 
 			<form onsubmit={handleLogin} class="flex flex-col gap-3">
 				<div class="flex flex-col gap-1">
-					<label class="text-xs font-medium text-navy/70">Adresse mail</label>
+					<label for="login-email" class="text-xs font-medium text-navy/70">Adresse mail</label>
 					<input
+						id="login-email"
 						type="email"
 						bind:value={email}
 						placeholder="ton adresse mail"
@@ -67,8 +69,9 @@
 				</div>
 
 				<div class="flex flex-col gap-1">
-					<label class="text-xs font-medium text-navy/70">Mot de passe</label>
+					<label for="login-password" class="text-xs font-medium text-navy/70">Mot de passe</label>
 					<input
+						id="login-password"
 						type="password"
 						bind:value={password}
 						placeholder="••••••••"

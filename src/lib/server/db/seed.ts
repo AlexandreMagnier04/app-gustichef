@@ -34,7 +34,7 @@ const CHEFS = [
 		name: 'Dupont',
 		email: 'antoine.dupont@gustichef.com',
 		localization: 'Lyon',
-		bio: 'Chef passionné par la gastronomie française traditionnelle. 15 ans d\'expérience en restaurant étoilé.',
+		bio: "Chef passionné par la gastronomie française traditionnelle. 15 ans d'expérience en restaurant étoilé.",
 		note: '4.8',
 		specialties: ['Cuisine française', 'Pâtisserie'],
 		menus: [
@@ -201,7 +201,9 @@ async function seed() {
 		.onConflictDoNothing()
 		.returning();
 
-	const specialtyMap = new Map(insertedSpecialties.map((s) => [s.name_speciality, s.id_speciality]));
+	const specialtyMap = new Map(
+		insertedSpecialties.map((s) => [s.name_speciality, s.id_speciality])
+	);
 
 	// Chefs
 	console.log('Seeding chefs...');

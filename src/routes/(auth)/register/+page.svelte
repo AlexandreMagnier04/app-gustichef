@@ -54,8 +54,9 @@
 
 	<form onsubmit={handleRegister} class="flex w-full flex-col gap-4">
 		<div class="flex flex-col gap-1">
-			<label class="text-xs font-medium text-navy/70">Prénom</label>
+			<label for="reg-firstname" class="text-xs font-medium text-navy/70">Prénom</label>
 			<input
+				id="reg-firstname"
 				type="text"
 				bind:value={firstname}
 				placeholder="ex : Marie"
@@ -66,8 +67,9 @@
 		</div>
 
 		<div class="flex flex-col gap-1">
-			<label class="text-xs font-medium text-navy/70">Nom</label>
+			<label for="reg-lastname" class="text-xs font-medium text-navy/70">Nom</label>
 			<input
+				id="reg-lastname"
 				type="text"
 				bind:value={name}
 				placeholder="ex : Dupont"
@@ -78,8 +80,9 @@
 		</div>
 
 		<div class="flex flex-col gap-1">
-			<label class="text-xs font-medium text-navy/70">Adresse mail</label>
+			<label for="reg-email" class="text-xs font-medium text-navy/70">Adresse mail</label>
 			<input
+				id="reg-email"
 				type="email"
 				bind:value={email}
 				placeholder="votre adresse mail"
@@ -90,8 +93,9 @@
 		</div>
 
 		<div class="flex flex-col gap-1">
-			<label class="text-xs font-medium text-navy/70">Ville</label>
+			<label for="reg-city" class="text-xs font-medium text-navy/70">Ville</label>
 			<input
+				id="reg-city"
 				type="text"
 				bind:value={localization}
 				placeholder="votre ville"
@@ -102,8 +106,9 @@
 		</div>
 
 		<div class="flex flex-col gap-1">
-			<label class="text-xs font-medium text-navy/70">Mot de passe</label>
+			<label for="reg-password" class="text-xs font-medium text-navy/70">Mot de passe</label>
 			<input
+				id="reg-password"
 				type="password"
 				bind:value={password}
 				placeholder="••••••••"
@@ -114,8 +119,9 @@
 		</div>
 
 		<div class="flex flex-col gap-1">
-			<label class="text-xs font-medium text-navy/70">Confirmation</label>
+			<label for="reg-confirm" class="text-xs font-medium text-navy/70">Confirmation</label>
 			<input
+				id="reg-confirm"
 				type="password"
 				bind:value={confirmPassword}
 				placeholder="••••••••"

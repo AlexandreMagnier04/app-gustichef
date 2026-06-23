@@ -156,6 +156,7 @@
 				<h2 class="text-base font-semibold text-navy">Modifier ce plat</h2>
 				<button
 					onclick={close}
+					aria-label="Fermer"
 					class="flex h-7 w-7 items-center justify-center rounded-full bg-navy/8 text-navy/60"
 				>
 					<svg
@@ -219,8 +220,9 @@
 
 				<!-- Nom -->
 				<div class="mb-4">
-					<label class="mb-1.5 block text-sm font-medium text-navy">Nom du plat</label>
+					<label for="emenu-title" class="mb-1.5 block text-sm font-medium text-navy">Nom du plat</label>
 					<input
+						id="emenu-title"
 						type="text"
 						bind:value={title}
 						class="w-full rounded-xl border border-navy/15 bg-white px-4 py-3 text-sm text-navy outline-none focus:border-rust/40"
@@ -230,8 +232,9 @@
 
 				<!-- Description -->
 				<div class="mb-4">
-					<label class="mb-1.5 block text-sm font-medium text-navy">Description</label>
+					<label for="emenu-description" class="mb-1.5 block text-sm font-medium text-navy">Description</label>
 					<textarea
+						id="emenu-description"
 						bind:value={description}
 						rows="3"
 						class="w-full resize-none rounded-xl border border-navy/15 bg-white px-4 py-3 text-sm text-navy outline-none focus:border-rust/40"
@@ -241,9 +244,10 @@
 
 				<!-- Prix -->
 				<div class="mb-4">
-					<label class="mb-1.5 block text-sm font-medium text-navy">Prix / convive</label>
+					<label for="emenu-price" class="mb-1.5 block text-sm font-medium text-navy">Prix / convive</label>
 					<div class="relative">
 						<input
+							id="emenu-price"
 							type="number"
 							step="0.01"
 							min="0"
@@ -258,8 +262,9 @@
 				<!-- Convives -->
 				<div class="mb-4 flex gap-3">
 					<div class="flex-1">
-						<label class="mb-1.5 block text-sm font-medium text-navy">Convives min</label>
+						<label for="emenu-guests-min" class="mb-1.5 block text-sm font-medium text-navy">Convives min</label>
 						<input
+							id="emenu-guests-min"
 							type="number"
 							min="1"
 							bind:value={guestsMin}
@@ -267,8 +272,9 @@
 						/>
 					</div>
 					<div class="flex-1">
-						<label class="mb-1.5 block text-sm font-medium text-navy">Convives max</label>
+						<label for="emenu-guests-max" class="mb-1.5 block text-sm font-medium text-navy">Convives max</label>
 						<input
+							id="emenu-guests-max"
 							type="number"
 							min="1"
 							bind:value={guestsMax}
@@ -279,9 +285,10 @@
 
 				<!-- Ingrédients -->
 				<div class="mb-5">
-					<label class="mb-1.5 block text-sm font-medium text-navy">Ingrédients</label>
+					<label for="emenu-ingredient" class="mb-1.5 block text-sm font-medium text-navy">Ingrédients</label>
 					<div class="flex gap-2">
 						<input
+							id="emenu-ingredient"
 							type="text"
 							placeholder="Ajouter un ingrédient..."
 							bind:value={ingredientInput}
@@ -291,6 +298,7 @@
 						<button
 							type="button"
 							onclick={addIngredient}
+							aria-label="Ajouter l'ingrédient"
 							class="flex h-10 w-10 items-center justify-center rounded-xl bg-rust text-white"
 						>
 							<svg
@@ -314,6 +322,7 @@
 									{ing}
 									<button
 										onclick={() => removeIngredient(ing)}
+										aria-label="Retirer {ing}"
 										class="ml-0.5 text-navy/40 hover:text-navy"
 									>
 										<svg

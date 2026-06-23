@@ -250,7 +250,7 @@ export async function getConversationOwned(
 	id: number,
 	userId: string,
 	role: 'chief' | 'customer'
-): Promise<(typeof conversations.$inferSelect) | null> {
+): Promise<typeof conversations.$inferSelect | null> {
 	const condition =
 		role === 'chief'
 			? and(eq(conversations.id_conversation, id), eq(conversations.id_chief, userId))
@@ -263,7 +263,7 @@ export async function getConversationOwned(
 export async function getLatestProposalInConversation(
 	convId: number,
 	types: string[]
-): Promise<(typeof messages.$inferSelect) | null> {
+): Promise<typeof messages.$inferSelect | null> {
 	const [msg] = await db
 		.select()
 		.from(messages)

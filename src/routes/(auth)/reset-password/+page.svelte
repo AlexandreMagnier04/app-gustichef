@@ -50,8 +50,9 @@
 
 			<form onsubmit={handleReset} class="flex flex-col gap-4">
 				<div class="flex flex-col gap-1">
-					<label class="text-xs font-medium text-navy/70">Nouveau mot de passe</label>
+					<label for="reset-password" class="text-xs font-medium text-navy/70">Nouveau mot de passe</label>
 					<input
+						id="reset-password"
 						type="password"
 						bind:value={newPassword}
 						placeholder="••••••••"
@@ -61,8 +62,9 @@
 				</div>
 
 				<div class="flex flex-col gap-1">
-					<label class="text-xs font-medium text-navy/70">Confirmer le mot de passe</label>
+					<label for="reset-confirm" class="text-xs font-medium text-navy/70">Confirmer le mot de passe</label>
 					<input
+						id="reset-confirm"
 						type="password"
 						bind:value={confirmPassword}
 						placeholder="••••••••"

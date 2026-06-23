@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import type { PageData } from './$types';
 	import type { Menu } from '$lib/models/chief.model';
 	import NewMenuModal from '$lib/components/NewMenuModal.svelte';
@@ -32,7 +33,8 @@
 	let activeTab = $state<Tab>('galerie');
 	let menuTypeFilter = $state<MenuTypeFilter>('plat');
 
-	let menus = $state(data.menus);
+	const initialMenus = untrack(() => data.menus);
+	let menus = $state(initialMenus);
 	const filteredMenus = $derived(menus.filter((m) => m.type_menu === menuTypeFilter));
 
 	// Modaux
@@ -131,6 +133,7 @@
 			{/if}
 			<a
 				href="/profile/edit"
+				aria-label="Modifier le profil"
 				class="absolute right-0 bottom-0 flex h-7 w-7 items-center justify-center rounded-full bg-rust shadow-md ring-2 ring-cream"
 			>
 				<svg
@@ -380,7 +383,9 @@
 			{:else}
 				<div class="flex flex-col gap-4">
 					{#each filteredMenus as menu, i (menu.id_menu)}
-						<div class="overflow-hidden rounded-2xl bg-white shadow-[0_2px_12px_rgba(5,30,35,0.08)]">
+						<div
+							class="overflow-hidden rounded-2xl bg-white shadow-[0_2px_12px_rgba(5,30,35,0.08)]"
+						>
 							<!-- Image propre -->
 							<div class="h-36 overflow-hidden">
 								{#if menu.image_url}
@@ -409,9 +414,18 @@
 										onclick={() => openEdit(menu)}
 										class="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-teal py-2.5 text-xs font-semibold text-white"
 									>
-										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3.5 w-3.5">
-											<path d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.263a1.75 1.75 0 0 0 0-2.474Z" />
-											<path d="M4.75 3.5A2.25 2.25 0 0 0 2.5 5.75v5.5A2.25 2.25 0 0 0 4.75 13.5h5.5A2.25 2.25 0 0 0 12.5 11.25V9a.75.75 0 0 0-1.5 0v2.25a.75.75 0 0 1-.75.75h-5.5a.75.75 0 0 1-.75-.75v-5.5a.75.75 0 0 1 .75-.75H7A.75.75 0 0 0 7 2H4.75Z" />
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											viewBox="0 0 16 16"
+											fill="currentColor"
+											class="h-3.5 w-3.5"
+										>
+											<path
+												d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.263a1.75 1.75 0 0 0 0-2.474Z"
+											/>
+											<path
+												d="M4.75 3.5A2.25 2.25 0 0 0 2.5 5.75v5.5A2.25 2.25 0 0 0 4.75 13.5h5.5A2.25 2.25 0 0 0 12.5 11.25V9a.75.75 0 0 0-1.5 0v2.25a.75.75 0 0 1-.75.75h-5.5a.75.75 0 0 1-.75-.75v-5.5a.75.75 0 0 1 .75-.75H7A.75.75 0 0 0 7 2H4.75Z"
+											/>
 										</svg>
 										Éditer
 									</button>
@@ -433,21 +447,54 @@
 							<!-- Header : photo client | titre événement | badge -->
 							<div class="flex items-center gap-3 px-4 pt-4 pb-3">
 								{#if res.customer?.image}
-									<img src={res.customer.image} alt="" class="h-10 w-10 shrink-0 rounded-full object-cover" />
+									<img
+										src={res.customer.image}
+										alt=""
+										class="h-10 w-10 shrink-0 rounded-full object-cover"
+									/>
 								{:else}
-									<div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-navy/10 text-sm font-bold text-navy/50">
+									<div
+										class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-navy/10 text-sm font-bold text-navy/50"
+									>
 										{(res.customer?.firstname?.[0] ?? '?').toUpperCase()}
 									</div>
 								{/if}
 								<div class="min-w-0 flex-1">
-									<a href="/reservations/{res.id_reservation}" class="flex items-center gap-1 text-[13px] font-semibold text-navy">
+									<a
+										href="/reservations/{res.id_reservation}"
+										class="flex items-center gap-1 text-[13px] font-semibold text-navy"
+									>
 										<span class="truncate">{res.title}</span>
-										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3.5 w-3.5 shrink-0 text-navy/40"><path fill-rule="evenodd" d="M6.22 4.22a.75.75 0 0 1 1.06 0l3.25 3.25a.75.75 0 0 1 0 1.06l-3.25 3.25a.75.75 0 0 1-1.06-1.06L8.94 8 6.22 5.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd"/></svg>
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											viewBox="0 0 16 16"
+											fill="currentColor"
+											class="h-3.5 w-3.5 shrink-0 text-navy/40"
+											><path
+												fill-rule="evenodd"
+												d="M6.22 4.22a.75.75 0 0 1 1.06 0l3.25 3.25a.75.75 0 0 1 0 1.06l-3.25 3.25a.75.75 0 0 1-1.06-1.06L8.94 8 6.22 5.28a.75.75 0 0 1 0-1.06Z"
+												clip-rule="evenodd"
+											/></svg
+										>
 									</a>
-									<p class="text-[11px] text-navy/50">{res.customer?.firstname} {res.customer?.name}</p>
+									<p class="text-[11px] text-navy/50">
+										{res.customer?.firstname}
+										{res.customer?.name}
+									</p>
 								</div>
-								<span class="shrink-0 rounded-full px-2.5 py-1 text-[10px] font-semibold {res.statut === 'confirme' ? 'bg-green-500/15 text-green-600' : res.statut === 'annule' ? 'bg-navy/8 text-navy/40' : 'bg-rust/10 text-rust'}">
-									{res.statut === 'confirme' ? 'Confirmée' : res.statut === 'annule' ? 'Annulée' : 'En attente'}
+								<span
+									class="shrink-0 rounded-full px-2.5 py-1 text-[10px] font-semibold {res.statut ===
+									'confirme'
+										? 'bg-green-500/15 text-green-600'
+										: res.statut === 'annule'
+											? 'bg-navy/8 text-navy/40'
+											: 'bg-rust/10 text-rust'}"
+								>
+									{res.statut === 'confirme'
+										? 'Confirmée'
+										: res.statut === 'annule'
+											? 'Annulée'
+											: 'En attente'}
 								</span>
 							</div>
 
@@ -456,33 +503,77 @@
 							<!-- Infos : date | heure | lieu | convives -->
 							<div class="grid grid-cols-2 gap-x-4 gap-y-2.5 px-4 py-3">
 								<div class="flex items-center gap-2 text-[12px] text-navy/70">
-									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3.5 w-3.5 shrink-0 text-navy/35"><path fill-rule="evenodd" d="M4 1.75a.75.75 0 0 1 1.5 0V3h5V1.75a.75.75 0 0 1 1.5 0V3h.25A2.75 2.75 0 0 1 15 5.75v7.5A2.75 2.75 0 0 1 12.25 16H3.75A2.75 2.75 0 0 1 1 13.25v-7.5A2.75 2.75 0 0 1 3.75 3H4V1.75ZM3.75 6a.75.75 0 0 0-.75.75v5.5c0 .414.336.75.75.75h8.5a.75.75 0 0 0 .75-.75v-5.5a.75.75 0 0 0-.75-.75H3.75Z" clip-rule="evenodd"/></svg>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 16 16"
+										fill="currentColor"
+										class="h-3.5 w-3.5 shrink-0 text-navy/35"
+										><path
+											fill-rule="evenodd"
+											d="M4 1.75a.75.75 0 0 1 1.5 0V3h5V1.75a.75.75 0 0 1 1.5 0V3h.25A2.75 2.75 0 0 1 15 5.75v7.5A2.75 2.75 0 0 1 12.25 16H3.75A2.75 2.75 0 0 1 1 13.25v-7.5A2.75 2.75 0 0 1 3.75 3H4V1.75ZM3.75 6a.75.75 0 0 0-.75.75v5.5c0 .414.336.75.75.75h8.5a.75.75 0 0 0 .75-.75v-5.5a.75.75 0 0 0-.75-.75H3.75Z"
+											clip-rule="evenodd"
+										/></svg
+									>
 									<span class="capitalize">{formatDate(res.event_date)}</span>
 								</div>
 								{#if res.event_time}
 									<div class="flex items-center gap-2 text-[12px] text-navy/70">
-										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3.5 w-3.5 shrink-0 text-navy/35"><path fill-rule="evenodd" d="M1 8a7 7 0 1 1 14 0A7 7 0 0 1 1 8Zm7-4.75a.75.75 0 0 0-.75.75v4.5a.75.75 0 0 0 1.5 0V4a.75.75 0 0 0-.75-.75ZM8 10a1 1 0 1 0 0 2 1 1 0 0 0 0-2Z" clip-rule="evenodd"/></svg>
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											viewBox="0 0 16 16"
+											fill="currentColor"
+											class="h-3.5 w-3.5 shrink-0 text-navy/35"
+											><path
+												fill-rule="evenodd"
+												d="M1 8a7 7 0 1 1 14 0A7 7 0 0 1 1 8Zm7-4.75a.75.75 0 0 0-.75.75v4.5a.75.75 0 0 0 1.5 0V4a.75.75 0 0 0-.75-.75ZM8 10a1 1 0 1 0 0 2 1 1 0 0 0 0-2Z"
+												clip-rule="evenodd"
+											/></svg
+										>
 										<span>{res.event_time}</span>
 									</div>
 								{/if}
 								{#if res.localization}
 									<div class="flex items-center gap-2 text-[12px] text-navy/70">
-										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3.5 w-3.5 shrink-0 text-navy/35"><path fill-rule="evenodd" d="m7.539 14.841.003.003.002.002a.755.755 0 0 0 .912 0l.002-.002.003-.003.012-.009a5.57 5.57 0 0 0 .19-.153 15.588 15.588 0 0 0 2.046-2.082c1.101-1.362 2.291-3.342 2.291-5.597A5 5 0 0 0 3 8c0 2.255 1.19 4.235 2.292 5.597a15.591 15.591 0 0 0 2.046 2.082 8.916 8.916 0 0 0 .189.153l.012.01ZM8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" clip-rule="evenodd"/></svg>
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											viewBox="0 0 16 16"
+											fill="currentColor"
+											class="h-3.5 w-3.5 shrink-0 text-navy/35"
+											><path
+												fill-rule="evenodd"
+												d="m7.539 14.841.003.003.002.002a.755.755 0 0 0 .912 0l.002-.002.003-.003.012-.009a5.57 5.57 0 0 0 .19-.153 15.588 15.588 0 0 0 2.046-2.082c1.101-1.362 2.291-3.342 2.291-5.597A5 5 0 0 0 3 8c0 2.255 1.19 4.235 2.292 5.597a15.591 15.591 0 0 0 2.046 2.082 8.916 8.916 0 0 0 .189.153l.012.01ZM8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"
+												clip-rule="evenodd"
+											/></svg
+										>
 										<span>{res.localization}</span>
 									</div>
 								{/if}
 								<div class="flex items-center gap-2 text-[12px] text-navy/70">
-									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3.5 w-3.5 shrink-0 text-navy/35"><path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z"/></svg>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 16 16"
+										fill="currentColor"
+										class="h-3.5 w-3.5 shrink-0 text-navy/35"
+										><path
+											d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z"
+										/></svg
+									>
 									<span>{res.guests} convive{res.guests > 1 ? 's' : ''}</span>
 								</div>
 							</div>
 
 							<!-- Actions -->
 							<div class="flex items-center justify-between border-t border-navy/6 px-4 py-3">
-								<a href="/reservations/{res.id_reservation}" class="text-xs font-medium text-navy/50">
+								<a
+									href="/reservations/{res.id_reservation}"
+									class="text-xs font-medium text-navy/50"
+								>
 									Voir les détails
 								</a>
-								<a href="/messages/{res.id_conversation}" class="rounded-xl bg-rust px-4 py-2 text-xs font-semibold text-white">
+								<a
+									href="/messages/{res.id_conversation}"
+									class="rounded-xl bg-rust px-4 py-2 text-xs font-semibold text-white"
+								>
 									Contacter
 								</a>
 							</div>
