@@ -5,7 +5,6 @@
 
 	let { data } = $props();
 	const r = $derived(data.reservation as ReservationDetail);
-	const reviewStats = $derived(data.reviewStats as { avg: number | null; count: number });
 	const menuImage = $derived(data.menuImage as string | null);
 	const isChief = $derived(data.user.id === r.id_chief);
 	let cancelling = $state(false);
@@ -94,12 +93,6 @@
 						</div>
 					{/if}
 				</div>
-				{#if reviewStats.avg != null}
-					<div class="flex flex-col items-center justify-center rounded-xl bg-navy px-3 py-2">
-						<span class="text-sm font-bold text-white">★ {reviewStats.avg.toFixed(1)}</span>
-						<span class="text-[10px] text-white/60">{reviewStats.count} avis</span>
-					</div>
-				{/if}
 			</a>
 		{/if}
 
@@ -238,10 +231,7 @@
 				href="/messages/{r.id_conversation}"
 				class="flex w-full items-center justify-center gap-2 rounded-2xl py-4 text-sm font-semibold text-white {isChief ? 'bg-rust' : 'bg-teal'}"
 			>
-				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4">
-					<path d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 0 0-1.5H6.617l-1.61-5.219 8.57 4.908a.75.75 0 0 0 .746-1.299L3.478 2.404Z" />
-					<path d="M3.478 21.596a.75.75 0 0 1-.926-.941l2.432-7.905H13.5a.75.75 0 0 1 0 1.5H6.617l-1.61 5.219 8.57-4.908a.75.75 0 0 1 .746 1.299L3.478 21.596Z" />
-				</svg>
+				<i class="fa-regular fa-paper-plane text-white"></i>
 				Contacter {isChief ? (r.customer?.firstname ?? 'le client') : (r.chief?.firstname ?? 'le chef')}
 			</a>
 		</div>

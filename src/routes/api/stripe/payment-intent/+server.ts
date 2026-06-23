@@ -1,9 +1,7 @@
 import { json, error } from '@sveltejs/kit';
 import Stripe from 'stripe';
-import { STRIPE_SECRET_KEY } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 import { requireUser } from '$lib/server/services/auth';
-
-const stripe = new Stripe(STRIPE_SECRET_KEY);
 
 export const POST = async ({ request, locals }) => {
 	const user = requireUser(locals);
@@ -12,6 +10,7 @@ export const POST = async ({ request, locals }) => {
 	const { amount } = await request.json();
 	if (!amount || amount < 50) throw error(400, 'Montant invalide');
 
+	const stripe = new Stripe(env.STRIPE_SECRET_KEY ?? '');
 	const paymentIntent = await stripe.paymentIntents.create({
 		amount: Math.round(amount),
 		currency: 'eur',

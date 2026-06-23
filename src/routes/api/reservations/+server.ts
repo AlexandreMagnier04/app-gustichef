@@ -1,17 +1,19 @@
 import { json, error } from '@sveltejs/kit';
-import { eq, and, desc, or, inArray } from 'drizzle-orm';
+import { desc } from 'drizzle-orm';
 import Stripe from 'stripe';
-import { STRIPE_SECRET_KEY } from '$env/static/private';
-import { requireUser } from '$lib/server/services/auth';
-import { addMessage, updateConversationStatut } from '$lib/server/services/messaging';
+import { env } from '$env/dynamic/private';
+import { requireUser, getUserInfo } from '$lib/server/services/auth';
+import {
+	getConversationOwned,
+	getLatestProposalInConversation,
+	addMessage,
+	updateConversationStatut
+} from '$lib/server/services/messaging';
 import { createReservation } from '$lib/server/services/reservations';
 import { createNotification } from '$lib/server/services/notifications';
-import { db } from '$lib/server/db';
-import { conversations, messages } from '$lib/server/db/schema/messaging';
-import { requests } from '$lib/server/db/schema/customers';
-import { users } from '$lib/server/db/schema/auth';
+import { getOpenRequestById } from '$lib/server/services/customers';
 
-const stripe = new Stripe(STRIPE_SECRET_KEY);
+const getStripe = () => new Stripe(env.STRIPE_SECRET_KEY ?? '');
 
 export const POST = async ({ request, locals }) => {
 	const user = requireUser(locals);
@@ -29,34 +31,19 @@ export const POST = async ({ request, locals }) => {
 
 	if (!conversationId || !stripeSetupIntentId) throw error(400, 'Données manquantes');
 
-	// Vérifier l'empreinte bancaire Stripe (bypass en mode simulation)
 	if (!stripeSetupIntentId.startsWith('simulated_')) {
-		const setupIntent = await stripe.setupIntents.retrieve(stripeSetupIntentId);
+		const setupIntent = await getStripe().setupIntents.retrieve(stripeSetupIntentId);
 		if (setupIntent.status !== 'succeeded') throw error(402, 'Empreinte bancaire non confirmée');
 	}
 
-	const [conv] = await db
-		.select()
-		.from(conversations)
-		.where(
-			and(eq(conversations.id_conversation, conversationId), eq(conversations.id_customer, user.id))
-		);
+	const conv = await getConversationOwned(conversationId, user.id, 'customer');
 	if (!conv) throw error(404, 'Conversation introuvable');
 
-	// Récupérer le menu depuis menu_proposal ou booking_request
-	const [proposal] = await db
-		.select()
-		.from(messages)
-		.where(
-			and(
-				eq(messages.id_conversation, conversationId),
-				inArray(messages.type, ['menu_proposal', 'booking_request'])
-			)
-		)
-		.orderBy(desc(messages.created_at))
-		.limit(1);
+	const proposal = await getLatestProposalInConversation(conversationId, [
+		'menu_proposal',
+		'booking_request'
+	]);
 
-	// Récupérer les données de la demande initiale
 	let reqData = {
 		title: 'Prestation',
 		guests: guests ?? 1,
@@ -64,7 +51,7 @@ export const POST = async ({ request, locals }) => {
 		localization: ''
 	};
 	if (conv.id_request) {
-		const [req] = await db.select().from(requests).where(eq(requests.id_request, conv.id_request));
+		const req = await getOpenRequestById(conv.id_request);
 		if (req)
 			reqData = {
 				title: req.title_request,
@@ -93,11 +80,7 @@ export const POST = async ({ request, locals }) => {
 	await updateConversationStatut(conversationId, 'confirme');
 	await addMessage(conversationId, user.id, 'Réservation confirmée ✓', 'system');
 
-	// Notifier le chef
-	const [customer] = await db
-		.select({ firstname: users.firstname, name: users.name })
-		.from(users)
-		.where(eq(users.id, user.id));
+	const customer = await getUserInfo(user.id);
 	const customerName = customer ? `${customer.firstname} ${customer.name}` : 'Le client';
 	await createNotification(
 		conv.id_chief,

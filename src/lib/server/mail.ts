@@ -1,7 +1,6 @@
 import nodemailer from 'nodemailer';
 import { env } from '$env/dynamic/private';
 
-// Transporter SMTP partagé (Brevo, Gmail, ou autre)
 function createTransporter() {
 	return nodemailer.createTransport({
 		host: env.SMTP_HOST,

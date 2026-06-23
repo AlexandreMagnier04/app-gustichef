@@ -2,7 +2,8 @@
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { loadStripe } from '@stripe/stripe-js';
-	import { PUBLIC_STRIPE_KEY } from '$env/static/public';
+	import { env } from '$env/dynamic/public';
+	const PUBLIC_STRIPE_KEY = env.PUBLIC_STRIPE_KEY ?? '';
 	import type { Stripe, StripeCardElement } from '@stripe/stripe-js';
 	import type { MessageItem } from '$lib/models/messaging.model';
 

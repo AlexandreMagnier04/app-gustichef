@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { replaceState } from '$app/navigation';
 	import { page } from '$app/state';
 	import portrait1 from '$lib/assets/img/portrait-1.jpeg';
 	import slide1 from '$lib/assets/img/slide-1.jpeg';
@@ -19,9 +20,16 @@
 
 	let { data } = $props();
 
-	let activeTab = $state<'decouvrir' | 'demandes'>(
-		page.url.searchParams.get('tab') === 'demandes' ? 'demandes' : 'decouvrir'
-	);
+	let activeTab = $state<'decouvrir' | 'demandes'>('decouvrir');
+
+	$effect(() => {
+		activeTab = page.url.searchParams.get('tab') === 'demandes' ? 'demandes' : 'decouvrir';
+	});
+
+	function setTab(tab: 'decouvrir' | 'demandes') {
+		activeTab = tab;
+		replaceState(tab === 'demandes' ? '?tab=demandes' : '?', {});
+	}
 	let showNewPublication = $state(false);
 	let showNewRequest = $state(false);
 	let editingRequest = $state<import('$lib/models/customer.model').Request | null>(null);
@@ -144,7 +152,7 @@
 				'decouvrir'
 					? 'text-navy'
 					: 'text-navy/40'}"
-				onclick={() => (activeTab = 'decouvrir')}
+				onclick={() => setTab('decouvrir')}
 			>
 				Découvrir
 				{#if activeTab === 'decouvrir'}
@@ -157,7 +165,7 @@
 				'demandes'
 					? 'text-navy'
 					: 'text-navy/40'}"
-				onclick={() => (activeTab = 'demandes')}
+				onclick={() => setTab('demandes')}
 			>
 				{isChief ? 'Demandes' : 'Mes demandes'}
 				{#if activeTab === 'demandes'}

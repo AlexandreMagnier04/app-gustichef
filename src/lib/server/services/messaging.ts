@@ -1,4 +1,4 @@
-import { eq, and, or, desc, ne } from 'drizzle-orm';
+import { eq, and, or, desc, ne, inArray } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { conversations, messages } from '$lib/server/db/schema/messaging';
 import { requests } from '$lib/server/db/schema/customers';
@@ -243,4 +243,49 @@ export async function addMessage(
 // Met à jour le statut d'une conversation (ex: devis_envoye → confirme / refuse)
 export async function updateConversationStatut(convId: number, statut: string): Promise<void> {
 	await db.update(conversations).set({ statut }).where(eq(conversations.id_conversation, convId));
+}
+
+// Retourne une conversation si elle appartient bien à l'utilisateur (selon son rôle)
+export async function getConversationOwned(
+	id: number,
+	userId: string,
+	role: 'chief' | 'customer'
+): Promise<(typeof conversations.$inferSelect) | null> {
+	const condition =
+		role === 'chief'
+			? and(eq(conversations.id_conversation, id), eq(conversations.id_chief, userId))
+			: and(eq(conversations.id_conversation, id), eq(conversations.id_customer, userId));
+	const [conv] = await db.select().from(conversations).where(condition);
+	return conv ?? null;
+}
+
+// Retourne le dernier message d'un type parmi une liste dans une conversation
+export async function getLatestProposalInConversation(
+	convId: number,
+	types: string[]
+): Promise<(typeof messages.$inferSelect) | null> {
+	const [msg] = await db
+		.select()
+		.from(messages)
+		.where(and(eq(messages.id_conversation, convId), inArray(messages.type, types)))
+		.orderBy(desc(messages.created_at))
+		.limit(1);
+	return msg ?? null;
+}
+
+// Insère un message d'invitation au paiement
+export async function addPaymentInvitation(
+	convId: number,
+	senderId: string,
+	pricePerPerson: number,
+	menuId: number | null
+): Promise<void> {
+	await db.insert(messages).values({
+		id_conversation: convId,
+		id_sender: senderId,
+		content_message: 'Votre prestation est prête ! Sécurisez votre réservation ci-dessous.',
+		type: 'payment_invitation',
+		id_menu: menuId ?? null,
+		price_per_person: pricePerPerson
+	});
 }

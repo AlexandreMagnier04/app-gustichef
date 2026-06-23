@@ -1,13 +1,14 @@
 import { json, error } from '@sveltejs/kit';
-import { eq, and, desc } from 'drizzle-orm';
-import { requireUser } from '$lib/server/services/auth';
-import { addMessage, updateConversationStatut } from '$lib/server/services/messaging';
+import { requireUser, getUserInfo } from '$lib/server/services/auth';
+import {
+	getConversationOwned,
+	getLatestProposalInConversation,
+	addMessage,
+	updateConversationStatut
+} from '$lib/server/services/messaging';
 import { createReservation } from '$lib/server/services/reservations';
 import { createNotification } from '$lib/server/services/notifications';
-import { db } from '$lib/server/db';
-import { conversations, messages } from '$lib/server/db/schema/messaging';
-import { requests } from '$lib/server/db/schema/customers';
-import { users } from '$lib/server/db/schema/auth';
+import { getOpenRequestById } from '$lib/server/services/customers';
 
 export const POST = async ({ params, locals }) => {
 	const user = requireUser(locals);
@@ -16,21 +17,11 @@ export const POST = async ({ params, locals }) => {
 	const id = Number(params.id);
 	if (isNaN(id)) throw error(400, 'ID invalide');
 
-	const [conv] = await db
-		.select()
-		.from(conversations)
-		.where(and(eq(conversations.id_conversation, id), eq(conversations.id_customer, user.id)));
+	const conv = await getConversationOwned(id, user.id, 'customer');
 	if (!conv) throw error(404, 'Conversation introuvable');
 
-	// Find the latest menu_proposal message
-	const [proposal] = await db
-		.select()
-		.from(messages)
-		.where(and(eq(messages.id_conversation, id), eq(messages.type, 'menu_proposal')))
-		.orderBy(desc(messages.created_at))
-		.limit(1);
+	const proposal = await getLatestProposalInConversation(id, ['menu_proposal']);
 
-	// Get request details for reservation
 	let reqData = {
 		title: 'Prestation',
 		guests: 1,
@@ -38,7 +29,7 @@ export const POST = async ({ params, locals }) => {
 		localization: ''
 	};
 	if (conv.id_request) {
-		const [req] = await db.select().from(requests).where(eq(requests.id_request, conv.id_request));
+		const req = await getOpenRequestById(conv.id_request);
 		if (req)
 			reqData = {
 				title: req.title_request,
@@ -63,11 +54,7 @@ export const POST = async ({ params, locals }) => {
 	await updateConversationStatut(id, 'confirme');
 	await addMessage(id, user.id, 'Réservation confirmée ✓', 'system');
 
-	// Notify chef
-	const [customer] = await db
-		.select({ firstname: users.firstname, name: users.name })
-		.from(users)
-		.where(eq(users.id, user.id));
+	const customer = await getUserInfo(user.id);
 	const customerName = customer ? `${customer.firstname} ${customer.name}` : 'Le client';
 	await createNotification(
 		conv.id_chief,

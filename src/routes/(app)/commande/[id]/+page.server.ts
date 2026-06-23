@@ -1,15 +1,14 @@
 import { error, redirect } from '@sveltejs/kit';
-import { eq, and } from 'drizzle-orm';
 import Stripe from 'stripe';
-import { STRIPE_SECRET_KEY } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 import { requireUser } from '$lib/server/services/auth';
 import { getConversationDetail } from '$lib/server/services/messaging';
-import { db } from '$lib/server/db';
-import { menus, images_menu } from '$lib/server/db/schema/chiefs';
+import { getExtrasByChief } from '$lib/server/services/chiefs';
+import { getMenuImageUrl } from '$lib/server/services/images';
 import type { MessageItem } from '$lib/models/messaging.model';
 import type { PageServerLoad } from './$types';
 
-const stripe = new Stripe(STRIPE_SECRET_KEY);
+const getStripe = () => new Stripe(env.STRIPE_SECRET_KEY ?? '');
 
 export const load: PageServerLoad = async ({ params, locals }) => {
 	const user = requireUser(locals);
@@ -29,18 +28,11 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		.reverse()
 		.find((m: MessageItem) => m.type === 'menu_proposal' || m.type === 'payment_invitation');
 
-	const [chiefExtras, menuImages, setupIntent] = await Promise.all([
-		db
-			.select()
-			.from(menus)
-			.where(and(eq(menus.id_chief, conv.id_chief), eq(menus.type_menu, 'extra'))),
-		proposal?.id_menu
-			? db.select().from(images_menu).where(eq(images_menu.id_menu, proposal.id_menu)).limit(1)
-			: Promise.resolve([]),
-		stripe.setupIntents.create({ usage: 'off_session', payment_method_types: ['card'] })
+	const [chiefExtras, menuImage, setupIntent] = await Promise.all([
+		getExtrasByChief(conv.id_chief),
+		proposal?.id_menu ? getMenuImageUrl(proposal.id_menu) : Promise.resolve(null),
+		getStripe().setupIntents.create({ usage: 'off_session', payment_method_types: ['card'] })
 	]);
-
-	const menuImage = menuImages[0]?.url ?? null;
 
 	return { conv, user, chiefExtras, menuImage, stripeClientSecret: setupIntent.client_secret };
 };

@@ -1,4 +1,4 @@
-import { and, eq, isNull } from 'drizzle-orm';
+import { and, eq, isNull, or } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { customers, requests } from '$lib/server/db/schema/customers';
 import { users } from '$lib/server/db/schema/auth';
@@ -123,4 +123,40 @@ export async function getRequestsByChief(): Promise<RequestWithCustomer[]> {
 		...rest,
 		customer: { firstname: customer_firstname, name: customer_name, image: customer_image }
 	}));
+}
+
+export async function getOpenRequestById(
+	id: number
+): Promise<(typeof requests.$inferSelect) | null> {
+	const [row] = await db
+		.select()
+		.from(requests)
+		.where(and(eq(requests.id_request, id), eq(requests.statut_request, 'open')));
+	return row ?? null;
+}
+
+export async function respondToRequest(id: number, chiefId: string): Promise<void> {
+	await db
+		.update(requests)
+		.set({ id_chief: chiefId, statut_request: 'responded' })
+		.where(eq(requests.id_request, id));
+}
+
+export async function patchRequestById(
+	id: number,
+	userId: string,
+	data: Partial<typeof requests.$inferInsert>
+): Promise<(typeof requests.$inferSelect) | null> {
+	const [updated] = await db
+		.update(requests)
+		.set(data)
+		.where(and(eq(requests.id_request, id), eq(requests.id_customer, userId)))
+		.returning();
+	return updated ?? null;
+}
+
+export async function deleteRequestById(id: number, userId: string): Promise<void> {
+	await db
+		.delete(requests)
+		.where(and(eq(requests.id_request, id), eq(requests.id_customer, userId)));
 }

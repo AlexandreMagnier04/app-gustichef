@@ -1,4 +1,4 @@
-import { eq, min, avg, count, ilike, inArray } from 'drizzle-orm';
+import { eq, min, avg, count, ilike, inArray, and } from 'drizzle-orm';
 import { error } from '@sveltejs/kit';
 import { db } from '$lib/server/db';
 import {
@@ -62,7 +62,7 @@ export async function getSpecialties(): Promise<Specialty[]> {
 
 export type ChiefMenuImage = {
 	id_menu: number;
-	url: string;
+	url: string | null;
 	title: string;
 	price: string;
 };
@@ -93,8 +93,8 @@ export async function getChiefsDetails(ids: string[]): Promise<Map<string, Chief
 				title: menus.title_menu,
 				price: menus.price_menu
 			})
-			.from(images_menu)
-			.innerJoin(menus, eq(images_menu.id_menu, menus.id_menu))
+			.from(menus)
+			.leftJoin(images_menu, eq(images_menu.id_menu, menus.id_menu))
 			.where(inArray(menus.id_chief, ids))
 			.orderBy(images_menu.position)
 	]);
@@ -111,9 +111,11 @@ export async function getChiefsDetails(ids: string[]): Promise<Map<string, Chief
 		}
 	}
 
+	const seenMenus = new Set<number>();
 	for (const row of imageRows) {
 		const entry = map.get(row.id_chief);
-		if (entry && entry.menuImages.length < 3) {
+		if (entry && !seenMenus.has(row.id_menu) && entry.menuImages.length < 6) {
+			seenMenus.add(row.id_menu);
 			entry.menuImages.push({ id_menu: row.id_menu, url: row.url, title: row.title, price: row.price });
 		}
 	}
@@ -279,6 +281,23 @@ export async function updateMenu(id: number, chiefId: string, data: UpdateMenuDt
 		.where(eq(menus.id_menu, id))
 		.returning();
 	return updated;
+}
+
+export async function getExtrasByChief(chiefId: string): Promise<Menu[]> {
+	return db
+		.select()
+		.from(menus)
+		.where(and(eq(menus.id_chief, chiefId), eq(menus.type_menu, 'extra')));
+}
+
+export async function getChiefUserInfo(
+	chiefId: string
+): Promise<{ firstname: string; name: string } | null> {
+	const [row] = await db
+		.select({ firstname: users.firstname, name: users.name })
+		.from(users)
+		.where(eq(users.id, chiefId));
+	return row ?? null;
 }
 
 export async function deleteMenu(id: number, chiefId: string): Promise<void> {

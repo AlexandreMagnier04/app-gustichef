@@ -63,10 +63,6 @@
 		showCuisineFilter = false;
 	}
 
-	// Remplit jusqu'au prochain multiple de 3
-	function padTo3(n: number): number {
-		return n === 0 ? 3 : n % 3 === 0 ? 0 : 3 - (n % 3);
-	}
 </script>
 
 <div class="flex h-full flex-col">
@@ -99,7 +95,7 @@
 		</p>
 
 		<!-- Chips filtres -->
-		<div class="flex items-center gap-2 px-4 pb-3">
+		<div class="flex items-center justify-center gap-2 px-4 pb-3">
 			<!-- Ville -->
 			<div class="relative">
 				<button
@@ -109,7 +105,7 @@
 						showCuisineFilter = false;
 						showPriceFilter = false;
 					}}
-					class="inline-flex items-center gap-1.5 rounded-full border border-navy/20 bg-white px-3.5 py-1.5 text-sm text-navy/80"
+					class="inline-flex items-center gap-1.5 rounded-full border border-teal bg-white px-3.5 py-1.5 text-sm text-teal"
 				>
 					{selectedCity || 'Ville'}
 					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3.5 w-3.5 text-navy/40">
@@ -142,7 +138,7 @@
 						showVilleFilter = false;
 						showPriceFilter = false;
 					}}
-					class="inline-flex items-center gap-1.5 rounded-full border border-navy/20 bg-white px-3.5 py-1.5 text-sm {selectedCuisine ? 'font-medium text-navy' : 'text-navy/80'}"
+					class="inline-flex items-center gap-1.5 rounded-full border border-teal bg-white px-3.5 py-1.5 text-sm text-teal"
 				>
 					{selectedCuisine || 'Cuisine'}
 					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3.5 w-3.5 text-navy/40">
@@ -174,7 +170,7 @@
 						showVilleFilter = false;
 						showCuisineFilter = false;
 					}}
-					class="inline-flex items-center gap-1.5 rounded-full border border-navy/20 bg-white px-3.5 py-1.5 text-sm {selectedPrice ? 'font-medium text-navy' : 'text-navy/80'}"
+					class="inline-flex items-center gap-1.5 rounded-full border border-teal bg-white px-3.5 py-1.5 text-sm text-teal"
 				>
 					{selectedPrice ? PRICE_RANGES[selectedPrice].label : 'Prix'}
 					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3.5 w-3.5 text-navy/40">
@@ -203,7 +199,7 @@
 	<div class="-mx-5 flex-1 overflow-y-auto">
 		<div class="flex flex-col gap-3 px-4 pb-28 pt-2">
 			{#each filteredChiefs as chief (chief.id_chief)}
-				<article class="overflow-hidden rounded-2xl border border-navy/[0.07] bg-cream shadow-sm">
+				<article class="overflow-hidden rounded-2xl bg-cream">
 
 					<!-- Infos chef → profil -->
 					<button
@@ -252,27 +248,30 @@
 						{/if}
 					</button>
 
-						<!-- Carousel photos — 2 visibles à la fois, scroll horizontal -->
-					<div class="overflow-x-auto pb-3" style="scrollbar-width:none;">
-						<div class="flex gap-2.5 px-4">
-							{#each chief.menuImages as img (img.id_menu)}
-								<button
-									type="button"
-									onclick={() => goto('/menus/' + img.id_menu)}
-									class="relative h-32 w-[52%] shrink-0 overflow-hidden rounded-2xl transition-opacity active:opacity-80"
-								>
-									<img src={img.url} alt={img.title} class="h-full w-full object-cover" />
-									<div class="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/65 to-transparent p-2">
-										<p class="truncate text-[11px] font-semibold leading-tight text-white">{img.title}</p>
-										<p class="text-[10px] text-white/75">{parseFloat(img.price).toFixed(0)}€</p>
-									</div>
-								</button>
-							{/each}
-							{#each Array(padTo3(chief.menuImages.length)) as _, i (i)}
-								<div class="h-32 w-[52%] shrink-0 rounded-2xl bg-linear-to-br {GRADIENTS[(chief.menuImages.length + i) % GRADIENTS.length]}"></div>
-							{/each}
+						<!-- Carousel photos — 2 visibles à la fois, scroll horizontal, clic → menu -->
+					{#if chief.menuImages.length > 0}
+						<div class="overflow-x-auto pb-3" style="scrollbar-width:none;">
+							<div class="flex gap-2.5 px-4">
+								{#each chief.menuImages as img, i (img.id_menu)}
+									<button
+										type="button"
+										onclick={() => goto('/menus/' + img.id_menu)}
+										class="relative h-32 w-[52%] shrink-0 overflow-hidden rounded-2xl transition-opacity active:opacity-80"
+									>
+										{#if img.url}
+											<img src={img.url} alt={img.title} class="h-full w-full object-cover" />
+										{:else}
+											<div class="h-full w-full bg-linear-to-br {GRADIENTS[i % GRADIENTS.length]}"></div>
+										{/if}
+										<div class="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/50 to-transparent px-3 py-2.5 text-left">
+											<p class="truncate text-[12px] font-semibold leading-tight text-white">{img.title}</p>
+											<p class="mt-0.5 text-[11px] text-white/80">{parseFloat(img.price).toFixed(0)}€</p>
+										</div>
+									</button>
+								{/each}
+							</div>
 						</div>
-					</div>
+					{/if}
 				</article>
 			{/each}
 

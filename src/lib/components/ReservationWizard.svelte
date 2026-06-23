@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { loadStripe } from '@stripe/stripe-js';
-	import { PUBLIC_STRIPE_KEY } from '$env/static/public';
+	import { env } from '$env/dynamic/public';
+	const PUBLIC_STRIPE_KEY = env.PUBLIC_STRIPE_KEY ?? '';
 	import type { Menu } from '$lib/models/chief.model';
 
 	interface Props {

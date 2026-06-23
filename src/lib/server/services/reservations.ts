@@ -2,6 +2,8 @@ import { eq, or } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
 import { db } from '$lib/server/db';
 import { reservations } from '$lib/server/db/schema/reservations';
+import { conversations, messages } from '$lib/server/db/schema/messaging';
+import { requests, customers } from '$lib/server/db/schema/customers';
 import { menus } from '$lib/server/db/schema/chiefs';
 import { users } from '$lib/server/db/schema/auth';
 import type { ReservationDetail } from '$lib/models/reservation.model';
@@ -130,4 +132,64 @@ export async function getReservationsForUser(userId: string): Promise<Reservatio
 		console.error('[getReservationsForUser] REAL ERROR:', e);
 		throw e;
 	}
+}
+
+export async function createDirectBooking(data: {
+	customerId: string;
+	chiefId: string;
+	menuId: number;
+	menuTitle: string;
+	pricePerPerson: number;
+	guests: number;
+	eventDate: string;
+	eventTime: string;
+	localization: string;
+	extras: { id_menu: number; title: string; qty: number; price_per_person: number }[];
+	notes: string;
+}): Promise<number> {
+	await db
+		.insert(customers)
+		.values({ id_customer: data.customerId, preferences_customer: '' })
+		.onConflictDoNothing();
+
+	const [req] = await db
+		.insert(requests)
+		.values({
+			title_request: data.menuTitle,
+			description_request: data.notes || `Demande via profil chef — ${data.menuTitle}`,
+			expected_date_request: data.eventDate,
+			expected_time_request: data.eventTime || null,
+			guests_request: data.guests,
+			localization_request: data.localization,
+			id_chief: data.chiefId,
+			id_customer: data.customerId,
+			statut_request: 'open'
+		})
+		.returning();
+
+	const [conv] = await db
+		.insert(conversations)
+		.values({ id_request: req.id_request, id_chief: data.chiefId, id_customer: data.customerId })
+		.returning();
+
+	const bookingData = {
+		date: data.eventDate,
+		time: data.eventTime || '',
+		guests: data.guests,
+		location: data.localization,
+		extras: data.extras.filter((e) => e.qty > 0).map((e) => ({ title: e.title, qty: e.qty })),
+		notes: data.notes || '',
+		menuTitle: data.menuTitle
+	};
+
+	await db.insert(messages).values({
+		id_conversation: conv.id_conversation,
+		id_sender: data.customerId,
+		content_message: JSON.stringify(bookingData),
+		type: 'booking_request',
+		id_menu: data.menuId,
+		price_per_person: data.pricePerPerson
+	});
+
+	return conv.id_conversation;
 }

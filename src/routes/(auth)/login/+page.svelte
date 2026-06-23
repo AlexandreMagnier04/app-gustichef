@@ -14,7 +14,10 @@
 		error = '';
 		const result = await signIn.email({ email, password, callbackURL: '/home' });
 		if (result.error) {
-			error = result.error.message ?? 'Email ou mot de passe incorrect';
+			const msg = result.error.message ?? '';
+			error = msg === 'Email not verified'
+				? 'Veuillez confirmer votre adresse email avant de vous connecter. Vérifiez votre boîte mail.'
+				: 'Email ou mot de passe incorrect';
 			loading = false;
 		}
 	}

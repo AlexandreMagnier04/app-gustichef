@@ -1,11 +1,7 @@
 import { json, error } from '@sveltejs/kit';
-import { requireUser } from '$lib/server/services/auth';
+import { requireUser, getUserInfo } from '$lib/server/services/auth';
 import { createNotification } from '$lib/server/services/notifications';
-import { db } from '$lib/server/db';
-import { conversations, messages } from '$lib/server/db/schema/messaging';
-import { requests, customers } from '$lib/server/db/schema/customers';
-import { users } from '$lib/server/db/schema/auth';
-import { eq } from 'drizzle-orm';
+import { createDirectBooking } from '$lib/server/services/reservations';
 
 export const POST = async ({ request, locals }) => {
 	const user = requireUser(locals);
@@ -38,59 +34,21 @@ export const POST = async ({ request, locals }) => {
 
 	if (!chiefId || !eventDate || !localization) throw error(400, 'Données manquantes');
 
-	// S'assurer que le profil client existe
-	await db
-		.insert(customers)
-		.values({ id_customer: user.id, preferences_customer: '' })
-		.onConflictDoNothing();
-
-	// Créer la demande
-	const [req] = await db
-		.insert(requests)
-		.values({
-			title_request: menuTitle,
-			description_request: notes || `Demande via profil chef — ${menuTitle}`,
-			expected_date_request: eventDate,
-			expected_time_request: eventTime || null,
-			guests_request: guests,
-			localization_request: localization,
-			id_chief: chiefId,
-			id_customer: user.id,
-			statut_request: 'open'
-		})
-		.returning();
-
-	// Créer la conversation
-	const [conv] = await db
-		.insert(conversations)
-		.values({ id_request: req.id_request, id_chief: chiefId, id_customer: user.id })
-		.returning();
-
-	// Stocker les données structurées en JSON
-	const bookingData = {
-		date: eventDate,
-		time: eventTime || '',
+	const conversationId = await createDirectBooking({
+		customerId: user.id,
+		chiefId,
+		menuId,
+		menuTitle,
+		pricePerPerson,
 		guests,
-		location: localization,
-		extras: extras.filter((e) => e.qty > 0).map((e) => ({ title: e.title, qty: e.qty })),
-		notes: notes || '',
-		menuTitle
-	};
-
-	await db.insert(messages).values({
-		id_conversation: conv.id_conversation,
-		id_sender: user.id,
-		content_message: JSON.stringify(bookingData),
-		type: 'booking_request',
-		id_menu: menuId,
-		price_per_person: pricePerPerson
+		eventDate,
+		eventTime,
+		localization,
+		extras,
+		notes
 	});
 
-	// Notifier le chef
-	const [customer] = await db
-		.select({ firstname: users.firstname, name: users.name })
-		.from(users)
-		.where(eq(users.id, user.id));
+	const customer = await getUserInfo(user.id);
 	const customerName = customer ? `${customer.firstname} ${customer.name}` : 'Un client';
 
 	await createNotification(
@@ -98,8 +56,8 @@ export const POST = async ({ request, locals }) => {
 		'new_booking_request',
 		'Nouvelle demande de prestation',
 		`${customerName} souhaite réserver « ${menuTitle} »`,
-		String(conv.id_conversation)
+		String(conversationId)
 	);
 
-	return json({ conversationId: conv.id_conversation });
+	return json({ conversationId });
 };

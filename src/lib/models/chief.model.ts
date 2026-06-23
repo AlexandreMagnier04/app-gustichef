@@ -1,6 +1,7 @@
 export interface Chief {
 	id_chief: string;
 	bio_chief: string | null;
+	banner_chief: string | null;
 	note_chief: string | null; // decimal → string (comportement Drizzle/Postgres)
 }
 
