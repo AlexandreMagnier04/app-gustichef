@@ -20,6 +20,7 @@ export const auth = betterAuth({
 			user: { email: string; name: string; role?: string; firstname?: string };
 			url: string;
 		}) => {
+			console.log(`[auth] sendVerificationEmail appelé pour ${user.email} role=${user.role}`);
 			const isChief = user.role === 'chief';
 			await sendMail({
 				to: user.email,
