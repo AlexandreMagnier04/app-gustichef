@@ -20,13 +20,19 @@ export async function sendMail(options: {
 	text?: string;
 }) {
 	const transporter = createTransporter();
-	await transporter.sendMail({
-		from: env.SMTP_FROM ?? `"Gustichef" <${env.SMTP_USER}>`,
-		to: options.to,
-		subject: options.subject,
-		html: options.html,
-		text: options.text
-	});
+	try {
+		const info = await transporter.sendMail({
+			from: env.SMTP_FROM ?? `"Gustichef" <${env.SMTP_USER}>`,
+			to: options.to,
+			subject: options.subject,
+			html: options.html,
+			text: options.text
+		});
+		console.log(`[mail] envoyé à ${options.to} — messageId: ${info.messageId}`);
+	} catch (err) {
+		console.error(`[mail] ERREUR envoi à ${options.to}:`, err);
+		throw err;
+	}
 }
 
 export async function sendPasswordResetMail(email: string, resetUrl: string) {
