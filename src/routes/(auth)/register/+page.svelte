@@ -3,7 +3,7 @@
 	import { registerUser, loginWithGoogle } from '$lib/services/auth.service';
 	import type { UserRole } from '$lib/models/user.model';
 	import logoRond from '$lib/assets/img/logo-gusti-rond-vert.png';
-	import logoEcriture from '$lib/assets/img/gustichef-ecriture-verte.png';
+	import logoEcriture from '$lib/assets/img/gustichef-ecriture-verte-2.png';
 
 	let role = $derived((page.url.searchParams.get('role') ?? 'customer') as UserRole);
 
