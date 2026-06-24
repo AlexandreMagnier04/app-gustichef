@@ -34,7 +34,7 @@
 	</div>
 
 	<div class="flex shrink-0 flex-col items-center justify-center px-6 py-3 text-center">
-		<img src={logo} alt="Gustichef" />
+		<img src={logo} alt="Gustichef" class="h-24 object-contain" />
 		<p class="mt-1 text-[0.8rem] font-medium text-[#051E23]">Voyage culinaire pas si loin que ça</p>
 	</div>
 
