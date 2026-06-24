@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { authClient } from '$lib/auth-client';
-	import ecriture from '$lib/assets/img/gustichef-ecriture-verte.png';
+	import ecriture from '$lib/assets/img/gustichef-ecriture-verte-2.png';
 	import bg from '$lib/assets/img/slide-1.jpeg';
 
 	let email = $state('');
