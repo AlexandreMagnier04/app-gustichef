@@ -26,5 +26,5 @@ COPY --from=builder /app/drizzle ./drizzle
 
 EXPOSE 3000
 
-# Sync schéma (préserve les données) → seed idempotent → démarrage app
-CMD ["sh", "-c", "node_modules/.bin/drizzle-kit push --force && node_modules/.bin/tsx src/lib/server/db/seed.ts && node build"]
+# Seed puis lancement de l'app
+CMD ["sh", "-c", "node_modules/.bin/tsx src/lib/server/db/seed.ts && node build"]
