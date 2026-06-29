@@ -27,10 +27,7 @@ export const auth = betterAuth({
 							.values({ id_customer: user.id, preferences_customer: '' })
 							.onConflictDoNothing();
 						// Le client n'a pas de vérification email : on le marque vérifié direct
-						await db
-							.update(users)
-							.set({ emailVerified: true })
-							.where(eq(users.id, user.id));
+						await db.update(users).set({ emailVerified: true }).where(eq(users.id, user.id));
 					}
 				}
 			}
