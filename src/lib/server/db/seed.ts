@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import { drizzle } from 'drizzle-orm/postgres-js';
+import { eq } from 'drizzle-orm';
 import postgres from 'postgres';
 import { randomUUID } from 'crypto';
 import { hashPassword } from 'better-auth/crypto';
@@ -191,10 +192,14 @@ const CUSTOMERS = [
 ];
 
 async function seed() {
-	// Idempotent : si des chefs existent déjà, on ne re-seed pas (préserve la prod)
-	const existingChefs = await db.select({ id: chiefs.id_chief }).from(chiefs).limit(1);
-	if (existingChefs.length > 0) {
-		console.log('Seed: données déjà présentes, rien à faire.');
+	// On se base sur un chef de démo de référence, pas sur les vrais chefs
+	const sentinel = await db
+		.select({ id: users.id })
+		.from(users)
+		.where(eq(users.email, CHEFS[0].email))
+		.limit(1);
+	if (sentinel.length > 0) {
+		console.log('Seed: données de démo déjà présentes, rien à faire.');
 		await client.end();
 		return;
 	}
