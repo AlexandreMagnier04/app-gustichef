@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { goto } from '$app/navigation';
 	import { registerUser, loginWithGoogle } from '$lib/services/auth.service';
 	import type { UserRole } from '$lib/models/user.model';
 	import logoRond from '$lib/assets/img/logo-gusti-rond-vert.png';
@@ -16,6 +17,7 @@
 	let errors = $state<Record<string, string>>({});
 	let serverError = $state('');
 	let loading = $state(false);
+	let success = $state(false);
 
 	async function handleRegister(e: SubmitEvent) {
 		e.preventDefault();
@@ -36,6 +38,7 @@
 		loading = false;
 		if (result.errors) errors = result.errors;
 		if (result.serverError) serverError = result.serverError;
+		if (!result.errors && !result.serverError) success = true;
 	}
 
 	async function handleGoogle() {
@@ -181,3 +184,30 @@
 		<a href="/login" class="font-medium text-navy">Se connecter</a>
 	</p>
 </div>
+
+{#if success}
+	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-6">
+		<div class="w-full max-w-xs rounded-2xl bg-cream p-8 text-center">
+			<div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-navy">
+				<svg viewBox="0 0 24 24" fill="none" class="h-8 w-8" aria-hidden="true">
+					<path
+						d="M5 13l4 4L19 7"
+						stroke="white"
+						stroke-width="2.5"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					/>
+				</svg>
+			</div>
+			<h2 class="mb-2 text-lg font-semibold text-navy">Inscription confirmée !</h2>
+			<p class="mb-6 text-sm text-gray-500">Tu peux maintenant te connecter à ton compte.</p>
+			<button
+				type="button"
+				onclick={() => goto('/login')}
+				class="w-full rounded-xl bg-navy py-3 text-sm font-medium text-cream"
+			>
+				Retour à la connexion
+			</button>
+		</div>
+	</div>
+{/if}

@@ -3,16 +3,43 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { sveltekitCookies } from 'better-auth/svelte-kit';
 import { env } from '$env/dynamic/private';
 import { getRequestEvent } from '$app/server';
+import { eq } from 'drizzle-orm';
 import { db } from '$lib/server/db';
+import { users } from '$lib/server/db/schema/auth';
+import { chiefs } from '$lib/server/db/schema/chiefs';
+import { customers } from '$lib/server/db/schema/customers';
 import { sendPasswordResetMail, sendMail } from '$lib/server/mail';
 
 export const auth = betterAuth({
 	baseURL: env.ORIGIN,
 	secret: env.BETTER_AUTH_SECRET,
 	database: drizzleAdapter(db, { provider: 'pg' }),
+	databaseHooks: {
+		user: {
+			create: {
+				// Crée automatiquement le profil chef/client à la création du user
+				after: async (user: { id: string; role?: string }) => {
+					if (user.role === 'chief') {
+						await db.insert(chiefs).values({ id_chief: user.id }).onConflictDoNothing();
+					} else {
+						await db
+							.insert(customers)
+							.values({ id_customer: user.id, preferences_customer: '' })
+							.onConflictDoNothing();
+						// Le client n'a pas de vérification email : on le marque vérifié direct
+						await db
+							.update(users)
+							.set({ emailVerified: true })
+							.where(eq(users.id, user.id));
+					}
+				}
+			}
+		}
+	},
 	emailAndPassword: {
 		enabled: true,
 		requireEmailVerification: true,
+		autoSignIn: false,
 		sendResetPassword: async ({ user, url }) => {
 			await sendPasswordResetMail(user.email, url);
 		}
@@ -26,13 +53,11 @@ export const auth = betterAuth({
 			user: { email: string; name: string; role?: string; firstname?: string };
 			url: string;
 		}) => {
-			console.log(`[auth] sendVerificationEmail appelé pour ${user.email} role=${user.role}`);
-			const isChief = user.role === 'chief';
+			// Seuls les chefs reçoivent un mail de vérification
+			if (user.role !== 'chief') return;
 			await sendMail({
 				to: user.email,
-				subject: isChief
-					? 'Confirmez votre inscription Chef – Gustichef'
-					: 'Confirmez votre adresse email – Gustichef',
+				subject: 'Confirmez votre inscription Chef – Gustichef',
 				html: `
 <!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"></head>
 <body style="margin:0;padding:0;background:#F5EDDC;font-family:sans-serif">
@@ -44,18 +69,14 @@ export const auth = betterAuth({
         </td></tr>
         <tr><td style="padding:32px">
           <h2 style="margin:0 0 8px;color:#163040;font-size:17px">
-            ${isChief ? `Bienvenue, ${user.firstname ?? user.name} !` : 'Confirmez votre adresse email'}
+            Bienvenue, ${user.firstname ?? user.name} !
           </h2>
           <p style="margin:0 0 20px;color:#555;font-size:14px;line-height:1.6">
-            ${
-							isChief
-								? `Votre inscription en tant que chef est bien enregistrée.<br>Cliquez sur le bouton ci-dessous pour confirmer votre adresse email et accéder à l'application.`
-								: `Cliquez sur le bouton ci-dessous pour confirmer votre adresse email et finaliser votre inscription.`
-						}
+            Votre inscription en tant que chef est bien enregistrée.<br>Cliquez sur le bouton ci-dessous pour confirmer votre adresse email et accéder à l'application.
           </p>
           <a href="${url}"
              style="display:inline-block;background:#B85C38;color:#fff;text-decoration:none;padding:13px 28px;border-radius:50px;font-size:14px;font-weight:600">
-            ${isChief ? "Accéder à l'application" : 'Confirmer mon email'}
+            Accéder à l'application
           </a>
           <p style="margin:24px 0 0;color:#999;font-size:12px">
             Ce lien expire dans <strong>24 heures</strong>.
