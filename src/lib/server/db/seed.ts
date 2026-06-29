@@ -191,19 +191,28 @@ const CUSTOMERS = [
 ];
 
 async function seed() {
+	// Idempotent : si des chefs existent déjà, on ne re-seed pas (préserve la prod)
+	const existingChefs = await db.select({ id: chiefs.id_chief }).from(chiefs).limit(1);
+	if (existingChefs.length > 0) {
+		console.log('Seed: données déjà présentes, rien à faire.');
+		await client.end();
+		return;
+	}
+
 	const password = await hashPassword('Password123!');
 
-	// Spécialités
+	// Spécialités — n'insère que celles qui manquent (évite les doublons)
 	console.log('Seeding specialties...');
-	const insertedSpecialties = await db
-		.insert(specialties)
-		.values(SPECIALTIES.map((name) => ({ name_speciality: name })))
-		.onConflictDoNothing()
-		.returning();
+	const existingSpecs = await db.select().from(specialties);
+	const existingNames = new Set(existingSpecs.map((s) => s.name_speciality));
+	const toInsert = SPECIALTIES.filter((name) => !existingNames.has(name));
+	if (toInsert.length > 0) {
+		await db.insert(specialties).values(toInsert.map((name) => ({ name_speciality: name })));
+	}
 
-	const specialtyMap = new Map(
-		insertedSpecialties.map((s) => [s.name_speciality, s.id_speciality])
-	);
+	// Construit la map depuis l'ensemble complet des spécialités présentes en base
+	const allSpecs = await db.select().from(specialties);
+	const specialtyMap = new Map(allSpecs.map((s) => [s.name_speciality, s.id_speciality]));
 
 	// Chefs
 	console.log('Seeding chefs...');
